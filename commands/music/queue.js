@@ -9,6 +9,10 @@ class Queue extends commando.Command {
       group: "music",
       memberName: "queue",
       description: "shows the queue of songs",
+      throttling: {
+        usages: 1,
+        duration: 5,
+      },
     });
   }
 

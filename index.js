@@ -1,9 +1,10 @@
 const commando = require("discord.js-commando");
 const config = require("./config.json");
 const path = require("path");
-//const Events = require("Events.json");
+const Events = require("./Events.json");
 const bot = new commando.Client({
   unknownCommandResponse: false,
+  commandPrefix: config.prefix,
 });
 //need to put capital words in too as well as all caps
 const language = [];

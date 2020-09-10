@@ -1,7 +1,7 @@
 const commando = require("discord.js-commando");
 const ytdl = require("ytdl-core");
 const queue = require("../../index");
-//const ytpl = require("ytpl");
+const ytpl = require("ytpl");
 
 class Playlist extends commando.Command {
   constructor(client) {
@@ -10,6 +10,10 @@ class Playlist extends commando.Command {
       group: "music",
       memberName: "playlist",
       description: "adds a playlist to play",
+      throttling: {
+        usages: 1,
+        duration: 5,
+      },
     });
   }
 
@@ -32,11 +36,13 @@ class Playlist extends commando.Command {
       return message.channel.send(
         "Do not enter single tracks here, use the play command."
       );
+
+    let info;
     /*
-    ytpl(ytpl.getPlaylistID(args[1]), function (err, playlist) {
-      if (err) throw err;
-      console.log(playlist.items.url_simple);
-    });
+    info = {
+      title: element.title,
+      url: element.url_simple,
+    };
     */
     if (!serverQueue) {
       const queueContract = {
@@ -48,8 +54,16 @@ class Playlist extends commando.Command {
         playing: true,
       };
       queue.set(message.guild.id, queueContract);
-      //queueContract.push(playlist);
-      //
+
+      let link = (await ytpl.getPlaylistID(args[1])).toString();
+      await (await ytpl(link, ytpl.options)).items.forEach((element) => {
+        info = {
+          title: element.title,
+          url: element.url_simple,
+        };
+        queueContract.songs.push(info);
+      });
+      console.log(queueContract.songs);
 
       try {
         var connection = await voiceChannel.join();
@@ -61,9 +75,16 @@ class Playlist extends commando.Command {
         return message.channel.send(err);
       }
     } else {
-      //
+      let link = (await ytpl.getPlaylistID(args[1])).toString();
+      await (await ytpl(link, ytpl.options)).items.forEach((element) => {
+        info = {
+          title: element.title,
+          url: element.url_simple,
+        };
+        serverQueue.songs.push(info);
+      });
       console.log(serverQueue.songs);
-      return message.channel.send("Playlist has been added to the queue");
+      return message.channel.send("Playlist has been added to the queue!");
     }
   }
 }
@@ -88,7 +109,9 @@ function play(guild, song) {
     })
     .on("error", (error) => console.error(error));
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-  serverQueue.textChannel.send(`Start playing: **${song.title}**`);
+  serverQueue.textChannel.send(
+    `Start playing: **${serverQueue.songs[0].title}**`
+  );
 }
 
-//module.exports = Playlist;
+module.exports = Playlist;

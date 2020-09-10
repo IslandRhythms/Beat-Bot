@@ -18,6 +18,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "fortune-cookie": "0.0.1",
     "node-opus": "^0.3.3",
-    "ytdl-core": "^3.2.2"
+    "ytdl-core": "^3.2.2",
+    "ytpl": "^1.0.0"
   }
 }

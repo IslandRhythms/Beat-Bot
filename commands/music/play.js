@@ -9,6 +9,10 @@ class Play extends commando.Command {
       group: "music",
       memberName: "play",
       description: "plays a song",
+      throttling: {
+        usages: 1,
+        duration: 5,
+      },
     });
   }
 
