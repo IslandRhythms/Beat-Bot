@@ -18,6 +18,10 @@ class Unloop extends commando.Command {
   async run(message) {
     const serverQueue = queue.get(message.guild.id);
     if (!serverQueue) return message.channel.send("nothing to unloop!");
+    if (!message.member.voice.channel)
+      return message.channel.send(
+        "You must be in a voice channel to unloop songs"
+      );
     queue.repeat = false;
     return message.channel.send("Will unloop boss!");
   }
