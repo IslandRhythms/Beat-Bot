@@ -38,12 +38,6 @@ class Playlist extends commando.Command {
       );
 
     let info;
-    /*
-    info = {
-      title: element.title,
-      url: element.url_simple,
-    };
-    */
     if (!serverQueue) {
       const queueContract = {
         textChannel: message.channel,
