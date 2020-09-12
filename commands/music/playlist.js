@@ -104,7 +104,8 @@ function play(guild, song) {
       })
     )
     .on("finish", () => {
-      serverQueue.songs.shift();
+      //put repeat if statement here
+      if (!queue.repeat) serverQueue.songs.shift();
       play(guild, serverQueue.songs[0]);
     })
     .on("error", (error) => console.error(error));

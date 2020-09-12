@@ -1,6 +1,7 @@
 const commando = require("discord.js-commando");
 const ytdl = require("ytdl-core");
 const queue = require("../../index");
+let repeat = require("../../index");
 
 class Play extends commando.Command {
   constructor(client) {
@@ -84,7 +85,8 @@ function play(guild, song) {
       })
     )
     .on("finish", () => {
-      serverQueue.songs.shift();
+      //put repeat if statement here
+      if (!queue.repeat) serverQueue.songs.shift();
       play(guild, serverQueue.songs[0]);
     })
     .on("error", (error) => console.error(error));

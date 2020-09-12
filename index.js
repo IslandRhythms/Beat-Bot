@@ -2,6 +2,7 @@ const commando = require("discord.js-commando");
 const config = require("./config.json");
 const path = require("path");
 const Events = require("./Events.json");
+const date = require("dateformat");
 const bot = new commando.Client({
   unknownCommandResponse: false,
   commandPrefix: config.prefix,
@@ -10,6 +11,7 @@ const bot = new commando.Client({
 const language = [];
 var info;
 module.exports = new Map();
+module.exports.repeat = false;
 const responses = [
   "You rang?",
   "I'm busy!",
@@ -27,12 +29,32 @@ bot.registry.registerGroup("music", "Music");
 bot.registry.registerDefaults();
 bot.registry.registerCommandsIn(path.join(__dirname + "/commands"));
 
+/*
+bot.setInterval(() => {
+  let today = new Date();
+  let format = date(today, "m/d");
+  let greeting = "";
+  for (let i = 0; i < Events.length; i++) {
+    if (format == Object.keys(Events[i]) && format != "12/25") {
+      greeting = "Happy " + Object.values(Events[i]);
+    }
+    if (format == "12/25") {
+      greeting = "Merry Christmas";
+    }
+  }
+
+  if (greeting != "") message.channel.send(greeting);
+}, 86400000);
+
+*/
+
 bot.on("ready", () => {
   bot.user.setActivity("!?help for how I can help!");
 
   bot.on("message", (message) => {
     if (message.author.bot) return;
 
+    /*
     if (message.content.includes("god") || message.content.includes("God")) {
       return message.channel.sendMessage("Tell me though, Can it bleed?");
     }
@@ -51,7 +73,7 @@ bot.on("ready", () => {
     if (language.some((word) => message.content.includes(word))) {
       return message.channel.sendMessage("Hey, language");
     }
-
+    */
     //will take message, split it up and then put parts into array
     const args = message.content.split(/ +/);
     //Part of the presence command

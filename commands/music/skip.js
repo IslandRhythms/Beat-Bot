@@ -9,7 +9,9 @@ class Skip extends commando.Command {
       group: "music",
       memberName: "skip",
       description:
-        "skips the current or specified song. Ex !?skip or !?skip 4 or !?skip 4 5 6 7 ...",
+        "skips the current or specified song. " +
+        "Ex !?skip or !?skip 4 or !?skip 4 5 6 7 ..." +
+        "Note: if the song is being looped, you must use the unloop command as skip will restart the current song",
       throttling: {
         usages: 1,
         duration: 2,

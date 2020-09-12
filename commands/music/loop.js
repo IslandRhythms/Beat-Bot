@@ -19,33 +19,9 @@ class Loop extends commando.Command {
   async run(message) {
     const serverQueue = queue.get(message.guild.id);
     if (!serverQueue) return message.channel.send("nothing to loop!");
-    //play(message.guild, serverQueue.songs[0]);
+    queue.repeat = true;
+    return message.channel.send("Will loop chief!");
   }
 }
 
-/*
-function play(guild, song) {
-  const serverQueue = queue.get(guild.id);
-  if (!song) {
-    serverQueue.voiceChannel.leave();
-    queue.delete(guild.id);
-    return;
-  }
-  const dispatcher = serverQueue.connection
-    .play(
-      ytdl(song.url, {
-        quality: "highestaudio",
-        highWaterMark: 1 << 25,
-        filter: "audioonly",
-      })
-    )
-    .on("finish", () => {
-      play(guild, serverQueue.songs[0]);
-    })
-    .on("error", (error) => console.error(error));
-  dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-  serverQueue.textChannel.send(`Start playing: **${song.title}**`);
-}
-*/
-
-//module.exports = Loop;
+module.exports = Loop;
