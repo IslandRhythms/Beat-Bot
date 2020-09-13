@@ -17,10 +17,11 @@ class Loop extends commando.Command {
   }
 
   async run(message) {
-    const serverQueue = queue.get(message.guild.id);
-    if (!serverQueue) return message.channel.send("nothing to loop!");
     if (!message.member.voice.channel)
       return message.channel.send("You must be in a voice channel to loop");
+    const serverQueue = queue.get(message.guild.id);
+    if (!serverQueue) return message.channel.send("nothing to loop!");
+    if (queue.repeat) return message.channel.send("Already looping!");
     queue.repeat = true;
     return message.channel.send("Will loop chief!");
   }

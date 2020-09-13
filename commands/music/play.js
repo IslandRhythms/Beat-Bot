@@ -46,11 +46,13 @@ class Play extends commando.Command {
         voiceChannel: voiceChannel,
         connection: null,
         songs: [],
+        backup: [],
         volume: 5,
         playing: true,
       };
       queue.set(message.guild.id, queueContract);
       queueContract.songs.push(song);
+      queueContract.backup.push(song);
       try {
         var connection = await voiceChannel.join();
         queueContract.connection = connection;
@@ -62,6 +64,7 @@ class Play extends commando.Command {
       }
     } else {
       serverQueue.songs.push(song);
+      serverQueue.backup.push(song);
       console.log(serverQueue.songs);
       return message.channel.send(`${song.title} has been added to the queue!`);
     }
@@ -85,6 +88,8 @@ function play(guild, song) {
     )
     .on("finish", () => {
       if (!queue.repeat) serverQueue.songs.shift();
+      if (queue.continue && serverQueue.songs.length === 0)
+        serverQueue.songs.push(serverQueue.backup);
       play(guild, serverQueue.songs[0]);
     })
     .on("error", (error) => console.error(error));

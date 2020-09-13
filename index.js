@@ -9,9 +9,10 @@ const bot = new commando.Client({
 });
 //need to put capital words in too as well as all caps
 const language = [];
-var info;
 module.exports = new Map();
 module.exports.repeat = false;
+module.exports.continue = false;
+
 const responses = [
   "You rang?",
   "I'm busy!",
