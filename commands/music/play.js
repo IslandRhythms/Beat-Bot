@@ -71,14 +71,14 @@ class Play extends commando.Command {
   }
 }
 
-function play(guild, song) {
+async function play(guild, song) {
   const serverQueue = queue.get(guild.id);
   if (!song) {
     serverQueue.voiceChannel.leave();
     queue.delete(guild.id);
     return;
   }
-  const dispatcher = serverQueue.connection
+  const dispatcher = await serverQueue.connection
     .play(
       ytdl(song.url, {
         quality: "highestaudio",

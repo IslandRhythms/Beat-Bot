@@ -85,7 +85,7 @@ class Playlist extends commando.Command {
     }
   }
 }
-function play(guild, song) {
+async function play(guild, song) {
   const serverQueue = queue.get(guild.id);
   if (!song) {
     serverQueue.voiceChannel.leave();
@@ -106,11 +106,9 @@ function play(guild, song) {
         serverQueue.songs.push(serverQueue.backup);
       play(guild, serverQueue.songs[0]);
     })
-    .on("error", (error) => console.error(error));
+    .on("error", (error) => console.log(error));
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-  serverQueue.textChannel.send(
-    `Start playing: **${serverQueue.songs[0].title}**`
-  );
+  serverQueue.textChannel.send(`Start playing: **${song.title}**`);
 }
 
 module.exports = Playlist;
