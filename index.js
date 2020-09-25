@@ -51,11 +51,14 @@ bot.setInterval(() => {
 
 bot.on("ready", () => {
   bot.user.setActivity("!?help for how I can help!");
+});
+bot.on("reconnecting", () => {
+  bot.user.setActivity("!?help for how I can help!");
+});
+bot.on("message", (message) => {
+  if (message.author.bot) return;
 
-  bot.on("message", (message) => {
-    if (message.author.bot) return;
-
-    /*
+  /*
     if (message.content.includes("god") || message.content.includes("God")) {
       return message.channel.sendMessage("Tell me though, Can it bleed?");
     }
@@ -75,42 +78,42 @@ bot.on("ready", () => {
       return message.channel.sendMessage("Hey, language");
     }
     */
-    //will take message, split it up and then put parts into array
-    const args = message.content.split(/ +/);
-    //Part of the presence command
-    if (
-      message.author.id == "314610062352187397" &&
-      message.content == "activity"
-    ) {
-      var activity = [
-        "Ready to play",
-        "Chilling",
-        "Doing work",
-        "afk",
-        "can talk",
-      ];
-      message.reply(activity);
-    }
-    if (message.author.id == "314610062352187397" && message.content == "? 0") {
-      module.exports.info = args[1];
-      message.reply("k");
-    }
-    if (message.author.id == "314610062352187397" && message.content == "? 1") {
-      module.exports.info = args[1];
-      message.reply("k");
-    }
-    if (message.author.id == "314610062352187397" && message.content == "? 2") {
-      module.exports.info = args[1];
-      message.reply("k");
-    }
-    if (message.author.id == "314610062352187397" && message.content == "? 3") {
-      module.exports.info = args[1];
-      message.reply("k");
-    }
-    if (message.author.id == "314610062352187397" && message.content == "? 4") {
-      module.exports.info = args[1];
-      message.reply("k");
-    }
-  });
+  //will take message, split it up and then put parts into array
+  const args = message.content.split(/ +/);
+  //Part of the presence command
+  if (
+    message.author.id == "314610062352187397" &&
+    message.content == "activity"
+  ) {
+    var activity = [
+      "Ready to play",
+      "Chilling",
+      "Doing work",
+      "afk",
+      "can talk",
+    ];
+    message.reply(activity);
+  }
+  if (message.author.id == "314610062352187397" && message.content == "? 0") {
+    module.exports.info = args[1];
+    message.reply("k");
+  }
+  if (message.author.id == "314610062352187397" && message.content == "? 1") {
+    module.exports.info = args[1];
+    message.reply("k");
+  }
+  if (message.author.id == "314610062352187397" && message.content == "? 2") {
+    module.exports.info = args[1];
+    message.reply("k");
+  }
+  if (message.author.id == "314610062352187397" && message.content == "? 3") {
+    module.exports.info = args[1];
+    message.reply("k");
+  }
+  if (message.author.id == "314610062352187397" && message.content == "? 4") {
+    module.exports.info = args[1];
+    message.reply("k");
+  }
 });
+
 bot.login(config.token);
