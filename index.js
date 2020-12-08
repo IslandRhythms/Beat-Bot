@@ -3,9 +3,9 @@ const config = require("./config.json");
 const path = require("path");
 const Events = require("./Events.json");
 const date = require("dateformat");
-const bot = new commando.Client({
+const bot = new commando.CommandoClient({
   unknownCommandResponse: false,
-  commandPrefix: config.prefix,
+  commandPrefix: "?",
 });
 //need to put capital words in too as well as all caps
 const language = [];
@@ -43,8 +43,12 @@ bot.setInterval(() => {
       greeting = "Merry Christmas";
     }
   }
-
-  if (greeting != "") message.channel.send(greeting);
+if (greeting != ""){
+    for(let j = 0; j < channelids.length; j++){
+  let channel = bot.channels.cache.get(channelids[j]); 
+   channel.send("@everyone "+greeting);
+    }
+  }
 }, 86400000);
 
 */
@@ -55,6 +59,11 @@ bot.on("ready", () => {
 bot.on("reconnecting", () => {
   bot.user.setActivity("!?help for how I can help!");
 });
+bot.on('guildMemberAdd', guildMember => {
+  let title = guildMember.guild.roles.cache.find(role => role.name === 'Band Kids');
+  guildMember.roles.add(title);
+});
+
 bot.on("message", (message) => {
   if (message.author.bot) return;
 
@@ -79,41 +88,8 @@ bot.on("message", (message) => {
     }
     */
   //will take message, split it up and then put parts into array
-  const args = message.content.split(/ +/);
-  //Part of the presence command
-  if (
-    message.author.id == "314610062352187397" &&
-    message.content == "activity"
-  ) {
-    var activity = [
-      "Ready to play",
-      "Chilling",
-      "Doing work",
-      "afk",
-      "can talk",
-    ];
-    message.reply(activity);
-  }
-  if (message.author.id == "314610062352187397" && message.content == "? 0") {
-    module.exports.info = args[1];
-    message.reply("k");
-  }
-  if (message.author.id == "314610062352187397" && message.content == "? 1") {
-    module.exports.info = args[1];
-    message.reply("k");
-  }
-  if (message.author.id == "314610062352187397" && message.content == "? 2") {
-    module.exports.info = args[1];
-    message.reply("k");
-  }
-  if (message.author.id == "314610062352187397" && message.content == "? 3") {
-    module.exports.info = args[1];
-    message.reply("k");
-  }
-  if (message.author.id == "314610062352187397" && message.content == "? 4") {
-    module.exports.info = args[1];
-    message.reply("k");
-  }
+  //const args = message.content.split(/ +/);
+  
 });
 
 bot.login(config.token);

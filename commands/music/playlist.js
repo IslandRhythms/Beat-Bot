@@ -51,10 +51,10 @@ class Playlist extends commando.Command {
       queue.set(message.guild.id, queueContract);
 
       let link = (await ytpl.getPlaylistID(args[1])).toString();
-      await (await ytpl(link, ytpl.options)).items.forEach((element) => {
+      (await ytpl(link, ytpl.options)).items.forEach((element) => {
         info = {
           title: element.title,
-          url: element.url_simple,
+          url: element.shortUrl,
         };
         queueContract.songs.push(info);
         queueContract.backup.push(info);
@@ -72,10 +72,10 @@ class Playlist extends commando.Command {
       }
     } else {
       let link = (await ytpl.getPlaylistID(args[1])).toString();
-      await (await ytpl(link, ytpl.options)).items.forEach((element) => {
+      (await ytpl(link, ytpl.options)).items.forEach((element) => {
         info = {
           title: element.title,
-          url: element.url_simple,
+          url: element.shortUrl,
         };
         serverQueue.songs.push(info);
         serverQueue.backup.push(info);

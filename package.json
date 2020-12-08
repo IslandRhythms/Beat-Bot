@@ -9,9 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/opus": "^0.3.2",
+    "@discordjs/opus": "^0.3.3",
     "dateformat": "^3.0.3",
-    "discord.js": "^12.3.1",
+    "discord.js": "^12.5.1",
     "discord.js-commando": "git+https://github.com/discordjs/Commando.git",
     "eslint": "^6.8.0",
     "ffmpeg": "0.0.4",
@@ -19,7 +19,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "fortune-cookie": "0.0.1",
     "node-opus": "^0.3.3",
-    "ytdl-core": "^3.2.2",
-    "ytpl": "^1.0.1"
+    "ytdl-core": "^4.1.4",
+    "ytpl": "^2.0.0-alpha.3"
   }
 }
