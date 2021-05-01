@@ -6,6 +6,7 @@ const date = require("dateformat");
 const bot = new commando.CommandoClient({
   unknownCommandResponse: false,
   commandPrefix: "?",
+  owner: "314610062352187397",
 });
 //need to put capital words in too as well as all caps
 const language = [];
@@ -23,6 +24,7 @@ const responses = [
   "I'm here to help friends!",
   "Don't like my sarcasm, well I don't like your stupid.",
 ];
+const channelids = ["784509591006347325"];//,"488053636060938242"]; //bot-testing and the-hut
 bot.registry.registerGroup("random", "Random");
 bot.registry.registerGroup("recommendations", "Recommendations");
 bot.registry.registerGroup("fun", "Fun");
