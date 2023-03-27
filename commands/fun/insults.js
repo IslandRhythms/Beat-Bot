@@ -1,4 +1,4 @@
-const commando = require('discord.js-commando');
+const { SlashCommandBuilder } = require('discord.js');
 const insult = require('../../insults.json');
 
 class InsultsCommand extends commando.Command{
@@ -24,3 +24,17 @@ class InsultsCommand extends commando.Command{
     }
 }
 module.exports = InsultsCommand;
+
+module.exports = {
+  data: new SlashCommandBuilder().setName('burn').setDescription('Sends a sick burn and will burn a user if mentioned in the command call').addUserOption(option => option.setName('target').setDescription('the user to burn')),
+  async execute(interaction) {
+    await interaction.deferReply();
+    const user = interaction.options.getUser('target') ?? '';
+    const burn = insult[Math.floor(Math.random() * insult.length)];
+    if (user) {
+      interaction.channel.send(`@${user.username} ${burn}`);
+    } else {
+      interaction.reply(`${burn}`)
+    }
+  }
+}

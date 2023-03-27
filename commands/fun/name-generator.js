@@ -1,4 +1,4 @@
-const commando = require('discord.js-commando');
+const { SlashCommandBuilder } = require('discord.js');
 
 class NameGenerator extends commando.Command{
     constructor(client){
@@ -55,3 +55,22 @@ class NameGenerator extends commando.Command{
     }
 }
 module.exports = NameGenerator;
+
+module.exports = {
+    data: new SlashCommandBuilder().setName('jumble')
+    .setDescription('generates a variation of your name and also allow you to add a letter of your choice to the jumble.')
+    .addStringOption(option => option.setName('name').setDescription('the name to jumble').setRequired(true))
+    .addStringOption(option => option.setName('letter').setDescription('The letter to throw into the mix')),
+    async execute(interaction) {
+        const name = interaction.options.getString('name');
+        const letter = interaction.options.getString('letter') ?? '';
+        const size = name.split('');
+        if (letter) {
+            size.push(letter);
+        }
+        const jumble = size.length
+        for (let i = 0; i < jumble.length; i++) {
+            
+        }
+    }
+}
