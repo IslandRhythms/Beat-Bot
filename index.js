@@ -1,18 +1,13 @@
-const commando = require("discord.js-commando");
+const { Client, Events, GatewayIntentBits } = require('discord.js');
 const config = require("./config.json");
 const path = require("path");
-const Events = require("./Events.json");
+const Occasions = require("./Events.json");
 const date = require("dateformat");
-const bot = new commando.CommandoClient({
-  unknownCommandResponse: false,
-  commandPrefix: "?",
-  owner: "314610062352187397",
-});
-//need to put capital words in too as well as all caps
-const language = [];
-module.exports = new Map();
-module.exports.repeat = false;
-module.exports.continue = false;
+const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers] });
+bot.commands = new Collection();
+
+const foldersPath = path.join(__dirname, 'commands');
+const commandFolders = fs.readdirSync(foldersPath);
 
 const responses = [
   "You rang?",
@@ -23,23 +18,33 @@ const responses = [
   "You can get yourself out of this situation",
   "I'm here to help friends!",
   "Don't like my sarcasm, well I don't like your stupid.",
+  "Don't you every message me again, you stupid fuck."
 ];
 const channelids = ["784509591006347325"];//,"488053636060938242"]; //bot-testing and the-hut
-bot.registry.registerGroup("random", "Random");
-bot.registry.registerGroup("recommendations", "Recommendations");
-bot.registry.registerGroup("fun", "Fun");
-bot.registry.registerGroup("music", "Music");
-bot.registry.registerDefaults();
-bot.registry.registerCommandsIn(path.join(__dirname + "/commands"));
+
+for (const folder of commandFolders) {
+	const commandsPath = path.join(foldersPath, folder);
+	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+	for (const file of commandFiles) {
+		const filePath = path.join(commandsPath, file);
+		const command = require(filePath);
+		// Set a new item in the Collection with the key as the command name and the value as the exported module
+		if ('data' in command && 'execute' in command) {
+			bot.commands.set(command.data.name, command);
+		} else {
+			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+		}
+	}
+}
 
 /*
 bot.setInterval(() => {
   let today = new Date();
   let format = date(today, "m/d");
   let greeting = "";
-  for (let i = 0; i < Events.length; i++) {
-    if (format == Object.keys(Events[i]) && format != "12/25") {
-      greeting = "Happy " + Object.values(Events[i]);
+  for (let i = 0; i < Occasions.length; i++) {
+    if (format == Object.keys(Occasions[i]) && format != "12/25") {
+      greeting = "Happy " + Object.values(Occasions[i]);
     }
     if (format == "12/25") {
       greeting = "Merry Christmas";
@@ -93,5 +98,5 @@ bot.on("message", (message) => {
   //const args = message.content.split(/ +/);
   
 });
-
 bot.login(config.token);
+console.log('logged in');

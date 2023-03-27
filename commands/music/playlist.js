@@ -1,6 +1,6 @@
 const commando = require("discord.js-commando");
 const ytdl = require("ytdl-core");
-const queue = require("../../index");
+const queue = require("../../../index");
 const ytpl = require("ytpl");
 
 class Playlist extends commando.Command {
