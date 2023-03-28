@@ -1,25 +1,15 @@
-const commando = require("discord.js-commando");
-const queue = require("../../index");
+const { SlashCommandBuilder } = require("discord.js");
+const { queue }= require("../../index");
 
-class Stop extends commando.Command {
-  constructor(client) {
-    super(client, {
-      name: "stop",
-      group: "music",
-      memberName: "stop",
-      description: "stops the music, feelsbadman don't be a party pooper",
-    });
-  }
-
-  async run(message) {
-    const serverQueue = queue.get(message.guild.id);
-    if (!message.member.voice.channel)
-      return message.channel.send(
-        "You have to be in a voice channel to stop the music!"
-      );
-    serverQueue.songs = [];
+module.exports = {
+  data: new SlashCommandBuilder().setName('stop').setDescription("stops the music, feelsbadman don't be a party pooper"),
+  async execute(interaction) {
+    const serverQueue = queue.get(interaction.guild.id);
+    // need to check if bot is in same channel as user
+    if (!interaction.member.voice.channel) {
+      return interaction.reply({ content: 'You must be in a voice channel to use this command', ephemeral: true });
+    }
+    serverQueue.songs.length = 0;
     serverQueue.connection.dispatcher.end();
   }
 }
-
-module.exports = Stop;

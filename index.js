@@ -9,6 +9,10 @@ bot.commands = new Collection();
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
+module.exports.queue = new Map();
+module.exports.repeat = false;
+module.exports.repeatQueue = false;
+
 const responses = [
   "You rang?",
   "I'm busy!",
@@ -66,10 +70,12 @@ bot.on("ready", () => {
 bot.on("reconnecting", () => {
   bot.user.setActivity("!?help for how I can help!");
 });
+/*
 bot.on('guildMemberAdd', guildMember => {
   let title = guildMember.guild.roles.cache.find(role => role.name === 'Band Kids');
   guildMember.roles.add(title);
 });
+*/
 
 bot.on("message", (message) => {
   if (message.author.bot) return;
