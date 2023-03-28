@@ -3,7 +3,7 @@ const { queue, repeatQueue } = require("../../index");
 
 
 module.exports = {
-  data: new SlashCommandBuilder().setName('UnloopQueue').setDescription('cancles the order to loop the current queue.'),
+  data: new SlashCommandBuilder().setName('unloopqueue').setDescription('cancles the order to loop the current queue.'),
   async execute(interaction) {
     const serverQueue = queue.get(interaction.guild.id);
     // need to check if bot is in same channel as user

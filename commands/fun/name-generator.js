@@ -21,6 +21,6 @@ module.exports = {
             size[position] = temp;
         }
         const result = size.join('');
-        await interaction.reply(result);
+        return interaction.followUp(result);
     }
 }

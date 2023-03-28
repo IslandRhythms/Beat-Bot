@@ -5,7 +5,7 @@ const { SlashCommandBuilder } = require("discord.js");
 
 
 module.exports = {
-  data: new SlashCommandBuilder().setName('PlayList').setDescription('Plays the playlist. If passing a link to a single track, use the play command')
+  data: new SlashCommandBuilder().setName('playlist').setDescription('Plays the playlist. If passing a link to a single track, use the play command')
   .addStringOption(option => option.setName('link').setDescription('link to playlist').setRequired(true)),
   async execute(interaction) {
     const serverQueue = queue.get(interaction.guild.id);

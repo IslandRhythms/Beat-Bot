@@ -13,9 +13,9 @@ module.exports = {
     const user = interaction.options.getUser('target') ?? '';
     const fortune = advice[Math.floor(Math.random() * advice.length)];
     if (user) {
-      interaction.channel.send(`@${user.username} ${fortune}`);
+      return interaction.followUp(`${user} ${fortune}`);
     } else {
-      interaction.reply(`${fortune}`)
+      return interaction.followup(`${fortune}`);
     }
   }
 }

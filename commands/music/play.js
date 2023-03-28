@@ -1,4 +1,5 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, } = require("discord.js");
+const { joinVoiceChannel, createAudioPlayer } = require('@discordjs/voice');
 const ytdl = require("ytdl-core");
 const { queue, repeat, repeatQueue } = require("../../index");
 
@@ -12,6 +13,7 @@ module.exports = {
     if (link.includes('list')) {
       return interaction.reply({ content: 'Do not send playlists, use the playlist command instead', ephemeral: true });
     }
+    console.log('what is interaction', interaction);
     const voiceChannel = interaction.member.voice.channel;
     if (!voiceChannel)
       return interaction.reply({ content: "You need to be in a voice channel to play music!", ephemeral: true });
@@ -39,7 +41,11 @@ module.exports = {
       queueContract.songs.push(song);
       queueContract.backup.push(song);
       try {
-        var connection = await voiceChannel.join();
+        const connection = await joinVoiceChannel({
+          channelId: interaction.channelId,
+          guildId: interaction.guildId,
+          adapterCreator: voiceChannel.guild.voiceAdapterCreator
+        });
         queueContract.connection = connection;
         play(interaction.guild, queueContract.songs[0]);
       } catch (err) {
@@ -64,14 +70,13 @@ async function play(guild, song) {
     queue.delete(guild.id);
     return;
   }
-  const dispatcher = await serverQueue.connection
-    .play(
-      ytdl(song.url, {
-        quality: "highestaudio",
-        highWaterMark: 1 << 25,
-        filter: "audioonly",
-      })
-    )
+  
+  const player = createAudioPlayer();
+  const dispatcher = await player.play(ytdl(song.url, {
+    quality: "highestaudio",
+    highWaterMark: 1 << 25,
+    filter: "audioonly",
+  }))
     .on("finish", () => {
       if (repeat) serverQueue.songs.shift();
       if (repeatQueue && serverQueue.songs.length === 0)

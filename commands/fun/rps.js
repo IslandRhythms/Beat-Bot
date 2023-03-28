@@ -10,19 +10,19 @@ module.exports = {
   async execute(interaction) {
     await interaction.deferReply();
     const options = ['rock', 'paper', 'scissors'];
-    const botChoice = options[Math.floor(Math.random()*3) + 1];
+    const botChoice = options[Math.floor(Math.random()*3)];
     const choice = interaction.options.getString('choice').toLowerCase();
     // const regex = /\b(?:rock|paper|scisscors)\b/gi
-    if (botChoice == 'rock' && choice == 'paper') {
-        await interaction.reply('I chose rock, I win!');
-    } else if (botChoice == 'paper' && choice == 'scissors') {
-        await interaction.reply('I chose paper, I win!')
-    } else if (botChoice == 'scissors' && choice == 'paper') {
-        await interaction.reply('I chose scissors, I win!');
+    if (choice == 'rock' && botChoice == 'paper') {
+        await interaction.followUp('I chose paper, I win!');
+    } else if (choice == 'paper' && botChoice == 'scissors') {
+        await interaction.followUp('I chose scissors, I win!')
+    } else if (choice == 'scissors' && botChoice == 'rock') {
+        await interaction.followUp('I chose rock, I win!');
     } else if (botChoice == choice) {
-        await interaction.reply("It's a draw")
+        await interaction.followUp("It's a draw")
     } else {
-        await interaction.reply(`You chose ${choice} and I chose ${botChoice}, you win!`);
+        await interaction.followUp(`You chose ${choice} and I chose ${botChoice}, you win!`);
     }
   }
 }

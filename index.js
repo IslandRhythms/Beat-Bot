@@ -1,9 +1,10 @@
-const { Client, Events, GatewayIntentBits } = require('discord.js');
+const { Client, Events, GatewayIntentBits, Collection } = require('discord.js');
 const config = require("./config.json");
 const path = require("path");
+const fs = require('fs');
 const Occasions = require("./Events.json");
 const date = require("dateformat");
-const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers] });
+const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates] });
 bot.commands = new Collection();
 
 const foldersPath = path.join(__dirname, 'commands');
@@ -69,6 +70,22 @@ bot.on("ready", () => {
 });
 bot.on("reconnecting", () => {
   bot.user.setActivity("!?help for how I can help!");
+});
+bot.on(Events.InteractionCreate, async interaction => {
+  if (!interaction.isChatInputCommand()) return; // bot ignores if not command
+  const command = interaction.client.commands.get(interaction.commandName);
+
+	if (!command) {
+		console.error(`No command matching ${interaction.commandName} was found.`);
+		return;
+	}
+
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		console.error(`Error executing ${interaction.commandName}`);
+		console.error(error);
+	}
 });
 /*
 bot.on('guildMemberAdd', guildMember => {

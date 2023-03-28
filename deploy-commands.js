@@ -1,5 +1,5 @@
 const { REST, Routes } = require('discord.js');
-const { clientId, guildId, token } = require('./config.json');
+const { clientID, guildId, token } = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -17,7 +17,7 @@ for (const folder of commandFolders) {
 		const command = require(filePath);
 		// Set a new item in the Collection with the key as the command name and the value as the exported module
 		if ('data' in command && 'execute' in command) {
-			commands.push(command);
+			commands.push(command.data.toJSON());
 		} else {
 			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 		}
@@ -31,10 +31,10 @@ const rest = new REST({ version: '10' }).setToken(token);
 (async () => {
 	try {
 		console.log(`Started refreshing ${commands.length} application (/) commands.`);
-
+    console.log('what are the commands?', commands);
 		// The put method is used to fully refresh all commands in the guild with the current set
 		const data = await rest.put(
-			Routes.applicationCommands(clientId),
+			Routes.applicationCommands(clientID),
 			{ body: commands },
 		);
 

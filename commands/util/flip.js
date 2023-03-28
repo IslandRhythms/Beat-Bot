@@ -2,19 +2,19 @@ const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
   cooldown: 5,
-  data: new SlashCommandBuilder().setName('Flip').setDescription('Flips a coin, feeling lucky?'),
+  data: new SlashCommandBuilder().setName('flip').setDescription('Flips a coin, feeling lucky?'),
   async execute(interaction) {
 
-    await interaction.deferReply();
-    await interaction.channel.send('The coin is in the air and ...');
+    // await interaction.deferReply();
+    await interaction.reply('The coin is in the air and ...');
     const coin = Math.floor(Math.random() * 2);
     setTimeout(airTime, 3000);
 
     async function airTime() {
       if (coin == 0) {
-        await interaction.reply("It's Heads!")
+        return interaction.channel.send("It's Heads!")
       } else {
-        await interaction.reply("It's Tails!");
+        return interaction.channel.send("It's Tails!");
       }
     }
   }

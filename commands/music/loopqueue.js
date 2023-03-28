@@ -3,7 +3,7 @@ const { queue, repeatQueue } = require("../../index");
 
 
 module.exports = {
-  data: new SlashCommandBuilder().setName('LoopQueue').setDescription('Loops the queue'),
+  data: new SlashCommandBuilder().setName('loopqueue').setDescription('Loops the queue'),
   async execute(interaction) {
     // need to check if user is in same voice channel as bot
     if (!interaction.member.voice.channel) {
