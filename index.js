@@ -1,15 +1,18 @@
 const { Client, Events, GatewayIntentBits, Collection } = require('discord.js');
+const { Player } = require('discord-player');
 const config = require("./config.json");
 const path = require("path");
 const fs = require('fs');
 const Occasions = require("./Events.json");
 const date = require("dateformat");
+
 const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates] });
 bot.commands = new Collection();
-
+const player = new Player(bot);
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
+module.exports.player = player;
 module.exports.queue = new Map();
 module.exports.repeat = false;
 module.exports.repeatQueue = false;

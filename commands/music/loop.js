@@ -13,6 +13,6 @@ module.exports = {
     if (!serverQueue) return interaction.reply({ content: 'Nothing to loop', ephemeral: true });
     if (repeat) return interaction.reply({ content: 'Already looping!', ephemeral: true });
     repeat = true;
-    interaction.reply('Will loop chief');
+    return interaction.reply('Will loop chief');
   }
 }

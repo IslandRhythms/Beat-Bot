@@ -1,32 +1,37 @@
 const { SlashCommandBuilder, } = require("discord.js");
 const { joinVoiceChannel, createAudioPlayer } = require('@discordjs/voice');
 const ytdl = require("ytdl-core");
-const { queue, repeat, repeatQueue } = require("../../index");
+const { queue, repeat, repeatQueue, player } = require("../../index");
 
 module.exports = {
   data: new SlashCommandBuilder().setName('play')
   .setDescription('Given a youtube link, plays the song. Do not send playlists. Use the playlist command.')
   .addStringOption(option => option.setName('link').setDescription('link to the song to play').setRequired(true)),
   async execute(interaction) {
+    await interaction.deferReply();
     const link = interaction.options.getString('link');
     const serverQueue = queue.get(interaction.guild.id);
     if (link.includes('list')) {
-      return interaction.reply({ content: 'Do not send playlists, use the playlist command instead', ephemeral: true });
+      return interaction.followUp({ content: 'Do not send playlists, use the playlist command instead', ephemeral: true });
     }
     console.log('what is interaction', interaction);
     const voiceChannel = interaction.member.voice.channel;
     if (!voiceChannel)
-      return interaction.reply({ content: "You need to be in a voice channel to play music!", ephemeral: true });
+      return interaction.followUp({ content: "You need to be in a voice channel to play music!", ephemeral: true });
     const permissions = voiceChannel.permissionsFor(interaction.client.user);
     if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
-      return interaction.reply({ content: "I need the permissions to join and speak in your voice channel!", ephemeral: true });
+      return interaction.followUp({ content: "I need the permissions to join and speak in your voice channel!", ephemeral: true });
     }
     const songInfo = await ytdl.getInfo(link);
     const song = {
       title: songInfo.videoDetails.title,
       url: songInfo.videoDetails.video_url,
     };
-
+    await player.play(voiceChannel, song.url);
+    queue.set(interaction.guild.id, queueContract);
+    return interaction.followUp('Should be playing a song')
+  }
+    /*
     if (!serverQueue) {
       const queueContract = {
         textChannel: interaction.channel,
@@ -86,4 +91,5 @@ async function play(guild, song) {
     .on("error", (error) => console.error(error));
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
   serverQueue.textChannel.send(`Start playing: **${song.title}**`);
+  */
 }
