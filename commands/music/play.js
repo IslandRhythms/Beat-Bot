@@ -1,40 +1,25 @@
-const commando = require("discord.js-commando");
+const { SlashCommandBuilder } = require("discord.js");
 const ytdl = require("ytdl-core");
-const queue = require("../../index");
+const { queue, repeat, repeatQueue } = require("../../index");
 
-class Play extends commando.Command {
-  constructor(client) {
-    super(client, {
-      name: "play",
-      group: "music",
-      memberName: "play",
-      description: "plays a song",
-      throttling: {
-        usages: 1,
-        duration: 5,
-      },
-    });
-  }
-
-  async run(message) {
-    const serverQueue = queue.get(message.guild.id);
-    const args = message.content.split(/ +/);
-    const voiceChannel = message.member.voice.channel;
-    if (!voiceChannel)
-      return message.channel.send(
-        "You need to be in a voice channel to play music!"
-      );
-    const permissions = voiceChannel.permissionsFor(message.client.user);
-    if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
-      return message.channel.send(
-        "I need the permissions to join and speak in your voice channel!"
-      );
+module.exports = {
+  data: new SlashCommandBuilder().setName('play')
+  .setDescription('Given a youtube link, plays the song. Do not send playlists. Use the playlist command.')
+  .addStringOption(option => option.setName('link').setDescription('link to the song to play').setRequired(true)),
+  async execute(interaction) {
+    const link = interaction.options.getString('link');
+    const serverQueue = queue.get(interaction.guild.id);
+    if (link.includes('list')) {
+      return interaction.reply({ content: 'Do not send playlists, use the playlist command instead', ephemeral: true });
     }
-    if (message.content.includes("list"))
-      return message.channel.send(
-        "Do not enter playlists here, use the playlist command."
-      );
-    const songInfo = await ytdl.getInfo(args[1]);
+    const voiceChannel = interaction.member.voice.channel;
+    if (!voiceChannel)
+      return interaction.reply({ content: "You need to be in a voice channel to play music!", ephemeral: true });
+    const permissions = voiceChannel.permissionsFor(interaction.client.user);
+    if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
+      return interaction.reply({ content: "I need the permissions to join and speak in your voice channel!", ephemeral: true });
+    }
+    const songInfo = await ytdl.getInfo(link);
     const song = {
       title: songInfo.videoDetails.title,
       url: songInfo.videoDetails.video_url,
@@ -42,7 +27,7 @@ class Play extends commando.Command {
 
     if (!serverQueue) {
       const queueContract = {
-        textChannel: message.channel,
+        textChannel: interaction.channel,
         voiceChannel: voiceChannel,
         connection: null,
         songs: [],
@@ -50,26 +35,27 @@ class Play extends commando.Command {
         volume: 5,
         playing: true,
       };
-      queue.set(message.guild.id, queueContract);
+      queue.set(interaction.guild.id, queueContract);
       queueContract.songs.push(song);
       queueContract.backup.push(song);
       try {
         var connection = await voiceChannel.join();
         queueContract.connection = connection;
-        play(message.guild, queueContract.songs[0]);
+        play(interaction.guild, queueContract.songs[0]);
       } catch (err) {
         console.log(err);
-        queue.delete(message.guild.id);
-        return message.channel.send(err);
+        queue.delete(interaction.guild.id);
+        return interaction.reply({content: err, ephemeral: true});
       }
     } else {
       serverQueue.songs.push(song);
       serverQueue.backup.push(song);
       console.log(serverQueue.songs);
-      return message.channel.send(`${song.title} has been added to the queue!`);
+      return interaction.reply(`${song.title} has been added to the queue!`);
     }
   }
 }
+
 
 async function play(guild, song) {
   const serverQueue = queue.get(guild.id);
@@ -87,8 +73,8 @@ async function play(guild, song) {
       })
     )
     .on("finish", () => {
-      if (!queue.repeat) serverQueue.songs.shift();
-      if (queue.continue && serverQueue.songs.length === 0)
+      if (repeat) serverQueue.songs.shift();
+      if (repeatQueue && serverQueue.songs.length === 0)
         serverQueue.songs.push(serverQueue.backup);
       play(guild, serverQueue.songs[0]);
     })
@@ -96,5 +82,3 @@ async function play(guild, song) {
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
   serverQueue.textChannel.send(`Start playing: **${song.title}**`);
 }
-
-module.exports = Play;
