@@ -18,6 +18,7 @@ module.exports = {
     const serverQueue = useQueue(interaction.guild.id);
     if (!serverQueue) return interaction.reply({ content: 'Nothing to loop', ephemeral: true });
     console.log('what is serverQueue, trying to find the mode', serverQueue);
+    // TODO: check if the indicated mode is already set. If so, do nothing and notify.
     serverQueue.setRepeatMode(mode);
     return interaction.reply('Will do chief');
   }
