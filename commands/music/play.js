@@ -17,9 +17,9 @@ module.exports = {
     if (!voiceChannel)
       return interaction.followUp({ content: "You need to be in a voice channel to play music!", ephemeral: true });
       // need to test this
-      if (interaction.guild.members.me.voice.channelId && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {
-        return interaction.followUp({ content: 'You must be in the same voice channel as me', ephemeral: true });
-      }
+    if (interaction.guild.members.me.voice.channelId && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {
+      return interaction.followUp({ content: 'You must be in the same voice channel as me', ephemeral: true });
+    }
     const permissions = voiceChannel.permissionsFor(interaction.client.user);
     if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
       return interaction.followUp({ content: "I need the permissions to join and speak in your voice channel!", ephemeral: true });

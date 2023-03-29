@@ -9,20 +9,16 @@ module.exports = {
   .addChoices({ name: 'rock', value: 'rock'}, { name: 'paper', value: 'paper'}, { name: 'scissors', value: 'scissors'})),
   async execute(interaction) {
     await interaction.deferReply();
+    const outcomes = { 
+        rock: { scissors: 'I win', paper: 'you win', rock: 'its a draw'}, 
+        paper: { scissors: 'You win', paper: 'its a draw', rock: 'I win'}, 
+        scissors: { scissors: 'its a draw', paper: 'I win', rock: 'you win'}
+    };
+    // interaction.followUp(opts.botChoice.choice)
     const options = ['rock', 'paper', 'scissors'];
     const botChoice = options[Math.floor(Math.random()*3)];
     const choice = interaction.options.getString('choice').toLowerCase();
     // const regex = /\b(?:rock|paper|scisscors)\b/gi
-    if (choice == 'rock' && botChoice == 'paper') {
-        await interaction.followUp('I chose paper, I win!');
-    } else if (choice == 'paper' && botChoice == 'scissors') {
-        await interaction.followUp('I chose scissors, I win!')
-    } else if (choice == 'scissors' && botChoice == 'rock') {
-        await interaction.followUp('I chose rock, I win!');
-    } else if (botChoice == choice) {
-        await interaction.followUp("It's a draw")
-    } else {
-        await interaction.followUp(`You chose ${choice} and I chose ${botChoice}, you win!`);
-    }
+    await interaction.followUp(`I chose ${botChoice} and you chose ${choice}, ${outcomes.botChoice.choice}`);
   }
 }
