@@ -10,3 +10,5 @@ The solution to this was that when moving the bot to include the modules. If you
 
 Helpful links
 link to arg passed to the execute functions: https://discord.js.org/#/docs/discord.js/main/class/CommandInteraction
+
+link to discord player highlights https://discord-player.js.org/docs/guides/migrating
