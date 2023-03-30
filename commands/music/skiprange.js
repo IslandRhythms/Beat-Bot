@@ -20,8 +20,9 @@ module.exports = {
       return interaction.followUp({ content: 'The range exceeds the queue size', ephemeral: true });
     }
     // option 1
-    for (let i = start - 1; i < end + 1; i++) {
-      serverQueue.removeTrack(i);
+    for (let i = start - 1; i < end ; i++) {
+      // the array size changes after every remove
+      serverQueue.removeTrack(start-1);
     }
     // serverQueue.songs.splice(start - 1, end - start);
     return interaction.followUp('Songs removed!');
