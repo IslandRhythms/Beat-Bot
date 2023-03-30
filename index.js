@@ -98,7 +98,7 @@ bot.on('guildMemberAdd', guildMember => {
 */
 
 bot.on("message", (message) => {
-  if (message.author.bot) return;
+  console.log('does this still work?', message);
 
   /*
     if (message.content.includes("god") || message.content.includes("God")) {
