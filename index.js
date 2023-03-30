@@ -69,10 +69,10 @@ if (greeting != ""){
 */
 
 bot.on("ready", () => {
-  bot.user.setActivity("!?help for how I can help!");
+  bot.user.setActivity("type / to see what I can do");
 });
 bot.on("reconnecting", () => {
-  bot.user.setActivity("!?help for how I can help!");
+  bot.user.setActivity("type / to see what I can do");
 });
 bot.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isChatInputCommand()) return; // bot ignores if not command
