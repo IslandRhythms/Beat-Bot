@@ -12,6 +12,7 @@ module.exports = {
     const serverQueue = useQueue(interaction.guild.id);
     const start = interaction.options.getInteger('start');
     const end = interaction.options.getInteger('end');
+    let song = start;
     // need to check if bot is in same channel as user
     if (!interaction.member.voice.channel) {
       return interaction.followUp({ content: 'You must be in a voice channel to use this command', ephemeral: true });
@@ -19,12 +20,16 @@ module.exports = {
     if (start > serverQueue.length || end > serverQueue.length) {
       return interaction.followUp({ content: 'The range exceeds the queue size', ephemeral: true });
     }
-    // option 1
-    for (let i = start - 1; i < end ; i++) {
-      // the array size changes after every remove
-      serverQueue.removeTrack(start-1);
+    if (start == 0) {
+      song++;
     }
-    // serverQueue.songs.splice(start - 1, end - start);
+    for (let i = song - 1; i < end ; i++) {
+      // the array size changes after every remove
+      serverQueue.removeTrack(song-1);
+    }
+    if (start == 0) {
+      serverQueue.node.skip();
+    }
     return interaction.followUp('Songs removed!');
   }
 }

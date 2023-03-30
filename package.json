@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "deploy": "node deploy-commands.js",
+    "activate": "node deploy-commands.js && node index.js"
   },
   "author": "",
   "license": "ISC",
@@ -21,8 +24,6 @@
     "fluent-ffmpeg": "^2.1.2",
     "fortune-cookie": "0.0.1",
     "node-opus": "^0.3.3",
-    "play-dl": "^1.9.6",
-    "ytdl-core": "^4.11.2",
-    "ytpl": "^2.0.0-alpha.3"
+    "ytdl-core": "^4.11.3"
   }
 }
