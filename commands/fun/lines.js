@@ -1,28 +1,18 @@
-const commando = require('discord.js-commando');
+const { SlashCommandBuilder } = require('discord.js');
 const lines = require('../../lines.json');
 
-class LineCommand extends commando.Command{
-    constructor(client){
-        super(client, {
-            name: 'lines',
-            group: 'fun',
-            memberName:'lines',
-            description: 'get a random pick up line or send if you mention a user in the command call'
-        });
-    
-    
+module.exports = {
+  data: new SlashCommandBuilder().setName('pickupline')
+  .setDescription('get a random pick up line or send if you mention a user in the command call')
+  .addUserOption(option => option.setName('target').setDescription('The member to attempt to swoon')),
+  async execute(interaction) {
+    await interaction.deferReply();
+    const user = interaction.options.getUser('target') ?? '';
+    const pickUpLine = lines[Math.floor(Math.random() * lines.length)];
+    if (user) {
+      interaction.followUp(`${user} ${pickUpLine}`);
+    } else {
+      interaction.followUp(`${pickUpLine}`);
     }
-    async run(message, args){
-        
-      let input = message.content.split(/ +/);
-      if(input.length > 1 && message.content.includes('<@') && message.content.includes('>')){
-        for(var i = 1; i < input.length; i++){
-          if(input[i].startsWith('<@') && input[i].endsWith('>'))
-        message.channel.send(input[i]+lines[Math.floor(Math.random() * lines.length)]);
-        }
-      }
-      else
-        message.reply(lines[Math.floor(Math.random() * lines.length)]);
-    }
+  }
 }
-module.exports = LineCommand;
