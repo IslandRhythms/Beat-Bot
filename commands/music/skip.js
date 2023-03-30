@@ -1,25 +1,29 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { queue } = require("../../index");
+const { useQueue } = require('discord-player');
 
 module.exports = {
   data: new SlashCommandBuilder().setName('skip')
-  .setDescription('Skips the current or specified song. If the song is being looped, use unloop fist')
-  .addIntegerOption(option => option.setName('song').setDescription('the number of the song to skip')),
+  .setDescription('Skips the current or skips to specified song.')
+  .addIntegerOption(option => option.setName('song').setDescription('the number of the song to skip to')),
   async execute(interaction) {
-    const serverQueue = queue.get(interaction.guild.id);
+    await interaction.deferReply();
+    const serverQueue = useQueue(interaction.guild.id);
     // need to check if bot is in same channel as user
     if (!interaction.member.voice.channel) {
-      return interaction.reply({ content: 'You must be in a voice channel to use this command', ephemeral: true });
+      return interaction.followUp({ content: 'You must be in a voice channel to use this command', ephemeral: true });
     }
     if (!serverQueue) {
-      return interaction.reply({ content: 'nothing to skip', ephemeral: true });
+      return interaction.followUp({ content: 'nothing to skip', ephemeral: true });
     }
     const song = interaction.options.getInteger('song');
     if (song > serverQueue.length) {
-      return interaction.reply({ content: 'number indicated is bigger than the current queue', ephemeral: true });
+      return interaction.followUp({ content: 'number indicated is bigger than the current queue', ephemeral: true });
     }
-    await interaction.reply('skipping song!');
-    return serverQueue.songs.splice(song - 1, 1);
-    // else serverQueue.connection.dispatcher.end();
+    if (song) {
+      serverQueue.node.skipTo(song-1);
+    } else {
+      serverQueue.node.skip();
+    }
+    return interaction.followUp('skipping song!');
   }
 }

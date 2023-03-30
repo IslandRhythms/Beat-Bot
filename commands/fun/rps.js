@@ -19,6 +19,6 @@ module.exports = {
     const botChoice = options[Math.floor(Math.random()*3)];
     const choice = interaction.options.getString('choice').toLowerCase();
     // const regex = /\b(?:rock|paper|scisscors)\b/gi
-    await interaction.followUp(`I chose ${botChoice} and you chose ${choice}, ${outcomes.botChoice.choice}`);
+    await interaction.followUp(`I chose ${botChoice} and you chose ${choice}, ${outcomes[botChoice][choice]}`);
   }
 }

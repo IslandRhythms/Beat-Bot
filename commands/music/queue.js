@@ -14,11 +14,11 @@ module.exports = {
     serverQueue.tracks.toArray().slice(0, serverQueue.tracks.toArray().length).forEach((track) => {
       titleArray.push(track.title);
     });
-    
     let queueEmbed = new EmbedBuilder()
       .setColor("#ff7373")
       .setTitle(`Music Queue - ${titleArray.length} items`);
       queueEmbed.addFields({ name: 'Currently Playing', value: serverQueue.currentTrack.title });
+      queueEmbed.addFields({ name: 'Progress', value: serverQueue.node.createProgressBar() });
       for (let i = 0; i < titleArray.length; i++) {
         queueEmbed.addFields({ name: (i+1).toString(), value: titleArray[i]});
       }

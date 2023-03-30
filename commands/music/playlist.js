@@ -1,4 +1,3 @@
-const ytdl = require("ytdl-core");
 const ytpl = require("ytpl");
 const { SlashCommandBuilder } = require("discord.js");
 const { useMasterPlayer } = require('discord-player');
@@ -25,13 +24,13 @@ module.exports = {
     if (!playlist.includes("list")) return interaction.followUp({content: "Do not enter single tracks here, use the play command.", ephemeral: true});
     let link = (await ytpl.getPlaylistID(playlist)).toString();
     const songs = await ytpl(link, ytpl.options);
+    await interaction.followUp('Playlist currently being added. Depending on how big the playlist is this may take some time.');
     for (let i = 0; i < songs.items.length; i++) {
       const info = {};
       info.title = songs.items[i].title;
       info.url = songs.items[i].shortUrl;
       await player.play(voiceChannel, info.url, { leaveOnEmpty: true });
     }
-    return interaction.followUp('Playlist added');
   }
 
 }
