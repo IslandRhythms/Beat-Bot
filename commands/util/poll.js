@@ -7,9 +7,12 @@ module.exports = {
   .addStringOption(option => option.setName('choices').setDescription('the possible choices, max 20, for the poll in the form of comma separated values')),
   async execute(interaction) {
     await interaction.deferReply();
-    const question = interaction.options.getString('question');
+    let question = interaction.options.getString('question');
+    if (!question.endsWith('?')) {
+      question = question + '?'
+    }
     const choices = interaction.options.getString('choices');
-    let queueEmbed = new EmbedBuilder().setColor("#ff7373").setTitle(question);
+    let queueEmbed = new EmbedBuilder().setColor("#ff7373").setTitle('📊 '+ question);
     if (!choices) {
       await interaction.followUp({ embeds: [queueEmbed] });
       const msg = await interaction.fetchReply();
