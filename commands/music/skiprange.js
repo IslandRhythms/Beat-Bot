@@ -21,7 +21,7 @@ module.exports = {
     }
     // option 1
     for (let i = start - 1; i < end + 1; i++) {
-      serverQueue.node.remove(i);
+      serverQueue.removeTrack(i);
     }
     // serverQueue.songs.splice(start - 1, end - start);
     return interaction.followUp('Songs removed!');
