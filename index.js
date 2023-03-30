@@ -71,9 +71,6 @@ if (greeting != ""){
 bot.on("ready", () => {
   bot.user.setActivity("type / to see what I can do");
 });
-bot.on("reconnecting", () => {
-  bot.user.setActivity("type / to see what I can do");
-});
 bot.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isChatInputCommand()) return; // bot ignores if not command
   const command = interaction.client.commands.get(interaction.commandName);
@@ -97,9 +94,9 @@ bot.on('guildMemberAdd', guildMember => {
 });
 */
 
-bot.on("message", (message) => {
-  console.log('does this still work?', message);
-
+bot.on("messageCreate", (message) => {
+  // if (message.author.bot) return; // prevent bot from replying to itself.
+  // return message.channel.send('Received')
   /*
     if (message.content.includes("god") || message.content.includes("God")) {
       return message.channel.sendMessage("Tell me though, Can it bleed?");
