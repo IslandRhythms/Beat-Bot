@@ -15,6 +15,7 @@
     "@discord-player/extractor": "^4.1.2",
     "@discordjs/opus": "^0.9.0",
     "@discordjs/voice": "^0.15.0",
+    "canvas": "^2.11.0",
     "dateformat": "^3.0.3",
     "discord-player": "^6.1.1",
     "discord.js": "^14.8.0",
@@ -24,6 +25,8 @@
     "fluent-ffmpeg": "^2.1.2",
     "fortune-cookie": "0.0.1",
     "node-opus": "^0.3.3",
+    "table-renderer": "^0.1.30",
+    "unique-names-generator": "^4.7.1",
     "ytdl-core": "^4.11.3"
   }
 }
