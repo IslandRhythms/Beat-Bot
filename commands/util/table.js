@@ -3,15 +3,19 @@ const path = require('path');
 const fs = require('fs');
 const TableRenderer = require('table-renderer');
 const { saveImage } = TableRenderer;
+const { parse } = require('csv-parse/sync');
+const fetch = require('node-fetch');
 
 
 module.exports = {
   data: new SlashCommandBuilder().setName('table')
-  .setDescription('builds a table from the provided data')
+  .setDescription('builds a table from the provided data. Keep entries small, or they will be shrunk.')
   .addStringOption(option => option.setName('title').setDescription('the title of your table').setRequired(true))
-  .addStringOption(option => option.setName('headers').setDescription('a comma separated list (CSL) of headers for each column').setRequired(true))
-  .addStringOption(option => option.setName('data').setDescription('a (CSL) of data to populate the table with. include - to indicate a line separator for the row').setRequired(true))
+  .addStringOption(option => option.setName('headers').setDescription('a comma separated list (CSL) of headers for each column'))
+  .addStringOption(option => option.setName('data').setDescription('a (CSL) of data to populate the table. include - to indicate a line separator for the row.'))
   .addStringOption(option => option.setName('background').setDescription('The hex color for the background. Default is charcoal, white is #FFFFFF'))
+  .addStringOption(option => option.setName('note').setDescription('Notes to leave on the message with the picture of the table'))
+  .addAttachmentOption(option => option.setName('file').setDescription('A csv file instead of typing in the table.'))
   .addBooleanOption(option => option.setName('axe').setDescription('Set to true to prevent overflow, so 1,2,3,4,5,- with 3 columns ignores 4 and 5. Defaut is false')),
   async execute(interaction) {
     await interaction.deferReply();
@@ -21,11 +25,30 @@ module.exports = {
     }
     const renderTable = TableRenderer.default({ backgroundColor: background }).render
     const title = interaction.options.getString('title');
-    const headers = interaction.options.getString('headers');
+    const headers = interaction.options.getString('headers') ?? '';
+    const data = interaction.options.getString('data') ?? '';
     const axe = interaction.options.getBoolean('axe') ?? false;
-    let stripped = headers.replace(/\s*,\s*/ig, ",");
-    const headerArray = stripped.split(',');
+    const note = interaction.options.getString('note') ?? '';
+    let input = interaction.options.getAttachment('file') ?? '';
+    let csvData = '';
+    if (input && (headers || data)) {
+      return interaction.followUp({ content: 'Either enter a file, or enter the data manually. Do not do both', ephemeral: true });
+    }
+    if (input) {
+      input = interaction.options.getAttachment('file');
+      if (!input.name.endsWith('.csv')) return interaction.followUp({ content: 'You must give it a csv', ephemeral: true });
+      input = await fetch(input.url).then(res => res.text());
+      csvData = parse(input);
+    }
     const columns = [];
+   
+    const rows = ['-'];
+    let stripped = headers.replace(/\s*,\s*/ig, ",");
+    const headerArray = csvData.length ? csvData[0] : stripped.split(',');
+    if (csvData.length) {
+      csvData.shift(); // remove the headers
+      csvData = csvData.flat(); // remove the nested arrays
+    }
     const rowObject = {};
     for (let i = 0; i < headerArray.length; i++) {
       const obj = {};
@@ -36,10 +59,8 @@ module.exports = {
       obj.align = 'center';
       columns.push(obj);
     }
-    const data = interaction.options.getString('data');
     stripped = data.replace(/\s*,\s*/ig, ",");
-    const dataArray = stripped.split(',');
-    const rows = ['-'];
+    const dataArray = csvData.length ? csvData : stripped.split(',');
     const keys = Object.keys(rowObject);
     let j = 0;
     let obj = {};
@@ -62,6 +83,7 @@ module.exports = {
     if (Object.keys(obj).length) {
       rows.push(obj);
     }
+
     const canvas = renderTable({
       title: title,
       columns: columns,
@@ -69,6 +91,6 @@ module.exports = {
     });
     await saveImage(canvas, path.join(__dirname, 'table.png'));
     
-    return interaction.followUp({ files: [path.join(__dirname, 'table.png')]})
+    return interaction.followUp({ content: note, files: [path.join(__dirname, 'table.png')]})
   }
 }
