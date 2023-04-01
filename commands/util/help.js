@@ -4,6 +4,7 @@ const fs = require('fs');
 module.exports = {
   data: new SlashCommandBuilder().setName('help').setDescription('Lists the commands of the bot'),
   async execute(interaction) {
+    await interaction.deferReply({ ephemeral: true });
     const commands = [];
     // Grab all the folders from the commands directory
     const commandDirectory = path.join(__dirname, '../');
@@ -29,6 +30,6 @@ module.exports = {
       }
       str += `/${commands[i].name} = ${commands[i].description}\n`;
     }
-    return interaction.reply({ content: str, ephemeral: true });
+    return interaction.followUp({ content: str });
   }
 }
