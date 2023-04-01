@@ -2,3 +2,4 @@ config.json
 exampleInteraction.txt
 node_modules
 table.png
+package-lock.json
