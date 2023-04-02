@@ -12,21 +12,16 @@ const player = Player.singleton(bot);
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
-module.exports.player = player;
-module.exports.queue = new Map();
-module.exports.repeat = false;
-module.exports.repeatQueue = false;
+module.exports.player = player; // not sure if this is needed anymore
 
 const responses = [
-  "You rang?",
   "I'm busy!",
-  "What do you want?",
   "Leave me alone",
-  "I have more important things to do than deal with you",
   "You can get yourself out of this situation",
-  "I'm here to help friends!",
-  "Don't like my sarcasm, well I don't like your stupid.",
-  "Don't you every message me again, you stupid fuck."
+  "Don't you ever message me again, you stupid fuck.",
+  "Is your need for attention so great that you have to ping me?",
+  "If everyone is ignoring you to the point where you have to ping me, you should reflect on your life choices up until this moment.",
+
 ];
 const channelids = ["784509591006347325"];//,"488053636060938242"]; //bot-testing and the-hut
 
@@ -95,8 +90,11 @@ bot.on('guildMemberAdd', guildMember => {
 */
 
 bot.on("messageCreate", (message) => {
-  // if (message.author.bot) return; // prevent bot from replying to itself.
-  // return message.channel.send('Received')
+  if (message.author.bot) return; // prevent bot from replying to itself.
+  if(message.content.includes('<@596812405733064734>')) {
+    const res = Math.floor(Math.random()*(responses.length - 1)) + 1;
+    return message.channel.send(`<@${message.author.id}> ${responses[res]}`)
+  }
   /*
     if (message.content.includes("god") || message.content.includes("God")) {
       return message.channel.sendMessage("Tell me though, Can it bleed?");
