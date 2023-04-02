@@ -56,7 +56,7 @@ module.exports = {
       obj.title = headerArray[i];
       obj.dataIndex = headerArray[i].toLowerCase();
       rowObject[obj.dataIndex] = '';
-      obj.align = 'center';
+      obj.align = 'left'; // center cuts off the first column's title, right botches the table completely
       columns.push(obj);
     }
     stripped = data.replace(/\s*,\s*/ig, ",");

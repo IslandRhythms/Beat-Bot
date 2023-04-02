@@ -15,7 +15,7 @@ module.exports = {
     if (user) {
       return interaction.followUp(`${user} ${fortune}`);
     } else {
-      return interaction.followup(`${fortune}`);
+      return interaction.followUp(`${fortune}`);
     }
   }
 }
