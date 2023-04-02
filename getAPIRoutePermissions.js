@@ -27,4 +27,15 @@ async function run() {
   });
 }
 
-run();
+// run();
+
+//get news for xcom
+// possible steam integration
+// not very reliable, any mention of xcom and its considered news
+async function getNews() {
+  const res = await fetch(`https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?key=${config.steamAPIKEY}&appid=268500`).then(res => res.json());
+  console.log('what is res', res);
+  console.log('what is news', res.appnews.newsitems[0])
+}
+
+getNews();
