@@ -23,7 +23,6 @@ module.exports = {
           obj.name = test[key].data.name; // cannot use dot notation for string numbers I guess
           obj.appId = key;
           obj.shortDescription = test[key].data.short_description;
-          console.log('what is genres', test[key].data.genres)
           obj.genres = test[key].data.genres.map(({id, ...item}) => item);
           obj.link = `store.steampowered.com/app/${key}`;
           games.push(obj);
@@ -31,13 +30,14 @@ module.exports = {
         }
       }
     }
+    await interaction.followUp('sending you a DM :)');
     // now to format the string;
-    await interaction.followUp(str)
+    await interaction.user.send(str)
     // There's a length requirement. So have to do it like this.
     for (let i = 0; i < games.length; i++) {
       const genres = [];
       games[i].genres.forEach(item => genres.push(item.description));
-      await interaction.channel.send(`${games[i].name}\n${games[i].shortDescription}\n${genres.join(', ')}\n${games[i].link}\n===============================\n`);
+      await interaction.user.send(`${games[i].name}\n${games[i].shortDescription}\n${genres.join(', ')}\n${games[i].link}\n===============================\n`);
       genres.length = 0;
     }
   }
