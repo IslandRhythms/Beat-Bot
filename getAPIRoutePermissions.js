@@ -43,6 +43,7 @@ getNews();
 */
 
 // Is this readable in memory? I guess it is. Use for discount command.
+// multiple results? Have user pic somehow.
 async function getGames() {
   const res = await fetch(`https://api.steampowered.com/ISteamApps/GetAppList/v2/?key=${config.steamAPIKEY}`).then(res => res.json());
   console.log('what is res', res.applist.apps);
