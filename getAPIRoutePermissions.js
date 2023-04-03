@@ -32,6 +32,7 @@ async function run() {
 //get news for xcom
 // possible steam integration
 // not very reliable, any mention of xcom and its considered news
+/*
 async function getNews() {
   const res = await fetch(`https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?key=${config.steamAPIKEY}&appid=268500`).then(res => res.json());
   console.log('what is res', res);
@@ -39,3 +40,12 @@ async function getNews() {
 }
 
 getNews();
+*/
+
+// Is this readable in memory? I guess it is. Use for discount command.
+async function getGames() {
+  const res = await fetch(`https://api.steampowered.com/ISteamApps/GetAppList/v2/?key=${config.steamAPIKEY}`).then(res => res.json());
+  console.log('what is res', res.applist.apps);
+}
+
+getGames();
