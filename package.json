@@ -28,7 +28,9 @@
     "node-fetch": "^2.6.9",
     "node-opus": "^0.3.3",
     "table-renderer": "^0.1.30",
+    "timer-node": "^5.0.7",
     "unique-names-generator": "^4.7.1",
+    "vdf-parser": "^1.2.1",
     "ytdl-core": "^4.11.3"
   }
 }
