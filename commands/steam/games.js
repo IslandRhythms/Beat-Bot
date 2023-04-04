@@ -3,7 +3,8 @@ const fs = require('fs');
 const VDF = require('vdf-parser');
 const fetch = require('node-fetch');
 
-const collectionFile = fs.readFileSync('C:\\Program Files (x86)\\Steam\\userdata\\256486405\\7\\remote\\sharedconfig.vdf').toString();
+const collectionFile = process.platform == 'win32' ? fs.readFileSync('C:\\Program Files (x86)\\Steam\\userdata\\256486405\\7\\remote\\sharedconfig.vdf').toString() :
+fs.readFileSync(__dirname+'/../Steam collections/sharedconfig.vdf').toString();
 const res = VDF.parse(collectionFile);
 
 module.exports = {

@@ -27,7 +27,6 @@ module.exports = {
     }
     if (appid) {
       const data = await fetch(`https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?key=${config.steamAPIKEY}&appid=${appid}`).then(res => res.json());
-      console.log('what is data', data);
       const newsitems = data.appnews.newsitems;
       console.log(newsitems[0], newsitems[1], newsitems[2]);
       return interaction.followUp(`${newsitems[0].title}\n ${newsitems[0].url.replace(/\s+/g, '')}`);
