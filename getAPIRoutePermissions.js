@@ -46,15 +46,21 @@ getNews();
 
 // Is this readable in memory? I guess it is. Use for discount command.
 // multiple results? Have user pick somehow.
-// Runtime on the PC is 2 ms. It might run slower on the pi.
+// Runtime on the PC is 6 ms. It might run slower on the pi.
 async function getGames() {
   const res = await fetch(`https://api.steampowered.com/ISteamApps/GetAppList/v2/?key=${config.steamAPIKEY}`).then(res => res.json());
   console.log('what is res', res.applist.apps);
+  console.log('starting timer...')
   const timer = new Timer({ label: 'runtime calculation'});
   timer.start();
   console.log(timer.isRunning());
   let j = 0;
   for (let i = 0; i < res.applist.apps.length; i++) {
+    const item = res.applist.apps[i];
+    if (item.name == 'XCOM 2') {
+      console.log('found the game!', item);
+      break;
+    }
     j++;
   }
   console.log('what is j', j);
