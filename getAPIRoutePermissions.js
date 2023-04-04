@@ -57,7 +57,7 @@ async function getGames() {
   let j = 0;
   for (let i = 0; i < res.applist.apps.length; i++) {
     const item = res.applist.apps[i];
-    if (item.name == 'XCOM 2') {
+    if (item.name == 'adsf') {
       console.log('found the game!', item);
       break;
     }
