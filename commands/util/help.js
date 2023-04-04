@@ -21,7 +21,7 @@ module.exports = {
           commands.push(command.data.toJSON());
       }
     }
-    let str = `**${commands[0].category}**\n\n`;
+    let str = `\`\`\`**${commands[0].category}**\n\n`;
     let cat = commands[0].category;
     for (let i = 0; i < commands.length; i++) {
       if (commands[i].category != cat) {
@@ -30,6 +30,7 @@ module.exports = {
       }
       str += `/${commands[i].name} = ${commands[i].description}\n`;
     }
+    str+= '```'
     return interaction.followUp({ content: str });
   }
 }
