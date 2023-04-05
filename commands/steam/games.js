@@ -25,7 +25,7 @@ module.exports = {
           obj.appId = key;
           obj.shortDescription = test[key].data.short_description;
           obj.genres = test[key].data.genres.map(({id, ...item}) => item);
-          obj.link = `store.steampowered.com/app/${key}`;
+          obj.link = `https://store.steampowered.com/app/${key}`;
           games.push(obj);
 
         }
