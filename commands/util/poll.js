@@ -16,7 +16,7 @@ module.exports = {
     const audience = interaction.options.getRole('audience') ?? '';
     let queueEmbed = new EmbedBuilder().setColor("#ff7373").setTitle('📊 '+ question);
     if (!choices) {
-      await interaction.followUp({ content: audience, embeds: [queueEmbed] });
+      await interaction.followUp({ content: `What do you think? ${audience}`, embeds: [queueEmbed] });
       const msg = await interaction.fetchReply();
       await msg.react('👍');
       await msg.react('👎');
@@ -28,7 +28,7 @@ module.exports = {
       for (let i = 0; i < numLoops; i++) {
         queueEmbed.addFields({ name: alphabet[i] + ' ' + options[i], value: ' ', inline: true });
       }
-      const msg = await interaction.followUp({ embeds: [queueEmbed] });
+      const msg = await interaction.followUp({ content: `What do you think? ${audience}`, embeds: [queueEmbed] });
       for (let i = 0; i < numLoops; i++) {
         await msg.react(alphabet[i])
       }
