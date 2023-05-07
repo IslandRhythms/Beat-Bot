@@ -35,9 +35,6 @@ module.exports = {
       }
       pagination.setEmbeds(embeds, (embed, index, array) => {
         return embed.setTitle(`Music Queue - ${titleArray.length} items`).setColor("#ff7373");
-        // puts these in the footer now
-        embed.addFields({ name: 'Currently Playing', value: serverQueue.currentTrack.title });
-        embed.addFields({ name: 'Progress', value: serverQueue.node.createProgressBar() });
       });
       pagination.setOptions({ prevDescription: `Currently Playing - ${serverQueue.currentTrack.title}`});
       pagination.render(); // calls interaction.followUp
