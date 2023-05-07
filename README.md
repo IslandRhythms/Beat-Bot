@@ -12,3 +12,5 @@ Helpful links
 link to arg passed to the execute functions: https://discord.js.org/#/docs/discord.js/main/class/CommandInteraction
 
 link to discord player highlights https://discord-player.js.org/docs/guides/migrating
+
+link to the pagination library documentation https://pagination-djs.js.org/
