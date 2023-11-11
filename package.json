@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "deploy": "node deploy-commands.js",
-    "activate": "node deploy-commands.js && node index.js"
+    "activate": "node deploy-commands.js && node index.js",
+    "start:prod": "env NODE_ENV=production node deploy-commands.js && node index.js",
+    "start:local": "env NODE_ENV=local node deploy-commands.js && node index.js"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +22,7 @@
     "dateformat": "^3.0.3",
     "discord-player": "^6.1.1",
     "discord.js": "^14.8.0",
+    "dotenv": "^16.3.1",
     "eslint": "^6.8.0",
     "ffmpeg": "0.0.4",
     "ffmpeg-static": "^4.4.1",
@@ -32,6 +35,7 @@
     "timer-node": "^5.0.7",
     "unique-names-generator": "^4.7.1",
     "vdf-parser": "^1.2.1",
+    "wikipedia": "^2.1.1",
     "ytdl-core": "^4.11.3"
   }
 }

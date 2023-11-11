@@ -1,6 +1,7 @@
+require('./config');
+
 const { Client, Events, GatewayIntentBits, Collection } = require('discord.js');
 const { Player } = require('discord-player');
-const config = require("./config.json");
 const path = require("path");
 const fs = require('fs');
 const Occasions = require("./Events.json");
@@ -123,5 +124,5 @@ bot.on("messageCreate", (message) => {
   //const args = message.content.split(/ +/);
   
 });
-bot.login(config.token);
+bot.login(process.env.TOKEN);
 console.log('logged in');
