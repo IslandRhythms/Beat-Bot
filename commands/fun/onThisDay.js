@@ -23,8 +23,16 @@ module.exports = {
     const day = interaction.options.getString('day');
     const events = await wiki.onThisDay({ type, month, day });
     // https://github.com/dopecodez/wikipedia/blob/master/docs/resultTypes.md#eventResult
-    if (type == 'all') {
-
-    }
+    const choices = Object.keys(events);
+    const index = Math.floor(Math.random() * choices.length);
+    const selectedArray = events[choices[index]];
+    const onThisDayIndex = Math.floor(Math.random() * selectedArray.length);
+    const pageEntry = selectedArray[onThisDayIndex].pages[0];
+    // desktop link: ${pageEntry.content_urls.desktop.page}
+    const str = `
+    For ${choices[index]} on this day, ${selectedArray[onThisDayIndex].year ? `in the year ${selectedArray[onThisDayIndex].year},` : ''} ${selectedArray[onThisDayIndex].text}
+    link: ${pageEntry.content_urls.mobile.page}
+    `;
+    await interaction.followUp(str);
   }
 }
