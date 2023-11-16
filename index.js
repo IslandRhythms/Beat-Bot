@@ -85,10 +85,13 @@ bot.on(Events.InteractionCreate, async interaction => {
 	} catch (error) {
 		console.error(`Error executing ${interaction.commandName}`);
 		console.error(error);
-    if (interaction.deferred && !interaction.replied) {
-      await interaction.followUp('something went wrong...');
-    } else {
-      await interaction.reply('something went wrong...');
+    if (!interaction.replied) {
+      if (interaction.deferred) {
+        await interaction.followUp('something went wrong...');
+      }
+      else {
+        await interaction.reply('something went wrong...');
+      }
     }
 	}
 });
