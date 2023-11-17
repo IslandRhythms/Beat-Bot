@@ -60,8 +60,6 @@ module.exports = {
     .setAuthor({ name: 'Dictionary.com', iconURL: 'https://e7.pngegg.com/pngimages/801/557/png-clipart-dictionary-com-android-mobile-phones-dictionary-blue-english.png', url: 'https://www.dictionary.com'})
     .setFooter({ text: 'Possible thanks to The free dictionary API https://dictionaryapi.dev/' });
     for (let i = 0; i < data.length; i++) {
-      console.log('what is data', data[i]);
-      console.log(data[i].details.length)
       WOTD.addFields({ name: data[i].partOfSpeech, value: data[i].details, inline: data[i].inline });
     }
     await interaction.followUp({ embeds: [WOTD] })
