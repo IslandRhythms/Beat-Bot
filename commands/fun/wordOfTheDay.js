@@ -9,13 +9,61 @@ module.exports = {
     const res = await axios.get('https://www.dictionary.com/e/word-of-the-day/').then(res => res.data);
     const root = parser.parse(res);
     const element = root.querySelector('div.wotd-item div.otd-item-headword__word h1');
-    const word = element.textContent;
-    const page = await axios.get(`https://www.dictionary.com/browse/${word}`).then(res => res.data);
-    const content = parser.parse(page);
-    content.querySelector('div.luna-definition-card')
-    console.log('what is content', content.textContent); // doesn't work
-    const embed = [];
-    const WOTD = new EmbedBuilder();
-    await interaction.followUp(`Under Construction`)
+    const wordOfTheDay = element.textContent;
+    const information = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${wordOfTheDay}`).then(res => res.data);
+    const phonetics = information[0].phonetic;
+    const data = [];
+    for (let i = 0; i < information.length; i++) {
+      for (let index = 0; index < information[i].meanings.length; index++) {
+        const obj = { partOfSpeech: '', details: '' };
+        const definition = information[i].meanings[index];
+        obj.partOfSpeech = definition.partOfSpeech;
+        for (let j = 0; j < definition.definitions.length; j++) {
+          const checkLength = obj.details + `${j+1}. ${definition.definitions[j].definition}\n${definition.definitions[j].example ? `Example Sentence: ${definition.definitions[j].example}\n` : ''}`;
+          if (checkLength.length > 1024) {
+            const newObj = { partOfSpeech: definition.partOfSpeech, details: obj.details, inline: true }
+            data.push(newObj);
+            obj.details = `${j+1}. ${definition.definitions[j].definition}\n${definition.definitions[j].example ? `Example Sentence: ${definition.definitions[j].example}\n` : ''}`; // much definition, many learning
+            obj.inline = true;
+          } else {
+            obj.details += `${j+1}. ${definition.definitions[j].definition}\n${definition.definitions[j].example ? `Example Sentence: ${definition.definitions[j].example}\n` : ''}`; // much definition, many learning
+          }
+        }
+        if (definition.synonyms.length) {
+          const checkLength = obj.details + `Synonyms: ${definition.synonyms.join(', ')}\n`;
+          if (checkLength.length > 1024) {
+            const newObj = { partOfSpeech: definition.partOfSpeech, details: obj.details, inline: true }
+            data.push(newObj);
+            obj.details = `Synonyms: ${definition.synonyms.join(', ')}\n`
+            obj.inline = true;
+          } else {
+            obj.details += `Synonyms: ${definition.synonyms.join(', ')}\n`
+          }
+        }
+        if (definition.antonyms.length) {
+          const checkLength = obj.details + `Antonyms: ${definition.antonyms.join(', ')}\n`;
+          if (checkLength.length > 1024) {
+            const newObj = { partOfSpeech: definition.partOfSpeech, details: obj.details, inline: true }
+            data.push(newObj);
+            obj.details = `Antonyms: ${definition.antonyms.join(', ')}\n`
+            obj.inline = true;
+          } else {
+            obj.details += `Antonyms: ${definition.antonyms.join(', ')}\n`
+          }
+        }
+        data.push(obj);
+      }
+    }
+    const WOTD = new EmbedBuilder().setTitle('Word of the Day')
+    .setDescription(`${wordOfTheDay} ${phonetics}`)
+    .setURL('https://www.dictionary.com/e/word-of-the-day/')
+    .setAuthor({ name: 'Dictionary.com', iconURL: 'https://e7.pngegg.com/pngimages/801/557/png-clipart-dictionary-com-android-mobile-phones-dictionary-blue-english.png', url: 'https://www.dictionary.com'})
+    .setFooter({ text: 'Possible thanks to The free dictionary API https://dictionaryapi.dev/' });
+    for (let i = 0; i < data.length; i++) {
+      console.log('what is data', data[i]);
+      console.log(data[i].details.length)
+      WOTD.addFields({ name: data[i].partOfSpeech, value: data[i].details, inline: data[i].inline });
+    }
+    await interaction.followUp({ embeds: [WOTD] })
   }
 }
