@@ -4,6 +4,7 @@ const { Client, Events, GatewayIntentBits, Collection } = require('discord.js');
 const { Player } = require('discord-player');
 const path = require("path");
 const fs = require('fs');
+const db = require('./db');
 const Occasions = require("./Events.json");
 const date = require("dateformat");
 
@@ -71,6 +72,8 @@ bot.on("ready", () => {
 bot.on('reconnecting', () => {
   bot.user.setActivity(" type /help to see what I can do");
 })
+
+const conn = run();
 bot.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isChatInputCommand()) return; // bot ignores if not command
   const command = interaction.client.commands.get(interaction.commandName);
@@ -81,7 +84,7 @@ bot.on(Events.InteractionCreate, async interaction => {
 	}
 
 	try {
-		await command.execute(interaction);
+		await command.execute(interaction, conn);
 	} catch (error) {
 		console.error(`Error executing ${interaction.commandName}`);
 		console.error(error);
@@ -134,3 +137,9 @@ bot.on("messageCreate", (message) => {
 });
 bot.login(process.env.TOKEN);
 console.log('logged in');
+
+
+async function run() {
+  const conn = await db().asPromise();
+  return conn;
+}
