@@ -73,7 +73,7 @@ bot.on('reconnecting', () => {
   bot.user.setActivity(" type /help to see what I can do");
 })
 
-const conn = run();
+const conn = run(); // fix this
 bot.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isChatInputCommand()) return; // bot ignores if not command
   const command = interaction.client.commands.get(interaction.commandName);
