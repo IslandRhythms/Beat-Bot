@@ -1,6 +1,8 @@
+require('../../config');
+
 const { SlashCommandBuilder } = require("discord.js");
 const fetch = require('node-fetch');
-const config = require('../../config.json');
+
 
 module.exports = {
   data: new SlashCommandBuilder().setName('gamenews').setDescription('gets the latest news for a given game. Provide only one input.')
@@ -16,7 +18,7 @@ module.exports = {
     let appid = id ? id : '';
     // This is really dumb but its the only way to do it rn.
     if (game) {
-      const res = await fetch(`https://api.steampowered.com/ISteamApps/GetAppList/v2/?key=${config.steamAPIKEY}`).then(res => res.json());
+      const res = await fetch(`https://api.steampowered.com/ISteamApps/GetAppList/v2/?key=${process.env.STEAMAPIKEY}`).then(res => res.json());
       for (let i = 0; i < res.applist.apps.length; i++) {
         const item = res.applist.apps[i];
         if (item.name.toLowerCase() == game.toLowerCase()) {
@@ -26,7 +28,7 @@ module.exports = {
       }
     }
     if (appid) {
-      const data = await fetch(`https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?key=${config.steamAPIKEY}&appid=${appid}`).then(res => res.json());
+      const data = await fetch(`https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?key=${process.env.STEAMAPIKEY}&appid=${appid}`).then(res => res.json());
       const newsitems = data.appnews.newsitems;
       console.log(newsitems[0], newsitems[1], newsitems[2]);
       return interaction.followUp(`${newsitems[0].title}\n ${newsitems[0].url.replace(/\s+/g, '')}`);

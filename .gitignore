@@ -3,3 +3,6 @@ exampleInteraction.txt
 node_modules
 table.png
 package-lock.json
+.env
+.env.local
+.env.production

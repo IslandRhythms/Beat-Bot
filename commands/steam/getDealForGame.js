@@ -1,5 +1,6 @@
+require('../../config');
+
 const { SlashCommandBuilder } = require("discord.js");
-const config = require('../../config.json');
 const fetch = require('node-fetch');
 
 module.exports = {
@@ -16,7 +17,7 @@ module.exports = {
     let appid = id ? id : '';
     // This is really dumb but its the only way to do it rn.
     if (game) {
-      const res = await fetch(`https://api.steampowered.com/ISteamApps/GetAppList/v2/?key=${config.steamAPIKEY}`).then(res => res.json());
+      const res = await fetch(`https://api.steampowered.com/ISteamApps/GetAppList/v2/?key=${process.env.STEAMAPIKEY}`).then(res => res.json());
       for (let i = 0; i < res.applist.apps.length; i++) {
         const item = res.applist.apps[i];
         if (item.name.toLowerCase() == game.toLowerCase()) {

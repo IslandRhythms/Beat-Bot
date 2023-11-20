@@ -1,6 +1,7 @@
+require('./config');
+
 const { Client, Events, GatewayIntentBits, Collection } = require('discord.js');
 const { Player } = require('discord-player');
-const config = require("./config.json");
 const path = require("path");
 const fs = require('fs');
 const Occasions = require("./Events.json");
@@ -84,6 +85,14 @@ bot.on(Events.InteractionCreate, async interaction => {
 	} catch (error) {
 		console.error(`Error executing ${interaction.commandName}`);
 		console.error(error);
+    if (!interaction.replied) {
+      if (interaction.deferred) {
+        await interaction.followUp('something went wrong...');
+      }
+      else {
+        await interaction.reply('something went wrong...');
+      }
+    }
 	}
 });
 /*
@@ -123,5 +132,5 @@ bot.on("messageCreate", (message) => {
   //const args = message.content.split(/ +/);
   
 });
-bot.login(config.token);
+bot.login(process.env.TOKEN);
 console.log('logged in');
