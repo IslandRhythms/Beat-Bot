@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
   discordName: String,
   discordServers: [],
   roles: {
-    type: [],
+    type: [String],
     enum: ['DM', 'Player', 'Member', 'Admin']
   }
 });

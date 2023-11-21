@@ -7,6 +7,7 @@ const noteSchema = require('./noteSchema');
 const pollSchema = require('./pollSchema');
 const userSchema = require('./userSchema');
 const errorSchema = require('./errorSchema');
+const dailySchema = require('./dailySchema');
 
 module.exports = function models() {
   const connection = mongoose.createConnection(process.env.MONGODB_CONNECTION_STRING, {
@@ -16,5 +17,6 @@ module.exports = function models() {
   connection.model('User', userSchema);
   connection.model('Error', errorSchema);
   connection.model('Poll', pollSchema);
+  connection.model('Daily', dailySchema);
   return connection;
 }
