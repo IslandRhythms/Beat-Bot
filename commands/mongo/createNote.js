@@ -5,42 +5,37 @@ module.exports = {
   .setDescription('saves information you write to the db')
   .addStringOption(option => option.setName('title').setDescription('the title of the note').setRequired(true))
   .addStringOption(option => option.setName('text').setDescription('The information to be stored').setRequired(true))
-  .addStringOption(option => option.setName('users').setDescription('A comma separated list of users that can access the note.'))
-  .addStringOption(option => option.setName('roles').setDescription('A comma separated list of the roles that have access to the note. Omit the @')),
+  .addUserOption(option => option.setName('user').setDescription('Another user that can access this created note.'))
+  .addRoleOption(option => option.setName('role').setDescription('Anyone with the selected role can access the created note.')),
   async execute(interaction, conn) {
     await interaction.deferReply();
     const { User, Note } = conn.models;
-    const user = await User.findOne({ discordName: interaction.user.username });
-    const guildMembers = interaction.member.guild.members;
-    const serverRoles = interaction.member.guild.roles;
-    // https://stackoverflow.com/questions/58780548/discord-js-any-way-to-get-all-roles
-    // https://stackoverflow.com/questions/50319939/how-to-list-all-members-from-a-specific-server
-    console.log(typeof guildMembers, typeof serverRoles); // not arrays
-    await interaction.followUp('Under Construction');
-    return;
+    const user = await User.findOne({ $or: [{ discordName: interaction.user.username }, { discordId: interaction.user.id }] });
+    
     const title = interaction.options.getStringOption('title');
     const text = interaction.options.getStringOption('text');
-    const users = interaction.options.getStringOption('users');
-    const roles = interaction.options.getRoleOption('roles');
-    let usersHaveAccess = [];
-    let rolesHaveAccess = [];
-    if (users) {
-      const userArray = users.split(',');
-      for (let i = 0; i < userArray.length; i++) {
-        // const profile = guildMembers.find(x => x.user.username == userArray[i]);
-      }
-    }
-    if (roles) {
-      const roleArray = roles.split(',');
-      for (let i = 0; i < roleArray.length; i++) {
-        // const profile = serverRoles.find(x => x.name == roleArray[i]);
-      }
-    }
-    await Note.create({
-      noteCreator: user._id,
+    const discordUser = interaction.options.getUserOption('user');
+    const role = interaction.options.getRoleOption('role');
+
+    const dataObject = {
+      noteCreator: {
+        discordId: interaction.user.id,
+        mongoId: user._id
+      },
       text,
       title,
       guildId: interaction.guildId
-    })
+    }
+
+    if (discordUser) {
+      dataObject.usersHaveAccess = [discordUser.id];
+    }
+    if (role) {
+      dataObject.rolesHaveAccess = [role.id]
+    }
+    console.log('what is dataObject', dataObject);
+    await interaction.followUp('Under Construction');
+    return;
+    await Note.create(dataObject);
   }
 }
