@@ -13,6 +13,8 @@ module.exports = {
     const user = await User.findOne({ discordName: interaction.user.username });
     const guildMembers = interaction.member.guild.members;
     const serverRoles = interaction.member.guild.roles;
+    // https://stackoverflow.com/questions/58780548/discord-js-any-way-to-get-all-roles
+    // https://stackoverflow.com/questions/50319939/how-to-list-all-members-from-a-specific-server
     console.log(typeof guildMembers, typeof serverRoles); // not arrays
     await interaction.followUp('Under Construction');
     return;
