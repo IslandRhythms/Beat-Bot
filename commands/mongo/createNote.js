@@ -2,9 +2,9 @@ const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder().setName('createnote')
-  .setDescription('saves information you write to the db')
-  .addStringOption(option => option.setName('title').setDescription('the title of the note').setRequired(true))
-  .addStringOption(option => option.setName('text').setDescription('The information to be stored').setRequired(true))
+  .setDescription('saves information you write to the db. Accessible to all unless specified otherwise.')
+  .addStringOption(option => option.setName('title').setDescription('the title of the note. Limit 256 characters').setRequired(true))
+  .addStringOption(option => option.setName('text').setDescription('The information to be stored. Limit 4096 characters').setRequired(true))
   .addUserOption(option => option.setName('user').setDescription('Another user that can access this created note.'))
   .addRoleOption(option => option.setName('role').setDescription('Anyone with the selected role can access the created note.'))
   .addBooleanOption(option => option.setName('private').setDescription('Set to true so when the bot finishes only you see the result.'))
@@ -24,10 +24,11 @@ module.exports = {
     const dataObject = {
       noteCreator: {
         discordId: interaction.user.id,
+        discordName: interaction.user.username,
         mongoId: user._id
       },
-      text,
-      title,
+      text: text.length > 4096 ? text.slice(0, 4096 ) : text,
+      title: title.length > 256 ? title.slice(0, 256) : title,
       image,
       guildId: interaction.guildId
     }
