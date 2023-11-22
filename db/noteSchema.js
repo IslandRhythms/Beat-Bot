@@ -5,8 +5,9 @@ const noteSchema = new mongoose.Schema({
   text: String,
   noteCreator: {
     discordId: String,
-    mongoID: mongoose.Schema.Types.ObjectId
+    mongoId: mongoose.Schema.Types.ObjectId
   },
+  image: String, // stores the discord attachment link
   usersHaveAccess: [String],
   rolesHaveAccess: [String],
   guildId: String

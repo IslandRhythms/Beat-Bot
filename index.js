@@ -88,7 +88,7 @@ const date = require("dateformat");
     try {
       console.log('what is interaction', interaction);
       const { User } = conn.models;
-      await User.findOneAndUpdate({ discordName: interaction.user.username }, { discordName: interaction.user.username }, { upsert: true });
+      await User.findOneAndUpdate({ discordName: interaction.user.username, discordId: interaction.user.id }, { discordName: interaction.user.username, discordId: interaction.user.id }, { upsert: true });
       await command.execute(interaction, conn);
     } catch (error) {
       console.error(`Error executing ${interaction.commandName}`);
