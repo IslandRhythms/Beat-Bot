@@ -8,7 +8,7 @@ module.exports = {
   .addUserOption(option => option.setName('user').setDescription('Another user that can access this created note.'))
   .addRoleOption(option => option.setName('role').setDescription('Anyone with the selected role can access the created note.'))
   .addBooleanOption(option => option.setName('private').setDescription('Set to true so when the bot finishes only you see the result.'))
-  .addAttachmentOption(option > option.setName('image').setDescription('an image to save on the note')),
+  .addAttachmentOption(option => option.setName('image').setDescription('an image to save on the note')),
   async execute(interaction, conn) {
     await interaction.deferReply();
     const { User, Note } = conn.models;
@@ -19,7 +19,7 @@ module.exports = {
     const discordUser = interaction.options.getUser('user');
     const role = interaction.options.getRole('role');
     const private = interaction.options.getBoolean('private');
-    const image = interaction.options.getAttachment('image');
+    const image = interaction.options.getAttachment('image') ? interaction.options.getAttachment('image').url : '';
 
     const dataObject = {
       noteCreator: {
@@ -27,7 +27,7 @@ module.exports = {
         discordName: interaction.user.username,
         mongoId: user._id
       },
-      text: text.length > 4096 ? text.slice(0, 4096 ) : text,
+      text: text.length > 4096 ? text.slice(0, 4096) : text,
       title: title.length > 256 ? title.slice(0, 256) : title,
       image,
       guildId: interaction.guildId
