@@ -5,6 +5,7 @@ const { Player } = require('discord-player');
 const path = require("path");
 const fs = require('fs');
 const db = require('./db');
+const tasks = require('./automations');
 const Occasions = require("./Events.json");
 const date = require("dateformat");
 
@@ -76,6 +77,10 @@ const date = require("dateformat");
   })
 
   const conn = await db().asPromise();
+
+  if (process.env.NODE_ENV === 'production') {
+    await tasks(db);
+  }
   bot.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isChatInputCommand()) return; // bot ignores if not command
     const command = interaction.client.commands.get(interaction.commandName);

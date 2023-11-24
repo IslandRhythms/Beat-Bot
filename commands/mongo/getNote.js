@@ -6,6 +6,7 @@ module.exports = {
   data: new SlashCommandBuilder().setName('getnote')
   .setDescription('gets all notes you have access to. Pass args to filter notes.')
   .addStringOption(option => option.setName('title').setDescription('the title of the note.'))
+  .addStringOption(option => option.setName('tag').setDescription('a tag the note has.'))
   .addStringOption(option => option.setName('whenstart').setDescription('when the note was created in the form MMDDYYYY'))
   .addStringOption(option => option.setName('whenend').setDescription('another date in the form MMDDYYYY. Use to determine a range of dates.'))
   .addBooleanOption(option => option.setName('private').setDescription('set to true so only you can see the result')),
@@ -15,6 +16,7 @@ module.exports = {
     const start = interaction.options.getString('whenstart');
     const end = interaction.options.getString('whenend');
     const private = interaction.options.getBoolean('private');
+    const tag = interaction.options.getString('tag');
     const { User, Note } = conn.models;
     const user = await User.findOne({ $or: [{ discordName: interaction.user.username }, { discordId: interaction.user.id }] });
     const roles = [];
@@ -35,6 +37,9 @@ module.exports = {
     if (end) {
       queryObject.createdAt.$lte = parseDateString(end);
     }
+    if (tag) {
+      queryObject.tags = tag
+    }
     const notes = await Note.find(queryObject)
     const embeds = [];
     for (let i = 0; i < notes.length; i++) {
@@ -43,12 +48,16 @@ module.exports = {
       embed.setImage(notes[i].image);
       embed.setAuthor({ name: notes[i].noteCreator.discordName })
       embed.setDescription(notes[i].text);
+      embed.addFields(
+        { name: 'tags', value: notes[i].tags.join(',') },
+        { name: 'noteId', value: notes[i].noteId },
+      );
       embeds.push(embed);
     }
     if (embeds.length) {
       await interaction.followUp({ embeds, ephemeral: private });
     } else {
-      await interaction.followUp('No notes found :(')
+      await interaction.followUp('No notes found :(');
     }
   }
 }

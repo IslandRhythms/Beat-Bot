@@ -8,7 +8,8 @@ module.exports = {
   .addUserOption(option => option.setName('user').setDescription('Another user that can access this created note.'))
   .addRoleOption(option => option.setName('role').setDescription('Anyone with the selected role can access the created note.'))
   .addBooleanOption(option => option.setName('private').setDescription('Set to true so when the bot finishes only you see the result.'))
-  .addAttachmentOption(option => option.setName('image').setDescription('an image to save on the note')),
+  .addAttachmentOption(option => option.setName('image').setDescription('an image to save on the note'))
+  .addStringOption(option => option.setName('tags').setDescription('a comma separated list of tags to categorize the note')),
   async execute(interaction, conn) {
     await interaction.deferReply();
     const { User, Note } = conn.models;
@@ -20,6 +21,15 @@ module.exports = {
     const role = interaction.options.getRole('role');
     const private = interaction.options.getBoolean('private');
     const image = interaction.options.getAttachment('image') ? interaction.options.getAttachment('image').url : '';
+    const tags = interaction.options.getString('tags');
+    const tagArray = tags.split(',');
+    const searchArray = [];
+    for (let i = 0; i < tagArray.length; i++) {
+      searchArray.push(tagArray[i].trim());
+    }
+
+    const existingNotes = await Note.find({ 'noteCreator.discordId' : interaction.user.id });
+    const noteId = interaction.user.username + existingNotes.length;
 
     const dataObject = {
       noteCreator: {
@@ -30,7 +40,9 @@ module.exports = {
       text: text.length > 4096 ? text.slice(0, 4096) : text,
       title: title.length > 256 ? title.slice(0, 256) : title,
       image,
-      guildId: interaction.guildId
+      guildId: interaction.guildId,
+      tags: searchArray,
+      noteId
     }
 
     if (discordUser) {

@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 
 module.exports = {
   data: new SlashCommandBuilder().setName('fact').setDescription('gets a random interesting fact.'),
-  async execute(interaction) {
+  async execute(interaction, conn) {
     await interaction.deferReply();
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
