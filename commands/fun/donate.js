@@ -11,8 +11,10 @@ module.exports = {
     const user = await User.findOne({
       discordId: streamer.id
     });
-    user.bits += 1;
-    await user.save();
+    if  (user) {
+      user.bits += 1;
+      await user.save();
+    }
     await interaction.reply(`<@${interaction.user.id}> has just subscribed to <@${streamer.id}>`);
   }
 }
