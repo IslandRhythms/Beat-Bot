@@ -12,9 +12,16 @@ module.exports = {
       discordId: streamer.id
     });
     if (user) {
-      user.subscribers += 1;
+      if (user.subscribers) {
+        user.subscribers += 1;
+      } else {
+        user.subscribers = 1;
+      }
       await user.save();
     }
-    await interaction.reply(`<@${interaction.user.id}> has just subscribed to <@${streamer.id}>`);
+    if (streamer.id == interaction.user.id) {
+      return interaction.followUp({ content: `You can't subscribe to yourself`, ephemeral: true });
+    }
+    return interaction.followUp(`<@${interaction.user.id}> has just subscribed to <@${streamer.id}>. They now have ${user.subscribers} subscribers.`);
   }
 }

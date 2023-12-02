@@ -11,10 +11,17 @@ module.exports = {
     const user = await User.findOne({
       discordId: streamer.id
     });
-    if  (user) {
-      user.bits += 1;
+    if (user) {
+      if (user.bits) {
+        user.bits += 1000;
+      } else {
+        user.bits = 1000;
+      }
       await user.save();
     }
-    await interaction.reply(`<@${interaction.user.id}> has just subscribed to <@${streamer.id}>`);
+    if (streamer.id == interaction.user.id) {
+      return interaction.followUp({ content: `You can't donate to yourself`, ephemeral: true });
+    }
+    return interaction.followUp(`<@${interaction.user.id}> has just donated to <@${streamer.id}>. They now have ${user.bits} bits.`);
   }
 }

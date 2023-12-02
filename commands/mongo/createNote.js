@@ -27,7 +27,7 @@ module.exports = {
     const checkFile = fileAttachment ? isAcceptableFile(fileAttachment.contentType) : false;
     const file = checkFile ? fileAttachment.url : '';
     const fileName = fileAttachment ? fileAttachment.name : '';
-    const tags = interaction.options.getString('tags');
+    const tags = interaction.options.getString('tags') ?? '';
     const tagArray = tags.split(',');
     const searchArray = [];
     for (let i = 0; i < tagArray.length; i++) {
@@ -66,11 +66,23 @@ module.exports = {
     embed.setDescription(dataObject.text);
     embed.addFields(
       { name: 'tags', value: dataObject.tags.join(',') },
-      { name: 'noteId', value: dataObject.noteId },
-      { name: 'usersHaveAccess', value: discordUser.username },
-      { name: 'rolesHaveAccess', value: role.name },
-      { name: fileName, value: file }
+      { name: 'noteId', value: dataObject.noteId }
     );
+    if (discordUser) {
+      embed.addFields({
+        name: 'usersHaveAccess', value: discordUser.username
+      })
+    }
+    if (role) {
+      embed.addFields({
+        name: 'rolesHaveAccess', value: role.name
+      })
+    }
+    if (file) {
+      embed.addFields({
+        name: fileName, value: file 
+      })
+    }
     const res = await Note.create(dataObject);
     await interaction.followUp({ content: `Document created. Be sure to remember the title or noteId for easy lookup. `, embeds: [embed], ephemeral: private });
   }
