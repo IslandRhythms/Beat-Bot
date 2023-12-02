@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const path = require('path');
 const fs = require('fs');
 module.exports = {
@@ -10,7 +10,6 @@ module.exports = {
     const commandDirectory = path.join(__dirname, '../');
     const commandFolders = fs.readdirSync(commandDirectory);
     // Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
-
     for (const folder of commandFolders) {
       const commandsPath = path.join(commandDirectory, folder);
       const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
@@ -21,6 +20,23 @@ module.exports = {
           commands.push(command.data.toJSON());
       }
     }
+    const embeds = [];
+    const helpEmbed = new EmbedBuilder().setTitle('Beat Bot Available Commands')
+    .setDescription('The following are the commands that Beat Bot has to offer sorted by category');
+    embeds.push(helpEmbed);
+    for (let i = 0; i < commandFolders.length; i++) {
+      const embed = new EmbedBuilder();
+      const category = commandFolders[i];
+      embed.setTitle(category);
+      for (let index = 0; index < commands.length; index++) {
+        const command = commands[index];
+        if (command.category == category) {
+          embed.addFields({ name: `/${command.name}`, value: command.description })
+        }
+      }
+      embeds.push(embed);
+    }
+    /*
     let str = `\`\`\`**${commands[0].category}**\n\n`;
     let cat = commands[0].category;
     for (let i = 0; i < commands.length; i++) {
@@ -32,5 +48,7 @@ module.exports = {
     }
     str+= '```'
     return interaction.followUp({ content: str });
+    */
+   return interaction.followUp({ embeds });
   }
 }

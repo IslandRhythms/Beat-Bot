@@ -13,6 +13,7 @@ const date = require("dateformat");
 
   const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates] });
   bot.commands = new Collection();
+  bot.cooldowns = new Collection();
   const player = Player.singleton(bot);
   const foldersPath = path.join(__dirname, 'commands');
   const commandFolders = fs.readdirSync(foldersPath);
@@ -117,8 +118,10 @@ const date = require("dateformat");
     } catch (error) {
       console.error(`Error executing ${interaction.commandName}`);
       console.error(error);
-      const { Error } = conn.models;
-      await Error.create({ commandname: interaction.commandName, message: error.message, data: error, commandOptions: interaction.options });
+      if (process.env.NODE_ENV === 'production') {
+        const { Error } = conn.models;
+        await Error.create({ commandname: interaction.commandName, message: error.message, data: error, commandOptions: interaction.options });
+      }
       if (!interaction.replied) {
         if (interaction.deferred) {
           await interaction.followUp('something went wrong...');

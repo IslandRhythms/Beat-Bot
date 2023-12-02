@@ -9,6 +9,7 @@ module.exports = {
   .addRoleOption(option => option.setName('role').setDescription('Anyone with the selected role can access the created note.'))
   .addBooleanOption(option => option.setName('private').setDescription('Set to true so when the bot finishes only you see the result.'))
   .addAttachmentOption(option => option.setName('image').setDescription('an image to save on the note'))
+  .addAttachmentOption(option => option.setName('file').setDescription('a text document or similar to save on the note.'))
   .addStringOption(option => option.setName('tags').setDescription('a comma separated list of tags to categorize the note')),
   async execute(interaction, conn) {
     await interaction.deferReply();
@@ -20,7 +21,12 @@ module.exports = {
     const discordUser = interaction.options.getUser('user');
     const role = interaction.options.getRole('role');
     const private = interaction.options.getBoolean('private');
-    const image = interaction.options.getAttachment('image') ? interaction.options.getAttachment('image').url : '';
+    const checkImage = interaction.options.getAttachment('image') ? isImage(interaction.options.getAttachment('image').contentType) : false;
+    const image = checkImage ? interaction.options.getAttachment('image').url : '';
+    const fileAttachment = interaction.options.getAttachment('file');
+    const checkFile = fileAttachment ? isAcceptableFile(fileAttachment.contentType) : false;
+    const file = checkFile ? fileAttachment.url : '';
+    const fileName = fileAttachment ? fileAttachment.name : '';
     const tags = interaction.options.getString('tags');
     const tagArray = tags.split(',');
     const searchArray = [];
@@ -40,6 +46,7 @@ module.exports = {
       text: text.length > 4096 ? text.slice(0, 4096) : text,
       title: title.length > 256 ? title.slice(0, 256) : title,
       image,
+      file,
       guildId: interaction.guildId,
       tags: searchArray,
       noteId
@@ -61,9 +68,26 @@ module.exports = {
       { name: 'tags', value: dataObject.tags.join(',') },
       { name: 'noteId', value: dataObject.noteId },
       { name: 'usersHaveAccess', value: discordUser.username },
-      { name: 'rolesHaveAccess', value: role.name }
+      { name: 'rolesHaveAccess', value: role.name },
+      { name: fileName, value: file }
     );
     const res = await Note.create(dataObject);
-    await interaction.followUp({ content: `Document created. Be sure to remember the title or noteId for easy lookup.`, embeds: [embed], ephemeral: private });
+    await interaction.followUp({ content: `Document created. Be sure to remember the title or noteId for easy lookup. `, embeds: [embed], ephemeral: private });
   }
+}
+
+function isImage(type) {
+  const allowed = ['image/jpeg', 'image/png', 'image/svg+xml']
+  if (allowed.includes(type)) {
+    return true;
+  }
+  return false;
+}
+
+function isAcceptableFile(type) {
+  const allowed = ['application/pdf', 'text/html', 'text/plain', 'text/markdown'];
+  if (allowed.includes(type)) {
+    return true;
+  }
+  return false;
 }
