@@ -4,8 +4,8 @@ const userSchema = new mongoose.Schema({
   discordName: String,
   discordId: String,
   discordServers: [],
-  subscribers: Number,
-  bits: Number,
+  subscribers: Number, // always increment by 1
+  bits: Number, // always increment by 1
   roles: {
     type: [String],
     enum: ['DM', 'Player', 'Member', 'Admin']

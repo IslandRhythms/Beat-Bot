@@ -1,9 +1,9 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder().setName('createnote')
   .setDescription('saves information you write to the db. Accessible to all unless specified otherwise.')
-  .addStringOption(option => option.setName('title').setDescription('the title of the note. Limit 256 characters').setRequired(true))
+  .addStringOption(option => option.setName('title').setDescription('the title of the note. Limit 256 characters. Make it memorable.').setRequired(true))
   .addStringOption(option => option.setName('text').setDescription('The information to be stored. Limit 4096 characters').setRequired(true))
   .addUserOption(option => option.setName('user').setDescription('Another user that can access this created note.'))
   .addRoleOption(option => option.setName('role').setDescription('Anyone with the selected role can access the created note.'))
@@ -51,7 +51,19 @@ module.exports = {
     if (role) {
       dataObject.rolesHaveAccess = [role.id]
     }
+
+    const embed = new EmbedBuilder();
+    embed.setTitle(dataObject.title);
+    embed.setImage(dataObject.image);
+    embed.setAuthor({ name: dataObject.noteCreator.discordName })
+    embed.setDescription(dataObject.text);
+    embed.addFields(
+      { name: 'tags', value: dataObject.tags.join(',') },
+      { name: 'noteId', value: dataObject.noteId },
+      { name: 'usersHaveAccess', value: discordUser.username },
+      { name: 'rolesHaveAccess', value: role.name }
+    );
     const res = await Note.create(dataObject);
-    await interaction.followUp({ content: `Document created: ${res}`, ephemeral: private });
+    await interaction.followUp({ content: `Document created. Be sure to remember the title or noteId for easy lookup.`, embeds: [embed], ephemeral: private });
   }
 }

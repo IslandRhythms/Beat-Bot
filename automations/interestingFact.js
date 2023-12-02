@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 
-module.exports = async function interestingFact(db) {
+module.exports = async function interestingFact() {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto('https://deepai.org/chat');
