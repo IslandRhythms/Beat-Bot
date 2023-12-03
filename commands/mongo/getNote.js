@@ -7,6 +7,7 @@ module.exports = {
   .setDescription('gets all notes you have access to. Pass args to filter notes.')
   .addStringOption(option => option.setName('title').setDescription('the title of the note.'))
   .addStringOption(option => option.setName('tag').setDescription('a tag the note has.'))
+  .addStringOption(option => option.setName('noteid').setDescription('the id of the note. A combo of your username plus entry.'))
   .addStringOption(option => option.setName('whenstart').setDescription('when the note was created in the form MMDDYYYY'))
   .addStringOption(option => option.setName('whenend').setDescription('another date in the form MMDDYYYY. Use to determine a range of dates.'))
   .addBooleanOption(option => option.setName('private').setDescription('set to true so only you can see the result')),
@@ -17,6 +18,7 @@ module.exports = {
     const end = interaction.options.getString('whenend');
     const private = interaction.options.getBoolean('private');
     const tag = interaction.options.getString('tag');
+    const noteId = interaction.options.getString('noteid');
     const { User, Note } = conn.models;
     const user = await User.findOne({ $or: [{ discordName: interaction.user.username }, { discordId: interaction.user.id }] });
     const roles = [];
@@ -38,8 +40,12 @@ module.exports = {
       queryObject.createdAt.$lte = parseDateString(end);
     }
     if (tag) {
-      queryObject.tags = tag
+      queryObject.tags = tag;
     }
+    if (noteId) {
+      queryObject.noteId = noteId;
+    }
+    console.log('what is queryObject', queryObject);
     const notes = await Note.find(queryObject)
     const embeds = [];
     for (let i = 0; i < notes.length; i++) {
@@ -54,6 +60,7 @@ module.exports = {
       );
       embeds.push(embed);
     }
+    console.log('is there stuff in embeds?', embeds.length);
     if (embeds.length) {
       await interaction.followUp({ embeds, ephemeral: private });
     } else {
