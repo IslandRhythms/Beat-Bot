@@ -24,11 +24,12 @@ module.exports = {
     const checkImage = interaction.options.getAttachment('image') ? isImage(interaction.options.getAttachment('image').contentType) : false;
     const image = checkImage ? interaction.options.getAttachment('image').url : '';
     const fileAttachment = interaction.options.getAttachment('file');
+    console.log('what is fileAttachment', fileAttachment);
     const checkFile = fileAttachment ? isAcceptableFile(fileAttachment.contentType) : false;
     const file = checkFile ? fileAttachment.url : '';
     const fileName = fileAttachment ? fileAttachment.name : '';
     const tags = interaction.options.getString('tags') ?? '';
-    const tagArray = tags.split(',');
+    const tagArray = tags.length ? tags.split(',') : [];
     const searchArray = [];
     for (let i = 0; i < tagArray.length; i++) {
       searchArray.push(tagArray[i].trim());
@@ -71,7 +72,9 @@ module.exports = {
 
     const embed = new EmbedBuilder();
     embed.setTitle(dataObject.title);
-    embed.setImage(dataObject.image);
+    if (dataObject.image) {
+      embed.setImage(dataObject.image);
+    }
     embed.setAuthor({ name: dataObject.noteCreator.discordName })
     embed.setDescription(dataObject.text);
     for (let i = 0; i < fieldArray.length; i++) {
@@ -93,7 +96,7 @@ function isImage(type) {
 }
 
 function isAcceptableFile(type) {
-  const allowed = ['application/pdf', 'text/html', 'text/plain', 'text/markdown'];
+  const allowed = ['application/pdf', 'text/html; charset=utf-8', 'text/plain; charset=utf-8', 'text/markdown'];
   if (allowed.includes(type)) {
     return true;
   }

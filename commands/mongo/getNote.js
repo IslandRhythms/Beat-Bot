@@ -27,8 +27,13 @@ module.exports = {
       guildId: interaction.guildId,
       $or: [{ 'noteCreator.discordId': user.discordId }, { usersHaveAccess: user.discordId }]
     }
+    if (noteId) {
+      queryObject.noteId = noteId;
+    }
     if (roles.length) {
-      queryObject.rolesHaveAccess = { $in: roles };
+      queryObject.$or.push({ rolesHaveAccess: { $in: roles } });
+      // not sure if this is needed
+      // queryObject.$or.push({ rolesHaveAccess: { $nin: roles } });
     }
     if (title) {
       queryObject.title = { $regex: title, $options: 'i' };
@@ -42,25 +47,24 @@ module.exports = {
     if (tag) {
       queryObject.tags = tag;
     }
-    if (noteId) {
-      queryObject.noteId = noteId;
-    }
     console.log('what is queryObject', queryObject);
     const notes = await Note.find(queryObject)
     const embeds = [];
+    console.log('what is notes', notes);
     for (let i = 0; i < notes.length; i++) {
       const embed = new EmbedBuilder();
       embed.setTitle(notes[i].title);
-      embed.setImage(notes[i].image);
+      if (notes[i].image) {
+        embed.setImage(notes[i].image);
+      }
       embed.setAuthor({ name: notes[i].noteCreator.discordName })
       embed.setDescription(notes[i].text);
       embed.addFields(
-        { name: 'tags', value: notes[i].tags.join(',') },
+        { name: 'tags', value: notes[i].tags.length ? notes[i].tags.join(',') : 'no tags available' },
         { name: 'noteId', value: notes[i].noteId },
       );
       embeds.push(embed);
     }
-    console.log('is there stuff in embeds?', embeds.length);
     if (embeds.length) {
       await interaction.followUp({ embeds, ephemeral: private });
     } else {
