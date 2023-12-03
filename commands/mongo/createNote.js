@@ -52,11 +52,21 @@ module.exports = {
       noteId
     }
 
+    const fieldArray = [{ name: 'noteId', value: dataObject.noteId }];
+    
     if (discordUser) {
       dataObject.usersHaveAccess = [discordUser.id];
+      fieldArray.push({ name: 'usersHaveAccess', value: discordUser.username });
     }
     if (role) {
-      dataObject.rolesHaveAccess = [role.id]
+      dataObject.rolesHaveAccess = [role.id];
+      fieldArray.push({ name: 'rolesHaveAccess', value: role.name });
+    }
+    if (file) {
+      fieldArray.push({ name: fileName, value: file });
+    }
+    if (dataObject.tags && dataObject.tags.join(',').length) {
+      fieldArray.push({ name: 'tags', value: dataObject.tags.join(',')});
     }
 
     const embed = new EmbedBuilder();
@@ -64,26 +74,12 @@ module.exports = {
     embed.setImage(dataObject.image);
     embed.setAuthor({ name: dataObject.noteCreator.discordName })
     embed.setDescription(dataObject.text);
-    embed.addFields(
-      { name: 'tags', value: dataObject.tags.join(',') },
-      { name: 'noteId', value: dataObject.noteId }
-    );
-    if (discordUser) {
-      embed.addFields({
-        name: 'usersHaveAccess', value: discordUser.username
-      })
+    for (let i = 0; i < fieldArray.length; i++) {
+      embed.addFields(
+        { name: fieldArray[i].name, value: fieldArray[i].value },
+      );
     }
-    if (role) {
-      embed.addFields({
-        name: 'rolesHaveAccess', value: role.name
-      })
-    }
-    if (file) {
-      embed.addFields({
-        name: fileName, value: file 
-      })
-    }
-    const res = await Note.create(dataObject);
+    await Note.create(dataObject);
     await interaction.followUp({ content: `Document created. Be sure to remember the title or noteId for easy lookup. `, embeds: [embed], ephemeral: private });
   }
 }
