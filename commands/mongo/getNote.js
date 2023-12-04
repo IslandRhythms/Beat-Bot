@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const parseDateString = require('../../parseDateString');
-const chunkString = require('../../chunkString');
+
 
 module.exports = {
   data: new SlashCommandBuilder().setName('getnote')
