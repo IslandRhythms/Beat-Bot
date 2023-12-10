@@ -61,7 +61,7 @@ module.exports = {
       embed.setDescription(notes[i].text);
       embed.addFields(
         { name: 'tags', value: notes[i].tags.length ? notes[i].tags.join(',') : 'no tags available' },
-        { name: 'noteId', value: notes[i].noteId },
+        { name: 'noteId', value: notes[i].noteId ?? 'no noteId detected' },
       );
       embeds.push(embed);
     }

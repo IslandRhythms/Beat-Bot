@@ -11,8 +11,26 @@ module.exports = {
   .addUserOption(option => option.setName('user').setDescription('the user to give access')),
   async execute(interaction, conn) {
     await interaction.deferReply();
+    const role = interaction.options.getRole('role');
+    const user = interaction.options.getUser('user');
+    const noteId = interaction.options.getString('noteId');
+    const title = interaction.options.getString('title');
+    console.log('the params', role, user, noteId, title);
+    const queryObject = {
+      'noteCreator.discordId': interaction.user.id,
+      $or: [{ noteId: noteId }, { title: title }]
+    };
     const { Note } = conn.models;
-
-    await interaction.followUp('Under Construction');
+    const notes = await Note.find(queryObject);
+    for (let i = 0; i < notes.length; i++) {
+      if (role && !notes[i].rolesHaveAccess.includes(role.id)) {
+        notes[i].rolesHaveAccess.push(role.id);
+      }
+      if (user && !notes[i].usersHaveAccess.includes(user.id)) {
+        notes[i].usersHaveAccess.push(user.id);
+      }
+      await notes[i].save();
+    }
+    await interaction.followUp({ content: 'Proper note access has been given', ephemeral: true });
   }
 }
