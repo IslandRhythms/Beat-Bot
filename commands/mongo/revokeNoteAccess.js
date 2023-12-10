@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const parseDateString = require('../../parseDateString');
+
 
 module.exports = {
   data: new SlashCommandBuilder().setName('revokenoteaccess')
@@ -12,6 +12,32 @@ module.exports = {
 
     const { Note } = conn.models;
 
-    await interaction.followUp('Under Construction');
+    const role = interaction.options.getRole('role');
+    const user = interaction.options.getUser('user');
+    const noteId = interaction.options.getString('noteId');
+    const title = interaction.options.getString('title');
+    const queryObject = {
+      'noteCreator.discordId': interaction.user.id,
+    };
+    if (noteId) {
+      queryObject.$or.push({ noteId: noteId })
+    }
+    if (title) {
+      queryObject.$or.push({ title: title });
+    }
+    const notes = await Note.find(queryObject);
+    for (let i = 0; i < notes.length; i++) {
+      if (role && notes[i].rolesHaveAccess.includes(role.id)) {
+        const index = notes[i].rolesHaveAccess.indexOf(role.id);
+        notes[i].rolesHaveAccess.splice(index, 1);
+      }
+      if (user && notes[i].usersHaveAccess.includes(user.id)) {
+        const index = notes[i].usersHaveAccess.indexOf(user.id);
+        notes[i].usersHaveAccess.splice(index, 1);
+      }
+      await notes[i].save();
+    }
+
+    await interaction.followUp({ content: `Revoked note access from ${user.username}`, ephemeral: true });
   }
 }
