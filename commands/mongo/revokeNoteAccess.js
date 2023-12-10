@@ -6,7 +6,8 @@ module.exports = {
   .setDescription('removes a user from all notes you have given them access. Add options to filter the notes.')
   .addStringOption(option => option.setName('title').setDescription('The title of the note'))
   .addStringOption(option => option.setName('noteid').setDescription('the id of the note'))
-  .addStringOption(option => option.setName('when').setDescription('when the note was created in the form MMDDYYYY')),
+  .addRoleOption(option => option.setName('role').setDescription('the role to allow access'))
+  .addUserOption(option => option.setName('user').setDescription('the user to give access')),
   async execute(interaction, conn) {
     await interaction.deferReply();
 
