@@ -9,6 +9,11 @@ const userSchema = new mongoose.Schema({
   roles: {
     type: [String],
     enum: ['DM', 'Player', 'Member', 'Admin']
+  },
+  availability: {
+    type: [String], 
+    enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], 
+    default: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
   }
 });
 
