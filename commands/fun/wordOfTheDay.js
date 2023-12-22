@@ -4,12 +4,11 @@ const parser = require('node-html-parser');
 
 module.exports = {
   data: new SlashCommandBuilder().setName('wordoftheday').setDescription('Gets the word of the day from dictionary.com'),
-  async execute(interaction) {
+  async execute(interaction, conn) {
     await interaction.deferReply();
-    const res = await axios.get('https://www.dictionary.com/e/word-of-the-day/').then(res => res.data);
-    const root = parser.parse(res);
-    const element = root.querySelector('div.wotd-item div.otd-item-headword__word h1');
-    const wordOfTheDay = element.textContent;
+    const { Daily } = conn.models;
+    const doc = await Daily.findOne();
+    const wordOfTheDay = doc.WOTD;
     const information = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${wordOfTheDay}`).then(res => res.data);
     const phonetics = information[0].phonetic;
     const data = [];

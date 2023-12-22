@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 
 const dailySchema = new mongoose.Schema({
-  WOTD: {
-
-  }
+  WOTD: String,
+  
 });
 
 module.exports = dailySchema;
