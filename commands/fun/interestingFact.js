@@ -5,7 +5,7 @@ const interestingFact = require('../../automations/interestingFact');
 module.exports = {
   cooldown: 60,
   data: new SlashCommandBuilder().setName('fact').setDescription('gets a random interesting fact.'),
-  async execute(interaction) {
+  async execute(interaction, conn) {
     await interaction.deferReply();
     const result = await interestingFact();
     await interaction.followUp(result);

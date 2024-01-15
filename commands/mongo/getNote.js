@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const parseDateString = require('../../parseDateString');
+const parseDateString = require('../../helpers/parseDateString');
 
 
 module.exports = {

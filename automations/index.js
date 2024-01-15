@@ -11,6 +11,7 @@ const millisecondsInWeek = 604800000;
 module.exports = async function tasks(db) {
   const { Task } = db.models;
   initTasks(null, db);
+  /*
   Task.registerHandler('interestingFact', interestingFact(db));
   Task.registerHandler('onThisDay', onThisDay(db));
   Task.registerHandler('wordOfTheDay', wordOfTheDay(db));
@@ -63,9 +64,8 @@ module.exports = async function tasks(db) {
     upsert: true,
     returnDocument: 'after'
   });
-
+*/
 }
-
 function next6am() {
   const today = Date.now();
   if (today.getHours() < 6) {
