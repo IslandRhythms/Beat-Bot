@@ -9,12 +9,12 @@ module.exports = {
   async execute(interaction) {
     await interaction.deferReply();
     const embed = new EmbedBuilder();
-    const fact = await axios.get('https://cat-fact.herokuapp.com/facts/random').then(res => res.data); // too many junk facts
+    const { fact } = await axios.get('https://catfact.ninja/fact').then(res => res.data);
     embed.setTitle('Cat Fact');
-    embed.setDescription(fact.text);
+    embed.setDescription(fact);
     const image = await axios.get('https://api.thecatapi.com/v1/images/search').then(res => res.data);
     embed.setImage(image[0].url);
-    embed.setFooter({ text: 'Possible thanks to https://cat-fact.herokuapp.com/facts/random and https://api.thecatapi.com/v1/images/search'})
+    embed.setFooter({ text: 'Possible thanks to https://catfact.ninja/fact and https://api.thecatapi.com/v1/images/search'})
     await interaction.followUp({ embeds: [embed] })
   }
 }
