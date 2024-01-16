@@ -18,3 +18,22 @@ module.exports = {
     await interaction.followUp({ embeds: [embed] })
   }
 }
+
+/*
+  This is part of the code we would have used to get an image that matches the dog fact,
+  but the payload is not standardized ex: key is australian and value is shepherd but then
+  bulldog is key and french is value :/
+  ================================================================================================
+    const data = await axios.get('https://dog.ceo/api/breeds/list/all').then(res => res.data);
+    const list = data.message;
+    const breeds = [];
+    for (const key in list) {
+      if (list[key].length) {
+        for (let i = 0; i < list[key].length; i++) {
+          breeds.push(`${key} ${list[key][i]}`);
+        }
+      } else {
+        breeds.push(key);
+      }
+    }
+*/
