@@ -7,6 +7,7 @@ const campaignSchema = new mongoose.Schema({
   guildId: String,
   gameMaster: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  characters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GameProfile' }],
   partyLoot: [String],
   tags: [String],
 }, { timestamps: true });
