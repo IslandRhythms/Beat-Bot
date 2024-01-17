@@ -4,6 +4,8 @@ const userSchema = new mongoose.Schema({
   discordName: String,
   discordId: String,
   discordServers: [],
+  campaigns: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Campaign' }],
+  profile: { type: mongoose.Schema.Types.ObjectId, ref: 'GameProfile' },
   subscribers: Number, // always increment by 1
   bits: Number, // always increment by 1000
   roles: {
