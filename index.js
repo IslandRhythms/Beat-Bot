@@ -11,7 +11,15 @@ const date = require("dateformat");
 
 (async () => {
 
-  const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates] });
+  const bot = new Client({ 
+    intents: [
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.MessageContent,
+      GatewayIntentBits.GuildMembers,
+      GatewayIntentBits.GuildVoiceStates
+    ] 
+  });
   bot.commands = new Collection();
   bot.cooldowns = new Collection();
   const player = Player.singleton(bot);
@@ -112,7 +120,10 @@ const date = require("dateformat");
     }
 
     try {
-      const { User } = conn.models;
+      const { User, Daily } = conn.models;
+      // const doc = await Daily.findOne({}).sort({ createdAt: 1 });
+      // doc.pings += 1;
+      // await doc.save();
       await User.findOneAndUpdate({ discordName: interaction.user.username, discordId: interaction.user.id }, { discordName: interaction.user.username, discordId: interaction.user.id }, { upsert: true });
       await command.execute(interaction, conn);
     } catch (error) {

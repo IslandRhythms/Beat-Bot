@@ -16,7 +16,8 @@ const dailySchema = new mongoose.Schema({
   astropicOTD: String,
   phaseOfTheMoon: String,
   songOTD: String,
-  dateString: String // MM/DD/YYYY
+  dateString: String, // MM/DD/YYYY
+  pings: Number
 });
 
 module.exports = dailySchema;
