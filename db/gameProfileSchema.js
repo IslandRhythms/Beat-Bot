@@ -4,6 +4,7 @@ const gameProfileSchema = new mongoose.Schema({
   campaigns: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Campaign' }],
   numCampaigns: Number,
   player: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  overallPlayerLevel: Number, // sum of each characters player level.
   playerCharacters: [{ 
     campaign: { type: mongoose.Schema.Types.ObjectId, ref: 'Campaign' },
     isAlive: Boolean,
@@ -14,7 +15,8 @@ const gameProfileSchema = new mongoose.Schema({
     epilogue: String,
     backStory: String,
     equipment: [String],
-    groupName: String
+    groupName: String,
+    characterImage: String
   }],
   numPlayerCharacters: Number,
   dmCampaigns: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Campaign' }],

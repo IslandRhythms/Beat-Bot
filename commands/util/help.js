@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const path = require('path');
 const fs = require('fs');
+const capitalizeFirstLetter = require('../../helpers/capitalizeFirstLetter');
 module.exports = {
   data: new SlashCommandBuilder().setName('help').setDescription('Lists the commands of the bot'),
   async execute(interaction) {
@@ -27,7 +28,7 @@ module.exports = {
     for (let i = 0; i < commandFolders.length; i++) {
       const embed = new EmbedBuilder();
       const category = commandFolders[i];
-      embed.setTitle(category);
+      embed.setTitle(capitalizeFirstLetter(category));
       for (let index = 0; index < commands.length; index++) {
         const command = commands[index];
         if (command.category == category) {
