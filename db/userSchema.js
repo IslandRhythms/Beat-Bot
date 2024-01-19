@@ -16,6 +16,13 @@ const userSchema = new mongoose.Schema({
     type: [String], 
     enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], 
     default: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+  },
+  favorites: {
+    games: [{ name: String, url: String }],
+    music: [{ name: String, url: String }],
+    movies: [String],
+    shows: [String],
+    foods: [String]
   }
 });
 
