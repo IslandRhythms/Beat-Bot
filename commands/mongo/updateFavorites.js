@@ -17,12 +17,39 @@ module.exports = {
     .addStringOption(option => option.setName('food').setDescription('the name of the food'))),
   async execute(interaction, conn) {
     await interaction.deferReply();
-
     const { User } = conn.models;
-
-    const day = interaction.options.getString('day');
-
+    const property = interaction.options._subcommand;
     const user = await User.findOne({ discordId: interaction.user.id });
+    if (property == 'games') {
+      const game = interaction.options.getString('game');
+      const link = interaction.options.getString('link');
+      const remove = user.favorites[property].find(x => x.name == game);
+      console.log('what is remove', remove);
+      if (remove) {
+        user.favorites[property].pull({ _id: remove._id });
+      } else {
+        user.favorites[property].push({ name: game, url: link });
+      }
+    } else if (property == 'music') {
+      const music = interaction.options.getString('music');
+      const link = interaction.options.getString('link');
+      const remove = user.favorites[property].find(x => x.name == music);
+      if (remove) {
+        user.favorites[property].pull({ _id: remove._id });
+      } else {
+        user.favoirtes[property].push({ name: music, url: link });
+      }
+    } else {
+      const entry = interaction.options.getString(property.substring(0, property.length - 1 ));
+      const remove = user.favorites[property].find(x => x == entry);
+      if (remove) {
+        user.favorites[property].pull(entry);
+      } else {
+        user.favorites[property].push(entry);
+      }
+    }
+    await user.save();
+    await interaction.followUp('Favorites Updated!');
     
   }
 }
