@@ -124,6 +124,7 @@ const date = require("dateformat");
       // const doc = await Daily.findOne({}).sort({ createdAt: 1 });
       // doc.pings += 1;
       // await doc.save();
+      // need to update discord pics in the db so check when the user runs a command if their profile pic has changed.
       await User.findOneAndUpdate({ discordName: interaction.user.username, discordId: interaction.user.id }, { discordName: interaction.user.username, discordId: interaction.user.id }, { upsert: true });
       await command.execute(interaction, conn);
     } catch (error) {

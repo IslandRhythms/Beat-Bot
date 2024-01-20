@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  discordName: String,
-  discordId: String,
+  discordName: String, // username
+  discordId: String, // id
+  discordPic: String, // avatar
   discordServers: [],
   campaigns: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Campaign' }],
   profile: { type: mongoose.Schema.Types.ObjectId, ref: 'GameProfile' },
