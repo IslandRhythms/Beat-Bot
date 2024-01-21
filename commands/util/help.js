@@ -32,7 +32,7 @@ module.exports = {
       for (let index = 0; index < commands.length; index++) {
         const command = commands[index];
         if (command.category == category) {
-          embed.addFields({ name: `/${command.name}`, value: command.description })
+          embed.addFields({ name: `/${command.name}`, value: command.description, inline: true })
         }
       }
       embeds.push(embed);

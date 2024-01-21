@@ -11,7 +11,7 @@ module.exports = {
     { name: 'Friday', value: 'Friday' },
     { name: 'Saturday', value: 'Saturday' },
     { name: 'Sunday', value: 'Sunday' },
-  )),
+  ).setRequired(true)),
   async execute(interaction, conn) {
     await interaction.deferReply();
 
@@ -20,6 +20,13 @@ module.exports = {
     const day = interaction.options.getString('day');
 
     const user = await User.findOne({ discordId: interaction.user.id });
-    
+    const remove = user.availability.find(x => x == day);
+    if (remove) {
+      user.availability.pull(day);
+      await user.save();
+      await interaction.followUp({ content: `Removed ${day} as a day you are unavailable.`, ephemeral: true });
+    } else {
+      await interaction.followUp({ content: `You've already indicated that you are not available on ${day}`, ephemeral: true });
+    }
   }
 }

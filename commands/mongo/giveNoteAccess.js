@@ -34,6 +34,10 @@ module.exports = {
       }
       await notes[i].save();
     }
-    await interaction.followUp({ content: `Proper note access has been given to ${user.username}`, ephemeral: true });
+    const messageArray = [];
+    if (role) messageArray.push(role.name);
+    if (user) messageArray.push(user.username);
+    const message = `Proper note access has been given to ${messageArray.join(', ')}`;
+    await interaction.followUp({ content: message, ephemeral: true });
   }
 }
