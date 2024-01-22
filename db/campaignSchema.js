@@ -7,7 +7,7 @@ const campaignSchema = new mongoose.Schema({
   guildId: String,
   gameMaster: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  characters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GameProfile' }],
+  characters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GameProfile' }], // this is flawed
   partyLoot: [String],
   tags: [String],
 }, { timestamps: true });
