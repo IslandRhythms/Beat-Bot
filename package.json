@@ -35,6 +35,8 @@
     "node-html-parser": "^6.1.11",
     "node-opus": "^0.3.3",
     "pagination.djs": "^4.0.9",
+    "pdf-parse": "^1.1.1",
+    "pdf-scraper": "^1.1.4",
     "puppeteer": "^21.5.2",
     "table-renderer": "^0.1.30",
     "timer-node": "^5.0.7",
