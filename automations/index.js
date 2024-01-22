@@ -8,6 +8,8 @@ const startQueue = require('./startQueue');
 const millisecondsInDay = 86400000;
 const millisecondsInWeek = 604800000;
 
+// https://discordjs.guide/popular-topics/faq.html#how-do-i-send-a-message-to-a-specific-channel
+
 module.exports = async function tasks(db) {
   const { Task } = db.models;
   initTasks(null, db);
