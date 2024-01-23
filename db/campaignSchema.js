@@ -9,8 +9,10 @@ const campaignSchema = new mongoose.Schema({
   guildId: String,
   gameMaster: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  characters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Character' }],
   partyLoot: [{ name: String, url: String }],
   tags: [String],
+  campaignId: String
 }, { timestamps: true });
 
 module.exports = campaignSchema;

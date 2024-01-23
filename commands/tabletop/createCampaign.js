@@ -10,8 +10,8 @@ module.exports = {
   .addUserOption(option => option.setName('dm').setDescription('who is the dm for the campaign?').setRequired(true).setRequired(true)),
   async execute(interaction, conn) {
     await interaction.deferReply();
-
     const { Campaign, User } = conn.models;
+    const guildId = interaction.guildId;
     const dm = interaction.options.getUser('dm');
     const players = interaction.options.getRole('players');
     const description = interaction.options.getString('description');
@@ -23,9 +23,16 @@ module.exports = {
     const playerIds = []
     users.map(x => playerIds.push(x._id));
     const GM = await User.findOne({ discordId: dm.id });
-    // await Campaign.create({ title: adventure, system, description, gameMaster: [dm], players: playerIds });
-    return interaction.followUp('Under Construction');
-    const embed = new EmbedBuilder().setTitle().setThumbnail();
+    const numCampaigns = await Campaign.countDocuments();
+    const campaignId = adventure + numCampaigns;
+    await Campaign.create({ title: adventure, system, description, gameMaster: [GM._id], players: playerIds, guildId, campaignId: campaignId });
+    const embed = new EmbedBuilder().setTitle(`${adventure}`).setDescription(description);
+    embed.addFields({ name: 'System', value: system, inline: true });
+    embed.addFields({ name: 'GM', value: dm.username, inline: true });
+    embed.addFields({ name: 'CampaignId', value: campaignId, inline: true });
+    for (let i = 0; i < players.members.length; i++) {
+      embed.addFields({ name: 'Player', value: players.members[i].username, inline: true });
+    }
     await interaction.followUp({ embeds: [embed], ephemeral: true });
   }
 }
