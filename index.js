@@ -76,7 +76,7 @@ const date = require("dateformat");
   }, 86400000);
 
   */
-
+  // put tasks call here so we can pass client
   bot.on("ready", () => {
     bot.user.setActivity("type /help to see what I can do");
   });
