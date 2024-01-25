@@ -21,9 +21,9 @@ const userSchema = new mongoose.Schema({
   favorites: {
     games: [{ name: String, url: String }],
     music: [{ name: String, url: String }],
-    movies: [String],
-    shows: [String],
-    foods: [String]
+    movies: [{ name: String, url: String }],
+    shows: [{ name: String, url: String }],
+    foods: [{ name: String, url: String }]
   }
 });
 

@@ -19,10 +19,6 @@ module.exports = {
         for (let pos = 0; pos < user.favorites[category].length; pos++) {
           embed.addFields({ name: `${user.favorites[category][pos].name}`, value: `${user.favorites[category][pos].url}` });
         }
-      } else {
-        for (let pos = 0; pos < user.favorites[category].length; pos++) {
-          embed.addFields({ name: `${category}`, value: `${user.favorites[category][pos]}` });
-        }
       }
       embeds.push(embed);
     }

@@ -77,6 +77,6 @@ module.exports = {
       campaign.groupLogo = groupLogo;
     }
     await campaign.save();
-    await interaction.followUp('Under Construction');
+    await interaction.followUp('Campaign Updated!');
   }
 }
