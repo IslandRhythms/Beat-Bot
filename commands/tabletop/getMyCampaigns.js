@@ -2,7 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 
 module.exports = {
-  data: new SlashCommandBuilder().setName('getcampaign').setDescription('get the details of a campaign you\'re in.')
+  data: new SlashCommandBuilder().setName('getmycampaign').setDescription('get the details of a campaign you\'re in.')
   .addStringOption(option => option.setName('title').setDescription('the name of the campaign you are in. Omit to get all.'))
   .addStringOption(option => option.setName('id').setDescription('the id of the campaign')),
   async execute(interaction, conn) {
@@ -11,6 +11,9 @@ module.exports = {
     const obj = {};
     const title = interaction.options.getString('title');
     const campaignId = interaction.options.getString('id');
+    const user = interaction.user.id;
+    const member = await User.findOne({ discordId: user })
+    obj.$or = [{ gameMaster: member._id }, { players: member._id }];
     if (title) {
       obj.title = title;
     }
@@ -20,9 +23,16 @@ module.exports = {
     const res = await Campaign.find(obj).populate('gameMaster').populate('players').populate('characters');
     const embeds = [];
     for (let i = 0; i < res.length; i++) {
-      const embed = new EmbedBuilder().setTitle(`${res.title}`).setDescription(res.description).setThumbnail(res.groupLogo);
-      embed.addFields({ name: 'System', value: res.system });
-      
+      const campaign = res[i];
+      const embed = new EmbedBuilder().setTitle(`${campaign.title}`).setDescription(campaign.description).setThumbnail(campaign.groupLogo);
+      embed.addFields({ name: 'System', value: campaign.system });
+      for (let j = 0; j < campaign.gameMaster.length; j++) {
+
+      }
+      for (let index = 0; index < campaign.players.length; index++) {
+        // do both player and character
+        // be sure to check that the associated character with the campaign is not dead or retired but is active in the campaign.
+      }
     }
     return interaction.followUp('Under Construction');
     await interaction.followUp({ embeds, ephemeral: true });

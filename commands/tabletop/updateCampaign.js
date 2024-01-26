@@ -5,7 +5,10 @@ module.exports = {
   data: new SlashCommandBuilder().setName('updatecampaign').setDescription('update details of a campaign you\'re in.')
   .addStringOption(option => option.setName('campaignid').setDescription('the id of the campaign you wish to update.').setRequired(true))
   .addStringOption(option => option.setName('title').setDescription('the new name of the campaign.'))
+  .addStringOption(option => option.setName('meeting').setDescription('the meeting time and day'))
   .addStringOption(option => option.setName('groupname').setDescription('the new name of the adventuring group.'))
+  .addBooleanOption(option => option.setName('victory').setDescription('did the players win?'))
+  .addBooleanOption(option => option.setName('stale').setDescription('did the campaign become statle?'))
   .addStringOption(option => option.setName('grouplogo').setDescription('the new logo of the adventuring group.'))
   .addUserOption(option => option.setName('player').setDescription('the player you wish to add or remove from the campaign.'))
   .addStringOption(option => option.setName('character').setDescription('the name of the character you wish to add or remove. Must include with player option.'))
@@ -20,6 +23,9 @@ module.exports = {
     const character = interaction.options.getString('character');
     const GM = interaction.options.getUser('gm');
     const player = interaction.options.getUser('player');
+    const meeting = interaction.options.getString('meeting');
+    const victory = interaction.options.getBoolean('victory');
+    const stale = interaction.options.getBoolean('stale');
 
     const campaign = await Campaign.findOne({ campaignId, guildId: interaction.guildId }).populate('gameMaster');
 
@@ -75,6 +81,15 @@ module.exports = {
     }
     if (groupLogo) {
       campaign.groupLogo = groupLogo;
+    }
+    if (victory) {
+      campaign.isVictory = victory;
+    }
+    if (stale) {
+      campaign.isStale = stale;
+    }
+    if (meeting) {
+      campaign.meetingAt = meeting;
     }
     await campaign.save();
     await interaction.followUp('Campaign Updated!');

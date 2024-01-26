@@ -8,13 +8,16 @@ const characterSchema = new mongoose.Schema({
   characterId: String, // another way to find a character.
   isAlive: Boolean,
   causeOfDeath: String,
-  isRetired: Boolean,
+  isRetired: Boolean, // player was done with character and wanted new character but this character did not die.
+  isFavorite: Boolean,
+  isHero: Boolean, // completed the campaign with this character
   name: String,
   totalLevel: Number,
   race: String,
   background: String,
   isMulticlass: Boolean,
   classes: [{ name: String, level: Number }],
+  feats: [String],
   epilogue: String,
   backStory: String,
   equipment: [String],
