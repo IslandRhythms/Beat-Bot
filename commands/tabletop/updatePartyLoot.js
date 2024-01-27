@@ -42,6 +42,6 @@ module.exports = {
       loot.url = link;
     }
     await doc.save();
-    await interaction.followUp('Under Construction');
+    await interaction.followUp(`${item} has been updated.`);
   }
 }
