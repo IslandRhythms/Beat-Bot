@@ -13,8 +13,9 @@ const campaignSchema = new mongoose.Schema({
   gameMaster: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   characters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Character' }],
-  partyLoot: [{ name: String, url: String, checkedOut: Boolean, character: { type: mongoose.Schema.Types.ObjectId, ref: 'Character'} }],
+  partyLoot: [{ name: String, url: String, checkedOut: Boolean, lost: Boolean, character: { type: mongoose.Schema.Types.ObjectId, ref: 'Character'} }],
   tags: [String],
+  numEncounters: Number,
   campaignId: String
 }, { timestamps: true });
 

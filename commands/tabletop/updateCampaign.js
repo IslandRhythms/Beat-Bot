@@ -9,9 +9,9 @@ module.exports = {
   .addStringOption(option => option.setName('groupname').setDescription('the new name of the adventuring group.'))
   .addBooleanOption(option => option.setName('victory').setDescription('did the players win?'))
   .addBooleanOption(option => option.setName('stale').setDescription('did the campaign become statle?'))
-  .addStringOption(option => option.setName('grouplogo').setDescription('the new logo of the adventuring group.'))
+  .addAttachmentOption(option => option.setName('grouplogo').setDescription('the new logo of the adventuring group.'))
   .addUserOption(option => option.setName('player').setDescription('the player you wish to add or remove from the campaign.'))
-  .addStringOption(option => option.setName('character').setDescription('the name of the character you wish to add or remove. Must include with player option.'))
+  .addStringOption(option => option.setName('character').setDescription('the name of the character you wish to add or remove. Must include with player option.')) // this is more nuanced
   .addUserOption(option => option.setName('gm').setDescription('the game master you wish to add or remove from the campaign.')),
   async execute(interaction, conn) {
     await interaction.deferReply();
@@ -19,7 +19,8 @@ module.exports = {
     const campaignId = interaction.options.getString('campaignid');
     const title = interaction.options.getString('title');
     const groupName = interaction.options.getString('groupname');
-    const groupLogo = interaction.options.getString('grouplogo');
+    const attachment = interaction.options.getAttachment('grouplogo');
+    const groupLogo = attachment.url;
     const character = interaction.options.getString('character');
     const GM = interaction.options.getUser('gm');
     const player = interaction.options.getUser('player');
