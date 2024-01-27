@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const getDiscordNameFromId = require('../../helpers/getDiscordNameFromId');
 
 
 module.exports = {
@@ -18,11 +19,18 @@ module.exports = {
       const embed = new EmbedBuilder().setTitle(`${res.title}`).setDescription(res.description).setThumbnail(res.groupLogo);
       embed.addFields({ name: 'System', value: res.system });
       for (let j = 0; j < res.gameMaster.length; j++) {
-        const user = interaction.members.find(x => x.id == res.gameMaster[i].discordId);
-        embed.addFields({ name: 'GameMaster', value: user.username, inline: true });
+        embed.addFields({ name: 'GameMaster', value: getDiscordNameFromId(interaction, res.gameMaster[i].discordId), inline: true });
       }
       
     }
-    await interaction.followUp({ embeds, ephemeral: true });
+    if (!embeds.length) {
+      const embeds = [];
+      const embed = new EmbedBuilder().setTitle('No entries found');
+      embeds.push(embed);
+      await interaction.followUp({ embeds, ephemeral: true });
+    } else {
+      await interaction.followUp({ embeds, ephemeral: true });
+    }
+    
   }
 }
