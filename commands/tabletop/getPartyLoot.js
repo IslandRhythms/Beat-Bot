@@ -9,8 +9,9 @@ module.exports = {
 
     const { Campaign, User } = conn.models;
     const adventure = interaction.options.getString('campaign');
-    const userId = await User.findOne({ discordId: interaction.user.id });
-    const doc = await Campaign.findOne({ title: adventure, $or: [{ players: userId }, {gameMaster: userId }] }).populate('partyLoot.character');
+    const user = await User.findOne({ discordId: interaction.user.id });
+    const userId = user._id;
+    const doc = await Campaign.findOne({ title: adventure, $or: [{ players: userId }, { gameMaster: userId }] }).populate('partyLoot.character');
     if (!doc) {
       return interaction.followUp(`No campaign found meeting the indicated parameters.`);
     }

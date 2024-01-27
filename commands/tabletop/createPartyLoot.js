@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('discord.js');
 
 
 module.exports = {
@@ -9,17 +9,18 @@ module.exports = {
   async execute(interaction, conn) {
     await interaction.deferReply();
 
-    const { Campaign } = conn.models;
+    const { Campaign, User } = conn.models;
     const adventure = interaction.options.getString('campaign');
     const item = interaction.options.getString('name');
     const url = interaction.options.getString('url');
-    const userId = interaction.user.id;
+    const user = await User.findOne({ discordId: interaction.user.id });
+    const userId = user._id;
     const doc = await Campaign.findOne({ title: adventure, $or: [{ players: userId }, { gameMaster: userId }] });
     if (!doc) {
       return interaction.followUp(`No campaign found meeting the indicated parameters.`);
     }
     doc.partyLoot.push({ name: item, url });
     await doc.save();
-    await interaction.followUp({ content: 'Party Loot Updated!', ephemeral: true });
+    await interaction.followUp({ content: 'Party Loot Created!', ephemeral: true });
   }
 }
