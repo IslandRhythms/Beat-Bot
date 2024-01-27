@@ -6,7 +6,7 @@ const { musicKeys, musicModes } = require('../../constants');
 // https://developer.spotify.com/documentation/web-api
 
 module.exports = {
-  data: new SlashCommandBuilder().setName('getkey').setDescription('gets the key of the track.')
+  data: new SlashCommandBuilder().setName('getkey').setDescription('gets the key of the given track, or recurring key of the album or playlist.')
   .addSubcommand(subcommand => subcommand.setName('track').setDescription('the key of the track')
     .addStringOption(option => option.setName('trackid')
     .setDescription('the id of the track from spotify that can be retrieved from the url.')
@@ -19,7 +19,7 @@ module.exports = {
     .addStringOption(option => option.setName('playlistid')
     .setDescription('the id of the playlist from spotify that can be retrieved from the url.')
     .setRequired(true))),
-  async execute(interaction, conn) {
+  async execute(interaction) {
     await interaction.deferReply();
     const { access_token } = await getSpotifyCredentials();
     const property = interaction.options._subcommand;
@@ -40,4 +40,8 @@ module.exports = {
       return interaction.followUp('Under Construction');
     }
   }
+}
+
+function getRecurringKey(songs) {
+
 }
