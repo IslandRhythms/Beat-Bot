@@ -40,6 +40,13 @@ module.exports = {
       }
       embeds.push(embed);
     }
-    await interaction.followUp({ embeds, ephemeral: true });
+    if (!embeds.length) {
+      const embeds = [];
+      const embed = new EmbedBuilder().setTitle('No entries found');
+      embeds.push(embed);
+      await interaction.followUp({ embeds, ephemeral: true });
+    } else {
+      await interaction.followUp({ embeds, ephemeral: true });
+    }
   }
 }
