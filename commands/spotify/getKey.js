@@ -3,6 +3,7 @@ const axios = require('axios');
 const getSpotifyCredentials = require('../../helpers/getSpotifyCredentials');
 const { musicKeys, musicModes } = require('../../constants');
 
+// https://developer.spotify.com/documentation/web-api
 
 module.exports = {
   data: new SlashCommandBuilder().setName('getkey').setDescription('gets the key of the track.')
