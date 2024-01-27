@@ -13,9 +13,12 @@ module.exports = {
     const { Campaign, User } = conn.models;
 
     const user = await User.findOne({ discordId: interaction.user.id });
+    if (!user) {
+      return interaction.followUp('You do not exist in the db, please contact Beat.');
+    }
     const adventure = interaction.options.getString('campaignid');
-    const doc = await Campaign.findOne({ campaignId: adventure, $or: [{ gameMaster: user._id }, { players: user._id }] }).populate('gameMaster').populate('characters').populate('partyLoot.character');
-    const isGM = doc.gameMaster.find(x => x._id.toString() == user._id.toString());
+    const doc = await Campaign.findOne({ campaignId: adventure, $or: [{ gameMaster: user._id }, { players: user._id }] }).populate('characters').populate('partyLoot.character');
+    const isGM = doc.gameMaster.find(x => x.toString() == user._id.toString());
     const player = interaction.options.getUser('player');
     const playerDoc = await User.findOne({ discordId: player.id })
     const item = interaction.options.getString('item');

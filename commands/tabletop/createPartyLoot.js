@@ -14,6 +14,9 @@ module.exports = {
     const item = interaction.options.getString('name');
     const url = interaction.options.getString('url');
     const user = await User.findOne({ discordId: interaction.user.id });
+    if (!user) {
+      return interaction.followUp('You do not exist in the db, please contact Beat.');
+    }
     const userId = user._id;
     const doc = await Campaign.findOne({ title: adventure, $or: [{ players: userId }, { gameMaster: userId }] });
     if (!doc) {

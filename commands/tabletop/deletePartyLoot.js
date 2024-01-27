@@ -13,6 +13,9 @@ module.exports = {
     const { Campaign, User } = conn.models;
     const adventure = interaction.options.getString('campaign');
     const user = await User.findOne({ discordId: interaction.user.id });
+    if (!user) {
+      return interaction.followUp('You do not exist in the db, please contact Beat.');
+    }
     const doc = await Campaign.findOne({ title: adventure, $or: [{ players: user._id }, { gameMaster: user._id }] }).populate('characters').populate('partyLoot.character');
     if (!doc) {
       return interaction.followUp(`No campaign found meeting the indicated parameters.`);
