@@ -7,9 +7,9 @@ module.exports = {
   async execute(interaction, conn) {
     await interaction.deferReply();
 
-    const { Campaign } = conn.models;
+    const { Campaign, User } = conn.models;
     const adventure = interaction.options.getString('campaign');
-    const userId = interaction.user.id;
+    const userId = await User.findOne({ discordId: interaction.user.id });
     const doc = await Campaign.findOne({ title: adventure, $or: [{ players: userId }, {gameMaster: userId }] }).populate('partyLoot.character');
     if (!doc) {
       return interaction.followUp(`No campaign found meeting the indicated parameters.`);
