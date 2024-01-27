@@ -17,7 +17,7 @@ const dailySchema = new mongoose.Schema({
   phaseOfTheMoon: String,
   songOTD: String,
   dateString: String, // MM/DD/YYYY
-  pings: Number
+  pings: Number,
 });
 
 module.exports = dailySchema;
