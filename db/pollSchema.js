@@ -22,6 +22,7 @@ const pollSchema = new mongoose.Schema({
   target: String, // optional string indicating who the poll was directed toward.
   question: String,
   result: String,
+  guildId: String, // get from message link
   pollId: String // the total number of poll documents at this documents creation
 });
 

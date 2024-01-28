@@ -5,6 +5,7 @@ const characterSchema = new mongoose.Schema({
   player: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   playerProfile: { type: mongoose.Schema.Types.ObjectId, ref: 'GameProfile' },
   system: String, // what system was the character played in? Ex: D&D, Pathfinder, etc.
+  guildId: String,
   characterId: String, // another way to find a character.
   isAlive: Boolean,
   causeOfDeath: String,

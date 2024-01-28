@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
   discordId: String, // id
   discordPic: String, // avatar
   discordServers: [],
+  birthday: String,
   campaigns: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Campaign' }],
   profile: { type: mongoose.Schema.Types.ObjectId, ref: 'GameProfile' },
   subscribers: Number, // always increment by 1
