@@ -32,7 +32,10 @@ module.exports = {
   async execute(interaction, conn) {
     await interaction.deferReply();
     const { GameProfile } = conn.models;
-
+    /*
+    The formula in D&D for ability modifiers is 
+    (The ability score - 10) / 2 round down if positive, and round up if negative.
+    */
     await interaction.followUp('Under Construction');
   }
 }
