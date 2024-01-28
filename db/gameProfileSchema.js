@@ -9,7 +9,12 @@ const gameProfileSchema = new mongoose.Schema({
   numPlayerCharacters: Number,
   dmCampaigns: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Campaign' }],
   numDMCampaigns: Number,
+  campaignPreference: String, // In person, online
+  campaignStyle: String, // Gritty, Casual, play test, combat driven, story driven, etc.
+  availableToDm: Boolean,
+  homebrewAllowed: Boolean,
   guildId: String,
+  preferredSystem: [String],
   tags: [String],
 }, { timestamps: true });
 
