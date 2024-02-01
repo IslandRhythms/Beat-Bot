@@ -28,6 +28,46 @@ module.exports = {
     const property = interaction.options._subcommand;
     const user = await User.findOne({ discordId: interaction.user.id });
     const profile = await GameProfile.findOne({ player: user._id }).populate('campaigns').populate('player').populate('playerCharacters').populate('dmCampaigns');
-    await interaction.followUp({ content: 'Under Construction', ephemeral: true });
+
+    const homebrew = interaction.options.getBoolean('homebrew');
+    const gming = interaction.options.getBoolean('gming');
+    const style = interaction.options.getString('style');
+    const preference = interaction.options.getString('preference');
+    const system = interaction.options.getString('system');
+    const description = interaction.options.getString('description');
+    const expectations = interaction.options.getString('expectations');
+    const obj = {
+      campaignPreference: preference,
+      campaignStyle: style,
+      homebrewAllowed: homebrew,
+      availableToDm: gming
+    };
+
+    if (property == 'player') {
+      if (description) {
+        profile.playerDescription = description;
+      }
+      if (expectations) {
+        profile.playerExpectations = expectations;  
+      }
+    } else {
+      if (description) {
+        profile.gmDescription = description;
+      }
+      if (expectations) {
+        profile.gmExpectations = expectations;  
+      }
+    }
+    if (system) {
+      const exists = profile.preferredSystem.find(x => x == system);
+      if (exists) {
+        profile.preferredSystem.pull(system);
+      } else {
+        profile.preferredSystem.push(system);
+      }
+    }
+    profile.set(...obj);
+    await profile.save();
+    await interaction.followUp({ content: 'Profile Updated!', ephemeral: true });
   }
 }
