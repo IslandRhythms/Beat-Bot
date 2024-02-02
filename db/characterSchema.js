@@ -20,6 +20,7 @@ const characterSchema = new mongoose.Schema({
   classes: [{ name: String, level: Number }],
   feats: [String],
   epilogue: String,
+  alignment: String,
   backStory: String,
   equipment: [String],
   groupName: String,

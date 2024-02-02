@@ -2,7 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const fs = require('fs/promises');
 const scraper = require('pdf-scraper');
 const axios = require('axios');
-
+const indexOfEnd = require('../../helpers/indexOfEnd');
 
 module.exports = {
   data: new SlashCommandBuilder().setName('uploadcharacter').setDescription('upload one of your characters')
@@ -29,7 +29,19 @@ module.exports = {
     const fileData = Buffer.from(res.data, 'binary');
     await fs.writeFile(`./${sheet.name}`, fileData);
     const data = await scraper(await fs.readFile(`./${sheet.name}`));
-    console.log(data.pages, data.pages.length);
+    console.log(data.pages, data.pages.length, data.pages[0]);
+    const text = data.pages[0];
+    const nameHeader = text.indexOf('CHARACTER NAME');
+    const nameEnd = indexOfEnd(text, 'CHARACTER NAME');
+    const name = text.substring(0, nameHeader).trim();
+    const classHeader = text.indexOf('CLASS & LEVEL');
+    const classAndLevelArray = text.substring(nameEnd, classHeader).replace(/\n/g, '').trim().split(',');
+    const classAndLevelEnd = indexOfEnd(text, 'CLASS & LEVEL');
+    const backgroundHeader = text.indexOf('BACKGROUNDPLAYER NAME');
+    const background = text.substring(classAndLevelEnd, backgroundHeader);
+    const raceHeader = text.indexOf('RACE');
+    const backgroundEnd = indexOfEnd(text, 'BACKGROUNDPLAYER NAME');
+    const race = text.substring(backgroundEnd, raceHeader);
     await interaction.followUp('Under Construction');
   }
 }
