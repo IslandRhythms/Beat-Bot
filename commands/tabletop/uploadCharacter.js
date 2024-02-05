@@ -42,6 +42,18 @@ module.exports = {
     const raceHeader = text.indexOf('RACE');
     const backgroundEnd = indexOfEnd(text, 'BACKGROUNDPLAYER NAME');
     const race = text.substring(backgroundEnd, raceHeader);
+    const alignmentHeader = text.indexOf('ALIGNMENT');
+    const raceEnd = indexOfEnd(text, 'RACE');
+    const alignment = text.substring(raceEnd, alignmentHeader);
+    const xpHeader = text.indexOf('EXPERIENCE POINTS');
+    const alignmentEnd = indexOfEnd(text, 'ALIGNMENT');
+    const xp = text.substring(alignmentEnd, xpHeader);
+    const strength = text.indexOf('STRENGTH');
+    const dexterity = text.indexOf('DEXTERITY');
+    const constitution = text.indexOf('CONSTITUTION');
+    const intelligence = text.indexOf('INTELLIGENCE');
+    const wisdom = text.indexOf('WISDOM');
+    const charisma = text.indexOf('CHARISMA');
     await interaction.followUp('Under Construction');
   }
 }
