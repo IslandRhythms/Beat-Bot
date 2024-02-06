@@ -3,12 +3,15 @@ const fs = require('fs/promises');
 const scraper = require('pdf-scraper');
 const axios = require('axios');
 const indexOfEnd = require('../../helpers/indexOfEnd');
+const parseRollTwentySheet = require('../../helpers/parseRollTwentySheet');
+const parseHtmlPage = require('../../helpers/parseHtmlPage');
 
 module.exports = {
   data: new SlashCommandBuilder().setName('uploadcharacter').setDescription('upload one of your characters')
   .addAttachmentOption(option => option.setName('sheet').setDescription('The character\'s sheet').setRequired(true))
-  .addStringOption(option => option.setName('source').setDescription('where was this pdf generated from?').addChoices(
-    { name: 'Roll20', value: 'Roll20'}
+  .addStringOption(option => option.setName('source').setDescription('where was this file generated from?').addChoices(
+    { name: 'Roll20', value: 'Roll20'},
+    { name: 'html from command', value: 'html'}
   ).setRequired(true))
   .addStringOption(option => option.setName('backstory').setDescription('what was your character\'s past before they became an adventurer.').setRequired(true))
   .addStringOption(option => option.setName('campaign').setDescription('what campaign is your character a participant?').setRequired(true))
@@ -22,38 +25,23 @@ module.exports = {
   .addStringOption(option => option.setName('epilogue').setDescription('what happened to your character after the adventure?')),
   async execute(interaction, conn) {
     await interaction.deferReply();
-    const { GameProfile } = conn.models;
+    const { GameProfile, User } = conn.models;
     const sheet = interaction.options.getAttachment('sheet');
-    console.log('what is sheet', sheet);
-    const res = await axios.get(sheet.url, { responseType: 'arraybuffer'});
-    const fileData = Buffer.from(res.data, 'binary');
-    await fs.writeFile(`./${sheet.name}`, fileData);
-    const data = await scraper(await fs.readFile(`./${sheet.name}`));
-    console.log(data.pages, data.pages.length, data.pages[0]);
-    const text = data.pages[0];
-    const nameHeader = text.indexOf('CHARACTER NAME');
-    const nameEnd = indexOfEnd(text, 'CHARACTER NAME');
-    const name = text.substring(0, nameHeader).trim();
-    const classHeader = text.indexOf('CLASS & LEVEL');
-    const classAndLevelArray = text.substring(nameEnd, classHeader).replace(/\n/g, '').trim().split(',');
-    const classAndLevelEnd = indexOfEnd(text, 'CLASS & LEVEL');
-    const backgroundHeader = text.indexOf('BACKGROUNDPLAYER NAME');
-    const background = text.substring(classAndLevelEnd, backgroundHeader);
-    const raceHeader = text.indexOf('RACE');
-    const backgroundEnd = indexOfEnd(text, 'BACKGROUNDPLAYER NAME');
-    const race = text.substring(backgroundEnd, raceHeader);
-    const alignmentHeader = text.indexOf('ALIGNMENT');
-    const raceEnd = indexOfEnd(text, 'RACE');
-    const alignment = text.substring(raceEnd, alignmentHeader);
-    const xpHeader = text.indexOf('EXPERIENCE POINTS');
-    const alignmentEnd = indexOfEnd(text, 'ALIGNMENT');
-    const xp = text.substring(alignmentEnd, xpHeader);
-    const strength = text.indexOf('STRENGTH');
-    const dexterity = text.indexOf('DEXTERITY');
-    const constitution = text.indexOf('CONSTITUTION');
-    const intelligence = text.indexOf('INTELLIGENCE');
-    const wisdom = text.indexOf('WISDOM');
-    const charisma = text.indexOf('CHARISMA');
+    const source = interaction.options.getString('source');
+    const user = await User.findOne({ discordId: interaction.user.id });
+    console.log('what is sheet', sheet); // make sure to delete sheet after the command finishes
+    let obj = null;
+    if (source == 'Roll20' && sheet.contentType == 'application/pdf') {
+      obj = await parseRollTwentySheet(sheet);
+    } else if (source == 'html' && sheet.contentType.includes('text/html')) {
+      obj = await parseHtmlPage(sheet);
+    } else {
+      return interaction.followUp('Please ensure the uploaded file type is one that this command supports.')
+    }
+    // create character
+    // await GameProfile.create();
+    // delete downloaded sheet
+
     await interaction.followUp('Under Construction');
   }
 }

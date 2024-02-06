@@ -1,4 +1,5 @@
 const axios = require('axios');
+const parser = require('node-html-parser');
 
 module.exports = async function wordOfTheDay(db) {
   const res = await axios.get('https://www.dictionary.com/e/word-of-the-day/').then(res => res.data);
