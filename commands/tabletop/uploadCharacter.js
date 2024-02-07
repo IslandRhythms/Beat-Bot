@@ -38,6 +38,8 @@ module.exports = {
     } else {
       return interaction.followUp('Please ensure the uploaded file type is one that this command supports.')
     }
+    obj.epilogue = interaction.options.getString('epilogue');
+    obj.isAlive = interaction.options.getBoolean('alive');
     // create character
     // await GameProfile.create();
     // delete downloaded sheet
