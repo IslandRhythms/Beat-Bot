@@ -120,12 +120,13 @@ const date = require("dateformat");
     }
 
     try {
-      const { User, Daily } = conn.models;
+      const { User, Daily, GameProfile } = conn.models;
       // const doc = await Daily.findOne({}).sort({ createdAt: 1 });
       // doc.pings += 1;
       // await doc.save();
       // need to update discord pics in the db so check when the user runs a command if their profile pic has changed.
-      await User.findOneAndUpdate({ discordName: interaction.user.username, discordId: interaction.user.id }, { discordName: interaction.user.username, discordId: interaction.user.id }, { upsert: true });
+      const user = await User.findOneAndUpdate({ discordName: interaction.user.username, discordId: interaction.user.id }, { discordName: interaction.user.username, discordId: interaction.user.id }, { upsert: true });
+      await GameProfile.findOneAndUpdate({ player: user._id }, { player: user._id }, { upsert: true });
       await command.execute(interaction, conn);
     } catch (error) {
       console.error(`Error executing ${interaction.commandName}`);

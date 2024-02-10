@@ -11,6 +11,7 @@ const dailySchema = require('./dailySchema');
 const campaignSchema = require('./campaignSchema');
 const gameProfileSchema = require('./gameProfileSchema');
 const characterSchema = require('./characterSchema');
+const bugReportSchema = require('./bugReportSchema');
 
 module.exports = function models() {
   const connection = mongoose.createConnection(process.env.MONGODB_CONNECTION_STRING, {
@@ -24,5 +25,6 @@ module.exports = function models() {
   connection.model('Campaign', campaignSchema);
   connection.model('GameProfile', gameProfileSchema);
   connection.model('Character', characterSchema);
+  connection.model('BugReport', bugReportSchema);
   return connection;
 }

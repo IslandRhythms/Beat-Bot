@@ -30,6 +30,7 @@ const characterSchema = new mongoose.Schema({
   bond: String,
   flaw: String,
   totalHP: String,
+  XP: String,
   stats: {
     strength: {
       modifier: Number,

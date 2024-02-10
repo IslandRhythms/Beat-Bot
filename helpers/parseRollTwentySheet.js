@@ -2,6 +2,7 @@
 
 const axios = require('axios');
 const fs = require('fs/promises');
+const scraper = require('pdf-scraper');
 
 module.exports = async function parseRollTwentySheet(sheet) {
   const res = await axios.get(sheet.url, { responseType: 'arraybuffer'});
@@ -39,6 +40,7 @@ module.exports = async function parseRollTwentySheet(sheet) {
   if (!Number.isNaN(secondDigit)) {
     hitPoints += secondDigit;
   }
+  // have this object look exactly like what a document would look like in the db for easier uploading. Look at parse html for reference
   return { 
     name,
     classAndLevel,

@@ -23,9 +23,10 @@ module.exports = {
     const user = await User.findOne({ discordId: target.id });
     const profile = await GameProfile.findOne({ player: user._id }).populate('campaigns').populate('player').populate('playerCharacters').populate('dmCampaigns');
     const embeds = [];
+    // console.log(`https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.png`)
     if (property == 'player') {
       const embed = new EmbedBuilder().setTitle(`${target.username}'s TableTop ${capitalizeFirstLetter(property)} Profile`);
-      embed.setThumbnail(target.avatar);
+      embed.setThumbnail(`https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.png`);
       embed.addFields({ name: 'Overall Player Level', value: profile.overallPlayerLevel, inline: true });
       embed.addFields({ name: 'Total Player Characters', value: profile.numPlayerCharacters, inline: true });
       embed.addFields({ name: 'Number of campaigns participated as player', value: profile.numCampaigns, inline: true });
@@ -40,7 +41,7 @@ module.exports = {
       embeds.push(embed);
     } else {
       const embed = new EmbedBuilder().setTitle(`${target.username}'s TableTop ${capitalizeFirstLetter(property)} Profile`);
-      embed.setThumbnail(target.avatar);
+      embed.setThumbnail(`https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.png`);
       embed.addFields({ name: 'Availability', value: profile.player.availability.join(',')});
       embed.addFields({ name: 'Number of campaigns as DM', value: profile.numDmCampaigns, inline: true });
       embed.addFields({ name: 'Homebrew Allowed', value: profile.homebrewAllowed, inline: true });

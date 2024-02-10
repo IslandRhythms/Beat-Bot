@@ -16,7 +16,7 @@ const campaignSchema = new mongoose.Schema({
   partyLoot: [{ name: String, url: String, checkedOut: Boolean, lost: Boolean, character: { type: mongoose.Schema.Types.ObjectId, ref: 'Character'} }],
   tags: [String],
   numEncounters: Number,
-  campaignId: String
+  campaignId: String // an easy to remember campaignId
 }, { timestamps: true });
 
 module.exports = campaignSchema;
