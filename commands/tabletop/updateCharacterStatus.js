@@ -2,7 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 
 module.exports = {
-  data: new SlashCommandBuilder().setName('changecharacterstatus').setDescription('change the status of one of your characters.')
+  data: new SlashCommandBuilder().setName('updatecharacterstatus').setDescription('change the status of one of your characters.')
   .addStringOption(option => option.setName('characterid').setDescription('the id of the character'))
   .addStringOption(option => option.setName('name').setDescription('the name of the character'))
   .addBooleanOption(option => option.setName('vitals').setDescription('is the character alive (true) or dead (false)?'))
