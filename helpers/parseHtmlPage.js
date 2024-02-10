@@ -34,14 +34,18 @@ module.exports = async function parseHtmlPage(sheet) {
         const props = {};
         if (name == 'classLevels') {
           props.level = values[i][values[i].length - 1];
-          props.class = values[i].substring(0, values[i].length - 1).trim();
+          props.name = values[i].substring(0, values[i].length - 1).trim();
           obj.classes.push(props);
         } else {
           obj[name].push(values[i]);
         }
       }
     } else {
-      obj[name] = value;
+      if (name == 'classLevels') {
+        obj.classes.push({ name: value.substring(0, value.length - 1).trim(), level: value[value.length - 1] })
+      } else {
+        obj[name] = value;
+      }
     }
   });
   if (obj.classes.length > 1) {

@@ -17,7 +17,7 @@ const characterSchema = new mongoose.Schema({
   race: String,
   background: String,
   isMulticlass: Boolean,
-  classes: [{ name: String, level: Number }],
+  classes: [{ name: String, level: { type: Number, get: v => v.toString() } }],
   feats: [String],
   epilogue: String,
   alignment: String,
