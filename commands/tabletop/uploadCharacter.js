@@ -110,11 +110,11 @@ module.exports = {
     }
 
 
-    pagination.setEmbeds(embeds, (embed, index, array) => {
+    pagination.setEmbeds(embeds, (currentEmbed, index, array) => {
       if (character.characterImage) {
-        embed.setThumbnail(character.characterImage);
+        currentEmbed.setThumbnail(character.characterImage);
       }
-      return embed.setFooter({ text: `Character Id ${character.characterId}`});
+      return currentEmbed.setFooter({ text: `Character Id ${character.characterId}`});
     });
 
     pagination.setOptions({ ephemeral: true });

@@ -2,10 +2,12 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const path = require('path');
 const fs = require('fs');
 const capitalizeFirstLetter = require('../../helpers/capitalizeFirstLetter');
+const { Pagination } = require('pagination.djs');
 module.exports = {
   data: new SlashCommandBuilder().setName('help').setDescription('Lists the commands of the bot'),
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    const pagination = new Pagination(interaction);
+    await interaction.deferReply({ ephemeral: true }); // set options on pagination won't work unless you do this
     const commands = [];
     // Grab all the folders from the commands directory
     const commandDirectory = path.join(__dirname, '../');
@@ -22,9 +24,6 @@ module.exports = {
       }
     }
     const embeds = [];
-    const helpEmbed = new EmbedBuilder().setTitle('Beat Bot Available Commands')
-    .setDescription('The following are the commands that Beat Bot has to offer sorted by category');
-    embeds.push(helpEmbed);
     for (let i = 0; i < commandFolders.length; i++) {
       const embed = new EmbedBuilder();
       const category = commandFolders[i];
@@ -37,6 +36,10 @@ module.exports = {
       }
       embeds.push(embed);
     }
-   return interaction.followUp({ embeds });
+    pagination.setEmbeds(embeds, (currentEmbed, index, array) => {
+      return currentEmbed.setAuthor({ name: `Beat Bot Available Commands`});
+    });
+    pagination.setOptions({ ephemeral: true });
+    pagination.render();
   }
 }
