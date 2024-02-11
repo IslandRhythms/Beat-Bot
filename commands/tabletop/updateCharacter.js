@@ -83,7 +83,7 @@ module.exports = {
     const response = await interaction.followUp({ content: 'Please select Properties to Update', components: [row] });
 
     const collector = await response.createMessageComponentCollector({ componentType: ComponentType.StringSelect, time: 30_000 });
-
+    // defer reply, do processing, send embed with updated page?
     collector.on('collect', async i => {
       await interaction.deleteReply();
       const selection = i.values;
