@@ -17,6 +17,8 @@ module.exports = {
     if (!name && !id) {
       return interaction.followUp('You must provide either the character id or the character name to make updates.');
     }
+    // should have the corresponding text input for each option perhaps? Might need to use the modal component maybe?
+    // This should also handle stats?
     const vitals = interaction.options.getBoolean('vitals');
     const retired = interaction.options.getBoolean('retired');
     const favorite = interaction.options.getBoolean('favorite');
