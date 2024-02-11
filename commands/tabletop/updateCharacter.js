@@ -22,6 +22,8 @@ module.exports = {
     }
     */
     // still have to account for the arrays
+    // maybe do a three way assignment i.e. const obj = {prop 1, prop2} = Character.schema.obj
+    // makes it so that instead of deleting what we're not using, we just have what we are using.
     const obj = Character.schema.obj;
     delete obj._id;
     delete obj.characterId;
