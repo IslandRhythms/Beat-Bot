@@ -1,15 +1,26 @@
-const { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, StringSelectMenuInteraction } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ComponentType } = require('discord.js');
 
 
 module.exports = {
-  data: new SlashCommandBuilder().setName('updatecharacterproperties')
+  data: new SlashCommandBuilder().setName('updatecharacter')
   .setDescription('Update a Specific character')
-  .addStringOption(option => option.setName('characterid').setDescription('the id of your character'))
-  .addStringOption(option => option.setName('name').setDescription('the name of your character')),
+  .addSubcommand(subcommand => subcommand.setName('details').setDescription('details about your character i.e. trait, ideal')
+    .addStringOption(option => option.setName('characterid').setDescription('the id of your character'))
+    .addStringOption(option => option.setName('name').setDescription('the name of your character')))
+  .addSubcommand(subcommand => subcommand.setName('build').setDescription('the stats, feats, equipment, and class breakdown of the character')
+    .addStringOption(option => option.setName('characterid').setDescription('the id of your character'))
+    .addStringOption(option => option.setName('name').setDescription('the name of your character'))),
   async execute(interaction, conn) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const { User, Character } = conn.models;
-    // need to decide how to break this up. Could combine two commands into 1 command with 2 subcommands and then delete different properties depending on the selection.
+    const sub = interaction.options._subcommand;
+    const charName = interaction.options.getString('name');
+    const charId = interaction.options.getString('characterid');
+    /*
+    if (!charName && ! charId) {
+      return interaction.followUp('Please provide either the name or characterId');
+    }
+    */
     // still have to account for the arrays
     const obj = Character.schema.obj;
     delete obj._id;
@@ -17,17 +28,35 @@ module.exports = {
     delete obj.playerProfile;
     delete obj.player;
     delete obj.guildId;
-    delete obj.isAlive;
-    delete obj.isRetired;
-    delete obj.isHero;
-    delete obj.isFavorite;
-    delete obj.isMulticlass;
-    delete obj.feats;
-    delete obj.classes;
-    delete obj.equipment;
     delete obj.campaign;
-    delete obj.stats;
-    obj.campaign = '';
+    // its ok if the subcommands have properties in common to update
+    if(sub == 'details') {
+      delete obj.isMulticlass;
+      delete obj.feats;
+      delete obj.classes;
+      delete obj.equipment;
+      delete obj.stats;
+      obj.campaign = '';
+    } else {
+      delete obj.isAlive;
+      delete obj.isRetired;
+      delete obj.isHero;
+      delete obj.isFavorite;
+      delete obj.causeOfDeath;
+      delete obj.epilogue;
+      delete obj.backstory;
+      delete obj.alignment;
+      delete obj.characterImage;
+      delete obj.groupName;
+      delete obj.system;
+      delete obj.name;
+      delete obj.trait;
+      delete obj.ideal;
+      delete obj.bond;
+      delete obj.flaw;
+      // repopulate obj with nested stat properties
+    }
+    
 
     console.log('what is obj', obj);
 
@@ -53,11 +82,12 @@ module.exports = {
 
     const response = await interaction.followUp({ content: 'Please select Properties to Update', components: [row] });
 
-    const collector = response.createMessageComponentCollector({ componentType: StringSelectMenuInteraction.StringSelect, time: 60_000 });
+    const collector = await response.createMessageComponentCollector({ componentType: ComponentType.StringSelect, time: 30_000 });
 
     collector.on('collect', async i => {
+      await interaction.deleteReply();
       const selection = i.values;
-      await i.reply(`${i.user} has selected ${selection}!`);
+      await i.reply(`You have selected ${selection}!`);
     });
   }
 }
