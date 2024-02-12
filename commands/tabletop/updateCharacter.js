@@ -74,6 +74,7 @@ module.exports = {
 
     const collector = await response.createMessageComponentCollector({ componentType: ComponentType.StringSelect, time: 30_000 });
     // defer reply, do processing, send embed with updated page?
+    // flip boolean properties if selected.
     collector.on('collect', async i => {
       await interaction.deleteReply();
       const selection = i.values;
