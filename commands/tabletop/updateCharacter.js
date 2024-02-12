@@ -9,6 +9,9 @@ module.exports = {
     .addStringOption(option => option.setName('name').setDescription('the name of your character')))
   .addSubcommand(subcommand => subcommand.setName('build').setDescription('the stats, feats, equipment, and class breakdown of the character')
     .addStringOption(option => option.setName('characterid').setDescription('the id of your character'))
+    .addStringOption(option => option.setName('name').setDescription('the name of your character')))
+  .addSubcommand(subcommand => subcommand.setName('statuses').setDescription('update your character\'s statuses')
+    .addStringOption(option => option.setName('characterid').setDescription('the id of your character'))
     .addStringOption(option => option.setName('name').setDescription('the name of your character'))),
   async execute(interaction, conn) {
     await interaction.deferReply({ ephemeral: true });
@@ -22,41 +25,26 @@ module.exports = {
     }
     */
     // still have to account for the arrays
-    // maybe do a three way assignment i.e. const obj = {prop 1, prop2} = Character.schema.obj
-    // makes it so that instead of deleting what we're not using, we just have what we are using.
-    const obj = Character.schema.obj;
-    delete obj._id;
-    delete obj.characterId;
-    delete obj.playerProfile;
-    delete obj.player;
-    delete obj.guildId;
-    delete obj.campaign;
+    const schema =  { ...Character.schema.obj };
+    let obj = null;
+    const { _id, characterId, playerProfile, player, guildId, campaign, ...rest } = schema;
+
     // its ok if the subcommands have properties in common to update
+    // use destructuring to parse out the fields we don't want.
+    // use object.assign
     if(sub == 'details') {
-      delete obj.isMulticlass;
-      delete obj.feats;
-      delete obj.classes;
-      delete obj.equipment;
-      delete obj.stats;
+      const { isAlive, isRetired, isHero, isFavorite, causeofDeath, epilogue, isMulticlass, feats, classes, equipment, stats, ...details } = rest;
+      obj = details;
       obj.campaign = '';
-    } else {
-      delete obj.isAlive;
-      delete obj.isRetired;
-      delete obj.isHero;
-      delete obj.isFavorite;
-      delete obj.causeOfDeath;
-      delete obj.epilogue;
-      delete obj.backstory;
-      delete obj.alignment;
-      delete obj.characterImage;
-      delete obj.groupName;
-      delete obj.system;
-      delete obj.name;
-      delete obj.trait;
-      delete obj.ideal;
-      delete obj.bond;
-      delete obj.flaw;
+    } else if (sub == 'build') {
+      const { isAlive, isRetired, isHero, isFavorite, causeOfDeath, epilogue, backstory,
+        alignment, characterImage, groupName, system, name, trait, ideal, bond, flaw, ...build } = rest;
+      obj = build;
       // repopulate obj with nested stat properties
+    } else {
+      const { race, totalLevel, totalHP, backstory, alignment, characterImage, groupName, system, name, trait, ideal, bond, flaw,
+        feats, classes, equipment, stats, XP, ...statuses } = rest;
+      obj = statuses;
     }
     
 
