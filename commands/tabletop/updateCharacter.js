@@ -30,6 +30,11 @@ module.exports = {
       return interaction.followUp('Please provide either the name or characterId');
     }
     */
+   const user = await User.findOne({ discordId: interaction.user.id });
+   const character = await Character.findOne({ player: user._id, $or: [{ name: charName, characterId: charId }]});
+   if (!character) {
+    return interaction.followUp('character not found');
+   }
     // still have to account for the arrays
     const schema =  { ...Character.schema.obj };
     let obj = null;
@@ -96,7 +101,9 @@ module.exports = {
       // doesn't seem like there is a way to forcibly close the modal if there is a timeout. User will just have to close on their end.
       await interaction.awaitModalSubmit({ time: 60_000 }).then(async (modalInteraction) => {
         console.log('what is res', modalInteraction);
-        await modalInteraction.reply('Received');
+        await modalInteraction.reply({ content: 'Updates received', ephemeral: true });
+        // process fields and there values, attach to an obj, then set that in the character doc
+
       }).catch(e => { 
         console.log('what is error', e)
       });
