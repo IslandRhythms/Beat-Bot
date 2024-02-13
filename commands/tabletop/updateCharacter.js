@@ -1,4 +1,10 @@
-const { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ComponentType } = require('discord.js');
+const { SlashCommandBuilder, 
+  ActionRowBuilder, 
+  StringSelectMenuBuilder, 
+  StringSelectMenuOptionBuilder, 
+  ComponentType, 
+  ModalBuilder, 
+  TextInputBuilder, TextInputStyle, } = require('discord.js');
 
 
 module.exports = {
@@ -69,16 +75,37 @@ module.exports = {
 
     const row = new ActionRowBuilder().addComponents(selectMenu);
 
-
     const response = await interaction.followUp({ content: 'Please select Properties to Update', components: [row] });
 
     const collector = await response.createMessageComponentCollector({ componentType: ComponentType.StringSelect, time: 30_000 });
     // defer reply, do processing, send embed with updated page?
-    // flip boolean properties if selected.
     collector.on('collect', async i => {
       await interaction.deleteReply();
-      const selection = i.values;
-      await i.reply(`You have selected ${selection}!`);
+      const selection = i.values; // array
+      const modal = new ModalBuilder().setTitle('Update Character Information').setCustomId('CharacterUpdateModal');
+      // await i.channel.send(`You have selected ${selection}!`);
+      for (const property of selection) {
+        // omit from the modal if the property is a boolean property i.e. starts with is
+        // How do we handle arrays finally?
+        const input = new TextInputBuilder().setCustomId(property).setLabel(`Please enter a new value for ${property}`).setStyle(TextInputStyle.Paragraph);
+        const row = new ActionRowBuilder().addComponents(input);
+        modal.addComponents(row);
+      }
+      await i.showModal(modal);
+      collector.stop('modal received, error statement will handle from here');
+      // doesn't seem like there is a way to forcibly close the modal if there is a timeout. User will just have to close on their end.
+      await interaction.awaitModalSubmit({ time: 60_000 }).then(async (modalInteraction) => {
+        console.log('what is res', modalInteraction);
+        await modalInteraction.reply('Received');
+      }).catch(e => { 
+        console.log('what is error', e)
+      });
+    });
+    // easiest solution is to just get rid of this
+    collector.on('end', async (collected, reason) => {
+      if (reason == 'time') {
+        await interaction.channel.send('Time ran out. Please try again.')
+      }
     });
   }
 }
