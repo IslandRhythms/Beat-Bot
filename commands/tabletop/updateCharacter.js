@@ -32,9 +32,11 @@ module.exports = {
     */
    const user = await User.findOne({ discordId: interaction.user.id });
    const character = await Character.findOne({ player: user._id, $or: [{ name: charName, characterId: charId }]});
+   /*
    if (!character) {
     return interaction.followUp('character not found');
    }
+   */
     // still have to account for the arrays
     const schema =  { ...Character.schema.obj };
     let obj = null;
@@ -103,6 +105,14 @@ module.exports = {
         console.log('what is res', modalInteraction);
         await modalInteraction.reply({ content: 'Updates received', ephemeral: true });
         // process fields and there values, attach to an obj, then set that in the character doc
+        const obj = {};
+        for ( const [fieldname, field] of modalInteraction.fields.fields.entries()) {
+          obj[fieldname] = field.value;
+        }
+        character.set(obj);
+        await character.save();
+        // TODO
+        // make it so that modal doesn't contain boolean properties, but on modal submit added to the object flipped
 
       }).catch(e => { 
         console.log('what is error', e)
