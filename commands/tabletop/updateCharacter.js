@@ -65,6 +65,7 @@ module.exports = {
 
     const selectMenuOptions = [];
     const properties = extractProperties(obj);
+    const arrayProperties = ['classes', 'feats', 'equipment'];
 
     // too many properties, need to break up into subcommands potentially
     for (const property of properties) {
@@ -90,14 +91,28 @@ module.exports = {
       await interaction.deleteReply();
       const selection = i.values; // array
       const modal = new ModalBuilder().setTitle('Update Character Information').setCustomId('CharacterUpdateModal');
+      const obj = {};
       for (const property of selection) {
-        // omit from the modal if the property is a boolean property i.e. starts with is
+        if (property.startsWith('is')) {
+          // omit from the modal if the property is a boolean property i.e. starts with is
+          obj[property] = !character[property]; // flip the boolean
+          continue;
+        }
         // How do we handle arrays finally?
-        // Solution One: keep a list of fields that are arrays, if one is detected, add another field to indicate if we are removing or adding fields.
-        // Maybe figure out a way to show what the current values are in the field?
-        const input = new TextInputBuilder().setCustomId(property).setLabel(`Please enter a new value for ${property}`).setStyle(TextInputStyle.Paragraph);
-        const row = new ActionRowBuilder().addComponents(input);
-        modal.addComponents(row);
+        if (arrayProperties.includes(property)) {
+          // Solution One: keep a list of fields that are arrays, if one is detected, add another field to indicate if we are removing or adding fields.
+          // Maybe figure out a way to show what the current values are in the field?
+          const line = new TextInputBuilder().setCustomId(`${property}Operation`).setLabel(`Do you wish to 1. add or 2. remove from ${property}?`).setStyle(TextInputStyle.Short);
+          modal.addComponents(new ActionRowBuilder().addComponents(line));
+          // use placeholder() to indicate how they should type it in. 
+          const input = new TextInputBuilder().setCustomId(property).setLabel(`Please enter a new value for ${property}`).setStyle(TextInputStyle.Paragraph);
+          const row = new ActionRowBuilder().addComponents(input);
+          modal.addComponents(row);
+        } else {
+          const input = new TextInputBuilder().setCustomId(property).setLabel(`Please enter a new value for ${property}`).setStyle(TextInputStyle.Paragraph);
+          const row = new ActionRowBuilder().addComponents(input);
+          modal.addComponents(row);
+        }
       }
       await i.showModal(modal);
       collector.stop('modal received, error statement will handle from here');
@@ -106,7 +121,7 @@ module.exports = {
         console.log('what is res', modalInteraction);
         await modalInteraction.reply({ content: 'Updates received', ephemeral: true });
         // process fields and there values, attach to an obj, then set that in the character doc
-        const obj = {};
+        // need to account for if arrays were selected
         for ( const [fieldname, field] of modalInteraction.fields.fields.entries()) {
           obj[fieldname] = field.value;
         }
