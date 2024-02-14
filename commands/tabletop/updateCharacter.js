@@ -81,19 +81,20 @@ module.exports = {
     .setMaxValues(properties.length);
 
     const row = new ActionRowBuilder().addComponents(selectMenu);
-
+    // Re: Solution One, maybe do the indication of removing or adding from the array here? Need list of array properties and go from there.
     const response = await interaction.followUp({ content: 'Please select Properties to Update', components: [row] });
 
     const collector = await response.createMessageComponentCollector({ componentType: ComponentType.StringSelect, time: 30_000 });
-    // defer reply, do processing, send embed with updated page?
+
     collector.on('collect', async i => {
       await interaction.deleteReply();
       const selection = i.values; // array
       const modal = new ModalBuilder().setTitle('Update Character Information').setCustomId('CharacterUpdateModal');
-      // await i.channel.send(`You have selected ${selection}!`);
       for (const property of selection) {
         // omit from the modal if the property is a boolean property i.e. starts with is
         // How do we handle arrays finally?
+        // Solution One: keep a list of fields that are arrays, if one is detected, add another field to indicate if we are removing or adding fields.
+        // Maybe figure out a way to show what the current values are in the field?
         const input = new TextInputBuilder().setCustomId(property).setLabel(`Please enter a new value for ${property}`).setStyle(TextInputStyle.Paragraph);
         const row = new ActionRowBuilder().addComponents(input);
         modal.addComponents(row);
