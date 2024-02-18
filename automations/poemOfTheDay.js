@@ -1,9 +1,7 @@
 const axios = require('axios');
 
-module.exports = async function poemOfTheDay(db) {
+module.exports = async function poemOfTheDay() {
   
   const res = await axios.get('https://poetrydb.org/random').then(res => res.data);
-  const { Daily } = db.models;
-  const doc = await Daily.findOne();
-  await doc.save();
+  return { poemOfTheDay: res }
 };

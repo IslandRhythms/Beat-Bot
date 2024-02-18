@@ -36,6 +36,10 @@ module.exports = async function parseHtmlPage(sheet) {
           props.level = values[i][values[i].length - 1];
           props.name = values[i].substring(0, values[i].length - 1).trim();
           obj.classes.push(props);
+        } else if (name == 'feats') {
+          // need a grep statment for the parenthesis
+        } else if (name == 'equipment') {
+          
         } else {
           obj[name].push(values[i]);
         }
@@ -43,6 +47,10 @@ module.exports = async function parseHtmlPage(sheet) {
     } else {
       if (name == 'classLevels') {
         obj.classes.push({ name: value.substring(0, value.length - 1).trim(), level: value[value.length - 1] })
+      } else if (name == 'feats') {
+        // need a grep statment for the parenthesis
+      } else if (name == 'equipment') {
+        
       } else {
         obj[name] = value;
       }

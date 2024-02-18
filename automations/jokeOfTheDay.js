@@ -12,8 +12,12 @@ module.exports = async function jokeOfTheDay(db) {
     url = 'https://v2.jokeapi.dev/joke/Programming,Miscellaneous,Dark,Pun';
   }
   const res = await axios.get(url).then(res => res.data);
-  // check type and depending on type, single or twopart, format differently
-  const { Daily } = db.models;
-  const doc = await Daily.findOne();
-  await doc.save();
+  if (res.error) {
+    return { jokeOTD: { joke: 'something went wrong'} };
+  }
+  if (res.type == 'twopart') {
+    return { jokeOTD: { setup: res.setup, delivery: res.delivery } };
+  } else {
+    return { jokeOTD: { joke: res.joke } };
+  }
 };

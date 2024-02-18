@@ -1,13 +1,10 @@
 const axios = require('axios');
 const parser = require('node-html-parser');
 
-module.exports = async function wordOfTheDay(db) {
+module.exports = async function wordOfTheDay() {
   const res = await axios.get('https://www.dictionary.com/e/word-of-the-day/').then(res => res.data);
   const root = parser.parse(res);
   const element = root.querySelector('div.wotd-item div.otd-item-headword__word h1');
   const wordOfTheDay = element.textContent;
-  const { Daily } = db.models;
-  const doc = await Daily.findOne();
-  doc.WOTD = wordOfTheDay;
-  await doc.save();
+  return { WOTD: wordOfTheDay }
 };

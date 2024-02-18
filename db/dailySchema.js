@@ -9,14 +9,27 @@ const dailySchema = new mongoose.Schema({
     summary: String
   },
   pokemonOTD: String,
-  factOTD: String,
+  poemOfTheDay: String,
+  factOTD: { fact: String, source: String},
   memeOTD: String,
-  jokeOTD: String,
+  jokeOTD: {
+    setup: String,
+    delivery: String,
+    joke: String
+  },
   plantOTD: String,
-  astropicOTD: String,
+  astropicOTD: {
+    url: String,
+    title: String,
+    description: String,
+  },
   phaseOfTheMoon: String,
   songOTD: String,
-  numberOTD: String,
+  numberOTD: {
+    number: Number,
+    trivia: String,
+    mathFact: String
+  },
   dateString: String, // MM/DD/YYYY
   pings: Number, // how many times people have called the bot
 });

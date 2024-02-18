@@ -3,6 +3,14 @@ const initTasks = require('@mongoosejs/task');
 const interestingFact = require('./interestingFact');
 const onThisDay = require('./onThisDay');
 const wordOfTheDay = require('./wordOfTheDay');
+const pokeOfTheDay = require('./pokemonOfTheDay');
+const poetryOfTheDay = require('./poemOfTheDay');
+const moonPhase = require('./phaseOfTheMoon');
+const numberOfTheDay = require('./numberOfTheDay');
+const jokeOfTheDay = require('./jokeOfTheDay');
+const factOfTheDay = require('./factOfTheDay');
+const memeOfTheDay = require('./memeOfTheDay');
+
 const startQueue = require('./startQueue');
 
 const millisecondsInDay = 86400000;
@@ -13,60 +21,22 @@ const millisecondsInWeek = 604800000;
 module.exports = async function tasks(db) {
   const { Task } = db.models;
   initTasks(null, db);
-  /*
-  Task.registerHandler('interestingFact', interestingFact(db));
-  Task.registerHandler('onThisDay', onThisDay(db));
-  Task.registerHandler('wordOfTheDay', wordOfTheDay(db));
-  Task.registerHandler('startQueue', startQueue(db));
+  Task.registerHandler('ofTheDay', ofTheDay(db));
   await Task.startPolling();
-  await Task.findOneAndUpdate({
-    name: 'onThisDay',
-    status: 'pending'
-  },
-  {
-    scheduledAt: next6am,
-    repeatAfterMS: millisecondsInDay
-  },
-  {
-    upsert: true,
-    returnDocument: 'after'
-  });
-  await Task.findOneAndUpdate({
-    name: 'interestingFact',
-    status: 'pending'
-  },
-  {
-    scheduledAt: next6am,
-    repeatAfterMS: millisecondsInDay
-  },
-  {
-    upsert: true,
-    returnDocument: 'after'
-  });
-  await Task.findOneAndUpdate({
-    name: 'wordOfTheDay',
-    status: 'pending'
-  },
-  {
-    scheduledAt: next6am,
-    repeatAfterMS: millisecondsInDay
-  },
-  {
-    upsert: true,
-    returnDocument: 'after'
-  });
+  await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: next6am, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
+}
 
-  await Task.findOneAndUpdate({
-    name: 'startQueue',
-    status: 'pending'
-  }, {
-    scheduledAt: getNextWeekAt6,
-    repeatAfterMS: millisecondsInWeek
-  }, {
-    upsert: true,
-    returnDocument: 'after'
-  });
-*/
+async function ofTheDay(db) {
+  const { Daily } = db.models;
+  const { WOTD } = await wordOfTheDay();
+  const { pokemonOfTheDay } = await pokeOfTheDay();
+  const { phaseOfTheMoon } = await moonPhase();
+  // const { poemOfTheDay } = await poetryOfTheDay(); // Poems can be pretty long, need a solution
+  const { numberOTD } = await numberOfTheDay();
+  const { jokeOTD } = await jokeOfTheDay();
+  const { factOTD } = await factOfTheDay();
+  const { memeOTD } = await memeOfTheDay();
+  const doc = await Daily.create();
 }
 function next6am() {
   const today = Date.now();

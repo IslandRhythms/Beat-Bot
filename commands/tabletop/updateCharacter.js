@@ -85,7 +85,7 @@ module.exports = {
     // Re: Solution One, maybe do the indication of removing or adding from the array here? Need list of array properties and go from there.
     const response = await interaction.followUp({ content: 'Please select Properties to Update', components: [row] });
 
-    const collector = await response.createMessageComponentCollector({ componentType: ComponentType.StringSelect, time: 30_000 });
+    const collector = await response.createMessageComponentCollector({ componentType: ComponentType.StringSelect, filter: (i) => i.user.id === interaction.user.id, time: 30_000 });
 
     collector.on('collect', async i => {
       await interaction.deleteReply();
@@ -123,7 +123,11 @@ module.exports = {
         // process fields and there values, attach to an obj, then set that in the character doc
         // need to account for if arrays were selected
         for ( const [fieldname, field] of modalInteraction.fields.fields.entries()) {
-          obj[fieldname] = field.value;
+          if (arrayProperties.includes(fieldname)) {
+
+          } else {
+            obj[fieldname] = field.value;
+          }
         }
         character.set(obj);
         await character.save();
