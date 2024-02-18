@@ -23,7 +23,11 @@ const dailySchema = new mongoose.Schema({
     title: String,
     description: String,
   },
-  phaseOfTheMoon: String,
+  phaseOfTheMoon: {
+    phase: String,
+    moon: String,
+    icon: String
+  },
   songOTD: String,
   numberOTD: {
     number: Number,

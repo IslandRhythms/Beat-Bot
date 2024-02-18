@@ -2,6 +2,7 @@
 
 const parser = require('node-html-parser');
 const axios = require('axios');
+const indexOfEnd = require('./indexOfEnd');
 
 module.exports = async function parseHtmlPage(sheet) {
   const res = await axios.get(sheet.url).then(res => res.data);
@@ -37,9 +38,26 @@ module.exports = async function parseHtmlPage(sheet) {
           props.name = values[i].substring(0, values[i].length - 1).trim();
           obj.classes.push(props);
         } else if (name == 'feats') {
-          // need a grep statment for the parenthesis
+          if (values[i].includes('(')) {
+            // need a grep statment for the parenthesis
+            const match = values[i].match(/\((.*?)\)/g); // returns an array
+            const parenthesisIndex = values[i].indexOf('(');
+            props.name = values[i].substring(0, parenthesisIndex).trim();
+
+            props.ASI.amount = parseInt(match[0].match(/\d/g)[0]);
+            const endIndex = match[0].search(/\d/);
+            props.ASI.stat = match[0].substring(1, endIndex - 1).trim();
+            obj.feats.push(props);
+          } else {
+            props.name = values[i];
+            obj.feats.push(props);
+          }
         } else if (name == 'equipment') {
-          
+          const number = parseInt(values[i].match(/\d+/)[0]);
+          const startIndex = indexOfEnd(values[i], values[i].match(/\d+/)[0]);
+          props.name = values[i].substring(startIndex, values[i].length).trim();
+          props.amount = number;
+          obj.equipment.push(props);
         } else {
           obj[name].push(values[i]);
         }
@@ -48,9 +66,26 @@ module.exports = async function parseHtmlPage(sheet) {
       if (name == 'classLevels') {
         obj.classes.push({ name: value.substring(0, value.length - 1).trim(), level: value[value.length - 1] })
       } else if (name == 'feats') {
-        // need a grep statment for the parenthesis
+        if (value.includes('(')) {
+          // need a grep statment for the parenthesis
+          const match = value.match(/\((.*?)\)/g); // returns an array
+          const parenthesisIndex = value.indexOf('(');
+          props.name = value.substring(0, parenthesisIndex).trim();
+
+          props.ASI.amount = parseInt(match[0].match(/\d/g)[0]);
+          const endIndex = match[0].search(/\d/);
+          props.ASI.stat = match[0].substring(1, endIndex - 1).trim();
+          obj.feats.push(props);
+        } else {
+          props.name = value;
+          obj.feats.push(props);
+        }
       } else if (name == 'equipment') {
-        
+          const number = parseInt(value.match(/\d+/)[0]);
+          const startIndex = indexOfEnd(value, value.match(/\d+/)[0]);
+          props.name = value.substring(startIndex, value.length).trim();
+          props.amount = number;
+          obj.equipment.push(props);
       } else {
         obj[name] = value;
       }

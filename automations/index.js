@@ -10,6 +10,7 @@ const numberOfTheDay = require('./numberOfTheDay');
 const jokeOfTheDay = require('./jokeOfTheDay');
 const factOfTheDay = require('./factOfTheDay');
 const memeOfTheDay = require('./memeOfTheDay');
+const astropicOfTheDay = require('./astropicOfTheDay');
 
 const startQueue = require('./startQueue');
 
@@ -29,13 +30,15 @@ module.exports = async function tasks(db) {
 async function ofTheDay(db) {
   const { Daily } = db.models;
   const { WOTD } = await wordOfTheDay();
-  const { pokemonOfTheDay } = await pokeOfTheDay();
+  const { pokemonOfTheDay } = await pokeOfTheDay(); // copy more or less what we do for the fun command
   const { phaseOfTheMoon } = await moonPhase();
   // const { poemOfTheDay } = await poetryOfTheDay(); // Poems can be pretty long, need a solution
   const { numberOTD } = await numberOfTheDay();
   const { jokeOTD } = await jokeOfTheDay();
   const { factOTD } = await factOfTheDay();
   const { memeOTD } = await memeOfTheDay();
+  const { astropicOTD } = await astropicOfTheDay();
+
   const doc = await Daily.create();
 }
 function next6am() {
