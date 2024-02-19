@@ -131,9 +131,6 @@ module.exports = {
         }
         character.set(obj);
         await character.save();
-        // TODO
-        // make it so that modal doesn't contain boolean properties, but on modal submit added to the object flipped
-
       }).catch(e => { 
         console.log('what is error', e)
       });
