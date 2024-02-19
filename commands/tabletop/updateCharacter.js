@@ -6,6 +6,8 @@ const { SlashCommandBuilder,
   ModalBuilder, 
   TextInputBuilder, TextInputStyle, } = require('discord.js');
 
+  const indexOfEnd = require('../../helpers/indexOfEnd');
+
 
 module.exports = {
   data: new SlashCommandBuilder().setName('updatecharacter')
@@ -104,8 +106,19 @@ module.exports = {
           // Maybe figure out a way to show what the current values are in the field?
           const line = new TextInputBuilder().setCustomId(`${property}Operation`).setLabel(`Do you wish to 1. add or 2. remove from ${property}?`).setStyle(TextInputStyle.Short);
           modal.addComponents(new ActionRowBuilder().addComponents(line));
+          let placeholder = '';
+          if (property == 'classes') {
+            placeholder = 'Forge Domain Cleric 4,Battlemaster Fighter 3';
+          } else if (property == 'feats') {
+            placeholder = 'polearm master,Elven Accuracy (Dexterity 1),war caster';
+          } else {
+            placeholder = '1 pouch,1 longsword,1 shield';
+          }
           // use placeholder() to indicate how they should type it in. 
-          const input = new TextInputBuilder().setCustomId(property).setLabel(`Please enter a new value for ${property}`).setStyle(TextInputStyle.Paragraph);
+          const input = new TextInputBuilder().setCustomId(property)
+            .setLabel(`Please enter a new value for ${property}`)
+            .setStyle(TextInputStyle.Paragraph)
+            .setPlaceholder(placeholder);
           const row = new ActionRowBuilder().addComponents(input);
           modal.addComponents(row);
         } else {
@@ -124,7 +137,66 @@ module.exports = {
         // need to account for if arrays were selected
         for ( const [fieldname, field] of modalInteraction.fields.fields.entries()) {
           if (arrayProperties.includes(fieldname)) {
-
+            const values = field.value.split(',');
+            const name = fieldname;
+            const props = {};
+            if (values.length > 1) {
+              for (let i = 0; i < values.length; i++) {
+                if (name == 'classes') {
+                  props.level = values[i][values[i].length - 1];
+                  props.name = values[i].substring(0, values[i].length - 1).trim();
+                  obj.classes.push(props);
+                } else if (name == 'feats') {
+                  if (values[i].includes('(')) {
+                    // need a grep statment for the parenthesis
+                    const match = values[i].match(/\((.*?)\)/g); // returns an array
+                    const parenthesisIndex = values[i].indexOf('(');
+                    props.name = values[i].substring(0, parenthesisIndex).trim();
+        
+                    props.ASI.amount = parseInt(match[0].match(/\d/g)[0]);
+                    const endIndex = match[0].search(/\d/);
+                    props.ASI.stat = match[0].substring(1, endIndex - 1).trim();
+                    obj.feats.push(props);
+                  } else {
+                    props.name = values[i];
+                    obj.feats.push(props);
+                  }
+                } else if (name == 'equipment') {
+                  const number = parseInt(values[i].match(/\d+/)[0]);
+                  const startIndex = indexOfEnd(values[i], values[i].match(/\d+/)[0]);
+                  props.name = values[i].substring(startIndex, values[i].length).trim();
+                  props.amount = number;
+                  obj.equipment.push(props);
+                }
+              }
+            } else {
+              const value = field.value;
+              const props = {};
+              if (name == 'classes') {
+                obj.classes.push({ name: value.substring(0, value.length - 1).trim(), level: value[value.length - 1] })
+              } else if (name == 'feats') {
+                if (value.includes('(')) {
+                  // need a grep statment for the parenthesis
+                  const match = value.match(/\((.*?)\)/g); // returns an array
+                  const parenthesisIndex = value.indexOf('(');
+                  props.name = value.substring(0, parenthesisIndex).trim();
+        
+                  props.ASI.amount = parseInt(match[0].match(/\d/g)[0]);
+                  const endIndex = match[0].search(/\d/);
+                  props.ASI.stat = match[0].substring(1, endIndex - 1).trim();
+                  obj.feats.push(props);
+                } else {
+                  props.name = value;
+                  obj.feats.push(props);
+                }
+              } else if (name == 'equipment') {
+                  const number = parseInt(value.match(/\d+/)[0]);
+                  const startIndex = indexOfEnd(value, value.match(/\d+/)[0]);
+                  props.name = value.substring(startIndex, value.length).trim();
+                  props.amount = number;
+                  obj.equipment.push(props);
+              }
+            }
           } else {
             obj[fieldname] = field.value;
           }
