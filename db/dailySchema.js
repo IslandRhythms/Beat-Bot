@@ -4,13 +4,15 @@ const dailySchema = new mongoose.Schema({
   wordOTD: String,
   animalOTD: {
     name: String,
+    scientificName: String,
     image: String,
+    funFact: String,
     link: String,
-    summary: String
+    briefSummary: String
   },
   pokemonOTD: String,
   poemOfTheDay: String,
-  factOTD: { fact: String, source: String},
+  factOTD: { fact: String, source: String },
   memeOTD: String,
   jokeOTD: {
     setup: String,

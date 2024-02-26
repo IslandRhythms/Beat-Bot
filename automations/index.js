@@ -11,6 +11,7 @@ const jokeOfTheDay = require('./jokeOfTheDay');
 const factOfTheDay = require('./factOfTheDay');
 const memeOfTheDay = require('./memeOfTheDay');
 const astropicOfTheDay = require('./astropicOfTheDay');
+const animalOfTheDay = require('./animalOfTheDay');
 
 const startQueue = require('./startQueue');
 
@@ -18,7 +19,7 @@ const millisecondsInDay = 86400000;
 const millisecondsInWeek = 604800000;
 
 // https://discordjs.guide/popular-topics/faq.html#how-do-i-send-a-message-to-a-specific-channel
-
+// gonna need to pass the discord client for some of these automations
 module.exports = async function tasks(db) {
   const { Task } = db.models;
   initTasks(null, db);
@@ -38,6 +39,7 @@ async function ofTheDay(db) {
   const { factOTD } = await factOfTheDay();
   const { memeOTD } = await memeOfTheDay();
   const { astropicOTD } = await astropicOfTheDay();
+  const { AOTD } = await animalOfTheDay();
 
   const doc = await Daily.create();
 }
