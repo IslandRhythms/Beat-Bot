@@ -30,7 +30,12 @@ const dailySchema = new mongoose.Schema({
     moon: String,
     icon: String
   },
-  songOTD: String,
+  songOTD: {
+    name: String,
+    artist: String,
+    url: String,
+    image: String
+  },
   numberOTD: {
     number: Number,
     trivia: String,

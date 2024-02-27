@@ -12,6 +12,7 @@ const factOfTheDay = require('./factOfTheDay');
 const memeOfTheDay = require('./memeOfTheDay');
 const astropicOfTheDay = require('./astropicOfTheDay');
 const animalOfTheDay = require('./animalOfTheDay');
+const songOfTheDay = require('./songOfTheDay');
 
 const startQueue = require('./startQueue');
 
@@ -27,19 +28,20 @@ module.exports = async function tasks(db) {
   await Task.startPolling();
   await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: next6am, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
 }
-
+// 10 embeds max per message, therefore some of these are gonna have to share an embed.
 async function ofTheDay(db) {
   const { Daily } = db.models;
   const { WOTD } = await wordOfTheDay();
   const { pokemonOfTheDay } = await pokeOfTheDay(); // copy more or less what we do for the fun command
   const { phaseOfTheMoon } = await moonPhase();
-  // const { poemOfTheDay } = await poetryOfTheDay(); // Poems can be pretty long, need a solution
+  const { poemOfTheDay } = await poetryOfTheDay();
   const { numberOTD } = await numberOfTheDay();
   const { jokeOTD } = await jokeOfTheDay();
   const { factOTD } = await factOfTheDay();
   const { memeOTD } = await memeOfTheDay();
   const { astropicOTD } = await astropicOfTheDay();
   const { AOTD } = await animalOfTheDay();
+  const sOTD = await songOfTheDay();
 
   const doc = await Daily.create();
 }

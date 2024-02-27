@@ -11,7 +11,6 @@ const bugReportSchema = new mongoose.Schema({
   },
   stepsToReproduce: {
     type: [String],
-    required: true
   },
   pic: {
     type: String,

@@ -1,9 +1,9 @@
 const axios = require('axios');
-const puppeteer = require('puppeteer');
 
 
 async function run() {
-  
+  const res = await axios.get(`https://date.nager.at/api/v3/PublicHolidays/2024/US`).then(res => res.data);
+  console.log('what is res', res);
 }
 
 run();

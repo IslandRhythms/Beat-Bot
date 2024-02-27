@@ -6,6 +6,7 @@ const { musicKeys, musicModes } = require('../../constants');
 // https://developer.spotify.com/documentation/web-api
 
 module.exports = {
+  cooldown: 30,
   data: new SlashCommandBuilder().setName('getkey').setDescription('gets the key of the given track, or recurring key of the album or playlist.')
   .addSubcommand(subcommand => subcommand.setName('track').setDescription('the key of the track')
     .addStringOption(option => option.setName('trackid')
