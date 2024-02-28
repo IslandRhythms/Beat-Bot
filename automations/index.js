@@ -1,6 +1,5 @@
 
 const initTasks = require('@mongoosejs/task');
-const interestingFact = require('./interestingFact');
 const onThisDay = require('./onThisDay');
 const wordOfTheDay = require('./wordOfTheDay');
 const pokeOfTheDay = require('./pokemonOfTheDay');

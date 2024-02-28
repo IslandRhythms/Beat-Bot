@@ -22,7 +22,8 @@ const date = require("dateformat");
   });
   bot.commands = new Collection();
   bot.cooldowns = new Collection();
-  const player = Player.singleton(bot);
+  const player = new Player(bot);
+  await player.extractors.loadDefault();
   const foldersPath = path.join(__dirname, 'commands');
   const commandFolders = fs.readdirSync(foldersPath);
 

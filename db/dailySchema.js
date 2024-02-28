@@ -43,6 +43,7 @@ const dailySchema = new mongoose.Schema({
   },
   dateString: String, // MM/DD/YYYY
   pings: Number, // how many times people have called the bot
+  totalBugReports: Number
 });
 
 module.exports = dailySchema;

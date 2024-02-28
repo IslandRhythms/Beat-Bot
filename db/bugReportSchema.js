@@ -18,7 +18,7 @@ const bugReportSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['Confirmed', 'Expected', 'Fixed', 'Third Party Problem', 'Feature Request']
+    enum: ['Confirmed', 'Expected', 'Fixed', 'Third Party Problem', 'Feature Request', 'Pending']
   },
   bugId: {
     type: String,
@@ -29,6 +29,6 @@ const bugReportSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   }
-});
+}, { timestamps: true });
 
 module.exports = bugReportSchema;
