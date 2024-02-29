@@ -2,8 +2,14 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   discordName: String, // username
-  discordId: String, // id
-  discordPic: String, // avatar
+  discordId: { // id
+    type: String,
+    required: true
+  },
+  discordPic: {
+    type: String,
+    required: true
+  },
   discordServers: [],
   birthday: String,
   campaigns: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Campaign' }],

@@ -1,7 +1,9 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
-const parser = require('node-html-parser');
+const { Pagination } = require('pagination.djs');
 
+
+// use pagination here
 module.exports = {
   data: new SlashCommandBuilder().setName('wordoftheday').setDescription('Gets the word of the day from dictionary.com'),
   async execute(interaction, conn) {
