@@ -30,6 +30,7 @@ module.exports = {
         'Authorization': `Bearer ${access_token}`
       }
     };
+    // https://github.com/IslandRhythms/MyKeySig/tree/master/public
     if (property == 'track') {
       const spotify = await axios.get(`https://api.spotify.com/v1/audio-features/${id}`, headers).then(res => res.data);
       return interaction.followUp(`The key of the track is ${musicKeys[spotify.key]} ${musicModes[spotify.mode]}`);

@@ -92,7 +92,7 @@ const date = require("dateformat");
     await tasks(db);
   }
   bot.on(Events.InteractionCreate, async interaction => {
-    if (!interaction.isChatInputCommand()) return; // bot ignores if not command
+    if (!interaction.isChatInputCommand() && !interaction.isAutocomplete()) return; // bot ignores if not command or autocomplete setup
     const command = interaction.client.commands.get(interaction.commandName);
 
     if (!command) {
@@ -126,9 +126,13 @@ const date = require("dateformat");
       // doc.pings += 1;
       // await doc.save();
       // need to update discord pics in the db so check when the user runs a command if their profile pic has changed.
-      const user = await User.findOneAndUpdate({ discordName: interaction.user.username, discordId: interaction.user.id }, { discordName: interaction.user.username, discordId: interaction.user.id }, { upsert: true });
-      await GameProfile.findOneAndUpdate({ player: user._id }, { player: user._id }, { upsert: true });
-      await command.execute(interaction, conn);
+      const user = await User.findOneAndUpdate({ discordName: interaction.user.username, discordId: interaction.user.id }, { discordName: interaction.user.username, discordId: interaction.user.id, discordPic: interaction.user.avatar }, { upsert: true });
+      // await GameProfile.findOneAndUpdate({ player: user._id }, { player: user._id }, { upsert: true });
+      if (interaction.isAutocomplete()) {
+        await command.autocomplete(interaction);
+      } else {
+        await command.execute(interaction, conn);
+      }
     } catch (error) {
       console.error(`Error executing ${interaction.commandName}`);
       console.error(error);

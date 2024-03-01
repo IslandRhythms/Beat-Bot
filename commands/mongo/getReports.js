@@ -28,11 +28,11 @@ module.exports = {
     if (interaction.user.id != process.env.OWNERID) {
       filter.reporter = user._id;
     }
-
+    console.log('what is interaction', interaction);
     if (bugId) { // end the function here is a bugId is present
       filter.bugId = bugId;
       const report = await BugReport.findOne(filter).populate('reporter');
-      const author = getDiscordNameFromId(report.reporter.discordId);
+      const author = getDiscordNameFromId(interaction.member.guild, report.reporter.discordId);
       const avatar = getDiscordAvatar({ id: report.reporter.discordId, avatar: report.reporter.avatar });
       const embed = new EmbedBuilder()
       .setTitle(`${report.title} Status: ${report.status}`)
@@ -49,12 +49,16 @@ module.exports = {
     const reports = await BugReport.find(filter).sort({ createdAt: -1 }).populate('reporter')
     for (let i = 0; i < reports.length; i++) {
       const report = reports[i];
-      const author = getDiscordNameFromId(report.reporter.discordId);
-      const avatar = getDiscordAvatar({ id: report.reporter.discordId, avatar: report.reporter.avatar });
+      const author = getDiscordNameFromId(interaction.member.guild, report.reporter.discordId);
+
+      const avatar = getDiscordAvatar({ id: report.reporter.discordId, avatar: report.reporter.discordPic });
+
+      // need to handle steps
       const embed = new EmbedBuilder()
       .setTitle(`${report.title}`)
       .setDescription(report.description)
-      .setAuthor({ name: author, iconUrl: avatar })
+      .setAuthor({ name: author })
+      .setThumbnail(avatar)
       .addFields({ name: 'Status', value: report.status, inline: true }, { name: 'BugId', value: report.bugId, inline: true })
       embeds.push(embed);
     }

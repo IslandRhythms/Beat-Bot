@@ -1,5 +1,5 @@
-module.exports = function getDiscordNameFromId(interaction, id) {
-  const members = interaction.member.guild.members;
-  const user = members.find(x => x.id == id);
+module.exports = function getDiscordNameFromId(guild, id) {
+  const members = guild.members.cache;
+  const { user } = members.find(x => x.id == id);
   return user.username;
 }

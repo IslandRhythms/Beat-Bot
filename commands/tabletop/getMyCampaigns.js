@@ -28,13 +28,13 @@ module.exports = {
       const embed = new EmbedBuilder().setTitle(`${campaign.title}`).setDescription(campaign.description).setThumbnail(campaign.groupLogo);
       embed.addFields({ name: 'System', value: campaign.system });
       for (let j = 0; j < campaign.gameMaster.length; j++) {
-        embed.addFields({ name: 'GM', value: getDiscordNameFromId(interaction, campaign.gameMaster[i].discordId), inline: true });
+        embed.addFields({ name: 'GM', value: getDiscordNameFromId(interaction.member.guild, campaign.gameMaster[i].discordId), inline: true });
       }
       for (let index = 0; index < campaign.players.length; index++) {
         // do both player and character
         const player = campaign.players[i];
         const character = campaign.characters.find(x => x.player.toString() == player.toString() && (x.isAlive && !x.isRetired));
-        embed.addFields({ name: 'Player', value: getDiscordNameFromId(interaction, player.discordId), inline: true });
+        embed.addFields({ name: 'Player', value: getDiscordNameFromId(interaction.member.guild, player.discordId), inline: true });
         embed.addFields({ name: 'Character', value: character.name, inline: true });
         // be sure to check that the associated character with the campaign is not dead or retired but is active in the campaign.
       }

@@ -19,7 +19,7 @@ module.exports = {
       const embed = new EmbedBuilder().setTitle(`${res.title}`).setDescription(res.description).setThumbnail(res.groupLogo);
       embed.addFields({ name: 'System', value: res.system });
       for (let j = 0; j < res.gameMaster.length; j++) {
-        embed.addFields({ name: 'GameMaster', value: getDiscordNameFromId(interaction, res.gameMaster[i].discordId), inline: true });
+        embed.addFields({ name: 'GameMaster', value: getDiscordNameFromId(interaction.member.guild, res.gameMaster[i].discordId), inline: true });
       }
       
     }

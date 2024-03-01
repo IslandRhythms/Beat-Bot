@@ -12,6 +12,13 @@ async function run() {
 
   console.log('what is response', response)
   // const teams = await axios.get(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/miami-heat/roster`)
+
+  const teams = await axios.get(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams`).then(res => res.data.sports[0]);
+  console.log('========')
+  console.log(teams);
+  console.log(teams.leagues)
+  console.log(teams.leagues[0].teams[0])
+  console.log(teams.leagues[0].teams.length)
 }
 
 run();
