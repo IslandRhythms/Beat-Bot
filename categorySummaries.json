@@ -1,0 +1,34 @@
+[
+  {
+    "name": "fun",
+    "summary": "a collection of fun and educational commands."
+  },
+  {
+    "name": "mongo",
+    "summary": "a collection of commands that don't have much in common other than directly interacting with the database."
+  },
+  {
+    "name": "music",
+    "summary": "a collection of commands that allow you to manipulate Beat Bot's music functionality"
+  },
+  {
+    "name": "sports",
+    "summary": "A collection of commands related to both sports and esports."
+  },
+  {
+    "name": "spotify",
+    "summary": "Commands that interact with spotify's api."
+  },
+  {
+    "name": "steam",
+    "summary": "a collection of commands that interact with steam's api and allow you to look up deals and news for games"
+  },
+  {
+    "name": "tabletop",
+    "summary": "a collection of commands that aid TTRPGs on the server as well as log adventures for posterity"
+  },
+  {
+    "name": "util",
+    "summary": "a collection of useful commands that offer simple tools and solutions for simple problems or situations"
+  }
+]
