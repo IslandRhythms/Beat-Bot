@@ -12,7 +12,7 @@ module.exports = {
       option.setName('drink').setDescription('the name of the drink').setRequired(true)))
   .addSubcommand(subcommand => 
     subcommand.setName('letter').setDescription('lookup all beverages that start with the indicated letter').addStringOption(option =>
-      option.setName('drink').setDescription('the name of the drink').setMaxLength(1).setRequired(true)))
+      option.setName('drink').setDescription('the first letter of the name of the drink').setMaxLength(1).setRequired(true)))
   .addSubcommand(subcommand => 
     subcommand.setName('ingredient').setDescription('lookup information about an ingredient').addStringOption(option =>
       option.setName('component').setDescription('the ingredient you wish to look up').setRequired(true)))
