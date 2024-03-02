@@ -29,6 +29,7 @@
     "ffmpeg-static": "^4.4.1",
     "fluent-ffmpeg": "^2.1.2",
     "fortune-cookie": "0.0.1",
+    "he": "^1.2.0",
     "mediaplex": "^0.0.9",
     "mongoose": "^8.0.1",
     "node-fetch": "^2.6.9",
