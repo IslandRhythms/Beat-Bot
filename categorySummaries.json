@@ -4,6 +4,10 @@
     "summary": "a collection of fun and educational commands."
   },
   {
+    "name": "learning",
+    "summary": "a collection of commands that will let you learn something new when used."
+  },
+  {
     "name": "mongo",
     "summary": "a collection of commands that don't have much in common other than directly interacting with the database."
   },
