@@ -1,5 +1,7 @@
 
 const initTasks = require('@mongoosejs/task');
+const { Pagination } = require('pagination.djs');
+
 const onThisDay = require('./onThisDay');
 const wordOfTheDay = require('./wordOfTheDay');
 const pokeOfTheDay = require('./pokemonOfTheDay');
@@ -27,7 +29,8 @@ module.exports = async function tasks(db) {
   await Task.startPolling();
   await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: next6am, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
 }
-// 10 embeds max per message, therefore some of these are gonna have to share an embed.
+// use pagination so that each entry can have their own embed
+// https://pagination-djs.js.org/#md:other-send-options
 async function ofTheDay(db) {
   const { Daily } = db.models;
   const { WOTD } = await wordOfTheDay();
