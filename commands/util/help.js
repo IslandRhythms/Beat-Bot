@@ -20,9 +20,10 @@ module.exports = {
       for (const file of commandFiles) {
         const filePath = path.join(commandsPath, file);
         const command = require(filePath);
-          command.data.category = folder;
-          command.data.summary = categorySummaries.find(x => x.name == folder).summary;
-          commands.push(command.data.toJSON());
+        // search command.data.options for subcommand information
+        command.data.category = folder;
+        command.data.summary = categorySummaries.find(x => x.name == folder).summary;
+        commands.push(command.data.toJSON());
       }
     }
     const embeds = [];
