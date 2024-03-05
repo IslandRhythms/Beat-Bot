@@ -7,25 +7,37 @@ module.exports = {
   data: new SlashCommandBuilder().setName('getnextevent')
   .setDescription('get the next event for the indicated team')
   .addSubcommand(subcommand =>
-    subcommand.setName('nba').setDescription('National Basketball Association')
+    subcommand.setName('basketball').setDescription('basketball')
+      .addStringOption(option =>
+        option.setName('league').setDescription('the league (nba, ncaa)').setRequired(true))
+        .addStringOption(option =>
+          option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
+  .addSubcommand(subcommand => 
+    subcommand.setName('football').setDescription('american football')
+    .addStringOption(option =>
+      option.setName('league').setDescription('the league (nfl, ncaa)').setRequired(true))
       .addStringOption(option =>
         option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
   .addSubcommand(subcommand => 
-    subcommand.setName('nfl').setDescription('National Football League')
+    subcommand.setName('baseball').setDescription('baseball')
+    .addStringOption(option =>
+      option.setName('league').setDescription('the league (mlb, ncaa)').setRequired(true))
       .addStringOption(option =>
         option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
   .addSubcommand(subcommand => 
-    subcommand.setName('mlb').setDescription('Major League Baseball')
-      .addStringOption(option =>
-        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
-  .addSubcommand(subcommand => 
-    subcommand.setName('nhl').setDescription('National Hockey League')
+    subcommand.setName('hockey').setDescription('hockey')
+    .addStringOption(option =>
+      option.setName('league').setDescription('the league (nhl, ncaa)').setRequired(true))
       .addStringOption(option =>
         option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
   .addSubcommand(subcommand => 
     subcommand.setName('soccer').setDescription('soccer (futbol)')
+    .addStringOption(option =>
+      option.setName('league').setDescription('the league (nhl, ncaa)').setRequired(true))
       .addStringOption(option =>
-        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true))),
+        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
+  .addSubcommand(subcommand => 
+    subcommand.setName('tennis').setDescription('tennis')),
   async execute(interaction) {
     await interaction.deferReply();
     console.log('what is team', interaction.options.getString('team'));
