@@ -14,8 +14,14 @@ const userSchema = new mongoose.Schema({
   birthday: String,
   campaigns: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Campaign' }],
   profile: { type: mongoose.Schema.Types.ObjectId, ref: 'GameProfile' },
-  subscribers: Number, // always increment by 1
-  bits: Number, // always increment by 1000
+  subscribers: { // always increment by 1
+    type: Number,
+    default: 0
+  },
+  bits: { // always increment by 1000
+    type: Number,
+    default: 0
+  },
   roles: {
     type: [String],
     enum: ['DM', 'Player', 'Member', 'Admin']
