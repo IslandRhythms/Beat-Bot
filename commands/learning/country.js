@@ -41,7 +41,8 @@ module.exports = {
       { name: 'Independent', value: `${countryData.independent}`, inline: true },
       { name: 'CCA2 code', value: countryData.cca2, inline: true },
       { name: 'CCA3 code', value: countryData.cca3, inline: true }, 
-      { name: 'CCN3 code', value: countryData.ccn3, inline: true }
+      { name: 'CCN3 code', value: countryData.ccn3, inline: true },
+      { name: 'Google Map View', value: countryData.maps.googleMaps, inline: true }
     );
     const keys = Object.keys(countryData.currencies);
     for (let i = 0; i < keys.length; i++) {
