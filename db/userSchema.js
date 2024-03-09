@@ -40,4 +40,12 @@ const userSchema = new mongoose.Schema({
   }
 });
 
+
+userSchema.virtual('zodiac').get(function() {
+  // should never pop up but just in case.
+  if(!this.birthday) {
+    return `You have not set your birthday. Please use \\setbirthday to set your birthday and receive information about your zodiac sign when its your birthday`
+  }
+});
+
 module.exports = userSchema;
