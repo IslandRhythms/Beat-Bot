@@ -14,10 +14,13 @@ module.exports = {
     .addStringOption(option => option.setName('link').setDescription('link to the movie synopsis')))
   .addSubcommand(subcommand => subcommand.setName('shows').setDescription('update your favorite shows')
     .addStringOption(option => option.setName('show').setDescription('the name of the show').setRequired(true))
-    .addStringOption(option => option.setName('link').setDescription('link to the show ynopsis')))
+    .addStringOption(option => option.setName('link').setDescription('link to the show synopsis')))
   .addSubcommand(subcommand => subcommand.setName('foods').setDescription('update your favorite foods')
     .addStringOption(option => option.setName('food').setDescription('the name of the food').setRequired(true))
-    .addStringOption(option => option.setName('link').setDescription('link to the food description'))),
+    .addStringOption(option => option.setName('link').setDescription('link to the food description')))
+  .addSubcommand(subcommand => subcommand.setName('books').setDescription('update your favorite foods')
+    .addStringOption(option => option.setName('book').setDescription('the name of the book').setRequired(true))
+    .addStringOption(option => option.setName('link').setDescription('link to the book description'))),
   async execute(interaction, conn) {
     await interaction.deferReply();
     const { User } = conn.models;

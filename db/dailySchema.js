@@ -10,6 +10,9 @@ const dailySchema = new mongoose.Schema({
     link: String,
     briefSummary: String
   },
+  artOfTheDay: {
+    type: String
+  },
   pokemonOTD: String,
   poemOfTheDay: String,
   factOTD: { fact: String, source: String },

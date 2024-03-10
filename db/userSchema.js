@@ -36,7 +36,8 @@ const userSchema = new mongoose.Schema({
     music: [{ name: String, url: String }],
     movies: [{ name: String, url: String }],
     shows: [{ name: String, url: String }],
-    foods: [{ name: String, url: String }]
+    foods: [{ name: String, url: String }],
+    books: [{ name: String, url: String }]
   }
 });
 

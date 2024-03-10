@@ -15,10 +15,8 @@ module.exports = {
       const embed = new EmbedBuilder();
       const category = categories[i];
       embed.setTitle(`${target.username}'s Favorite ${category}`);
-      if (category == 'games' || category == 'music') {
-        for (let pos = 0; pos < user.favorites[category].length; pos++) {
-          embed.addFields({ name: `${user.favorites[category][pos].name}`, value: `${user.favorites[category][pos].url}` });
-        }
+      for (let pos = 0; pos < user.favorites[category].length; pos++) {
+        embed.addFields({ name: `${user.favorites[category][pos].name}`, value: `${user.favorites[category][pos].url}` });
       }
       embeds.push(embed);
     }
