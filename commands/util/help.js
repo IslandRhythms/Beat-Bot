@@ -27,6 +27,7 @@ module.exports = {
       }
     }
     const embeds = [];
+    let totalCommands = 0;
     for (let i = 0; i < commandFolders.length; i++) {
       const embed = new EmbedBuilder();
       const category = commandFolders[i];
@@ -34,6 +35,7 @@ module.exports = {
       for (let index = 0; index < commands.length; index++) {
         const command = commands[index];
         if (command.category == category) {
+          totalCommands++;
           embed.setDescription(command.summary);
           embed.addFields({ name: `/${command.name}`, value: command.description, inline: true })
         }
@@ -41,7 +43,7 @@ module.exports = {
       embeds.push(embed);
     }
     pagination.setEmbeds(embeds, (currentEmbed, index, array) => {
-      currentEmbed.setFooter({ text: `Page ${index + 1} / ${array.length}`});
+      currentEmbed.setFooter({ text: `Page ${index + 1} / ${array.length} Total available commands ${totalCommands}`});
       return currentEmbed.setAuthor({ name: `Beat Bot Available Commands`});
     });
     pagination.setOptions({ ephemeral: true });

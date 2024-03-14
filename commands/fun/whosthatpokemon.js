@@ -36,14 +36,16 @@ module.exports = {
     const embed = new EmbedBuilder().setTitle(`Who's that pokemon? ${time / 1000} seconds on the clock!`).setImage(`attachment://${pokemonData.name}Black.png`)
     await interaction.followUp({ embeds: [embed], files: [{ attachment: outputPath, name: `${pokemonData.name}Black.png`}]});
     const collectorObject = {
-      max: 1, // Collect only one response
       time: time, // Set a timeout for response collection (30 seconds in this example)
       errors: ['time'] // Handle timeout errors
     }
     if (!private) {
       collectorObject.filter = (msg) => msg.author.id === interaction.user.id;
+    } else {
+      collectorObject.max = 1; // Collect only one response
     }
     const collector = interaction.channel.createMessageCollector(collectorObject);
+    
     
     collector.on('collect', async (msg) => {
       const userAnswer = msg.content.toLowerCase();

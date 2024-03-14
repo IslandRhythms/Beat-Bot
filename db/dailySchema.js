@@ -11,7 +11,12 @@ const dailySchema = new mongoose.Schema({
     briefSummary: String
   },
   artOfTheDay: {
-    type: String
+    metTitle: String,
+    metImageLink: String,
+    metArtist: String,
+    chicagoTitle: String,
+    chicagoImageLink: String,
+    chicagoArtist: String
   },
   pokemonOTD: String,
   poemOfTheDay: String,
