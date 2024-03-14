@@ -13,13 +13,13 @@ module.exports = {
       const { Daily } = conn.models;
       const doc = await Daily.findOne().sort({ createdAt: -1 });
       const metEmbed = new EmbedBuilder()
-      .setTitle(doc.artOfTheDay.metTitle ?? `No title found`)
-      .setAuthor({ name: doc.artOfTheDay.metArftist ?? 'No artist found'})
-      .setImage(doc.artOfTheDay.metImageLink ?? `No image found`);
+      .setTitle(doc.artOTD.metTitle ?? `No title found`)
+      .setAuthor({ name: doc.artOTD.metArtist ?? 'No artist found'})
+      .setImage(doc.artOTD.metImageLink ?? `No image found`);
       const chicagoEmbed = new EmbedBuilder()
-      .setTitle(doc.artOfTheDay.chicagoTitle ?? `No title found`)
-      .setAuthor({ name: doc.artOfTheDay.chicagoArtist ?? `No artist found`})
-      .setImage(doc.artOfTheDay.chicagoImageLink ?? `No image found`)
+      .setTitle(doc.artOTD.chicagoTitle ?? `No title found`)
+      .setAuthor({ name: doc.artOTD.chicagoArtist ?? `No artist found`})
+      .setImage(doc.artOTD.chicagoImageLink ?? `No image found`)
       return interaction.followUp({ embeds: [metEmbed, chicagoEmbed] })
     } else {
       const query = interaction.options.getString('term');

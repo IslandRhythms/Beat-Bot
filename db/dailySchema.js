@@ -10,7 +10,7 @@ const dailySchema = new mongoose.Schema({
     link: String,
     briefSummary: String
   },
-  artOfTheDay: {
+  artOTD: {
     metTitle: String,
     metImageLink: String,
     metArtist: String,
@@ -19,7 +19,7 @@ const dailySchema = new mongoose.Schema({
     chicagoArtist: String
   },
   pokemonOTD: String,
-  poemOfTheDay: String,
+  poemOTD: String,
   factOTD: { fact: String, source: String },
   memeOTD: String,
   jokeOTD: {
