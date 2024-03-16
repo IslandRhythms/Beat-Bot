@@ -18,6 +18,9 @@ const dailySchema = new mongoose.Schema({
     chicagoImageLink: String,
     chicagoArtist: String
   },
+  plantOTD: {
+    type: String
+  },
   pokemonOTD: String,
   poemOTD: String,
   factOTD: { fact: String, source: String },

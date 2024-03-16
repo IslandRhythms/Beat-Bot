@@ -1,4 +1,5 @@
 const axios = require('axios');
+require('./config');
 
 /*
 async function run() {
@@ -25,38 +26,21 @@ run();
 
 */
 
-// if met doesn't have an image link, move to chicago
-async function met() {
-  const res = await axios.get('https://collectionapi.metmuseum.org/public/collection/v1/objects').then(res => res.data);
-  console.log('what is res', res, res.total, res.objectIDs.length);
-  // ignore res.total
-  const selectedArtwork = res.objectIDs[Math.floor(Math.random() * res.objectIDs.length)];
-  console.log('what is selectedArtwork', selectedArtwork);
-  const artwork = await axios.get(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${selectedArtwork}`).then(res => res.data).catch(e => console.log('what is e', e.message, e.request.path));
-  console.log('what is artwork', artwork);
+async function run() {
+  let url = `https://perenual.com/api/species-list?key=${process.env.PLANTAPIKEY}`;
+  const { last_page } = await axios.get(url).then(res => res.data);
+  const selectedPage = Math.floor(Math.random() * last_page) + 1; // +1 because there is no page 0
+  url += `&page=${selectedPage}`;
+  const { data } = await axios.get(url).then(res => res.data);
+  const selectedPlantIndex = Math.floor(Math.random() * data.length);
+  console.log('The plant of the day is', data[selectedPlantIndex]);
+  const plantOfTheDay = data[selectedPlantIndex];
+  console.log('Getting plant information ...');
+  const plantInformation = await axios.get(`https://perenual.com/api/species/details/${plantOfTheDay.id}?key=${process.env.PLANTAPIKEY}`).then(res => res.data);
+  console.log(plantInformation);
+  // what to do with this?
+  const plantDisease = await axios.get(`https://perenual.com/api/pest-disease-list?key=${process.env.PLANTAPIKEY}`).then(res => res.data);
+  console.log(plantDisease.data[0])
 }
 
-// concept working
-async function chicago() {
-  console.log('=======================================================');
-  const { pagination } = await axios.get(`https://api.artic.edu/api/v1/images`).then(res => res.data)
-  // begin randomization
-  // first pick a page
-  const page = Math.floor(Math.random() * pagination.total_pages) + 1;
-  console.log('what is page', page);
-  // now we query for that page
-  const { data } = await axios.get(`https://api.artic.edu/api/v1/images?page=${page}`).then(res => res.data).catch(e => console.log(e.message))
-  // now that we have our array of artworks, we choose one randomly
-  console.log('what is data.length', data.length)
-  const selectedArtwork = Math.floor(Math.random() * data.length);
-  console.log('what is the artwork', data[selectedArtwork])
-  // now we get the image link
-  const test = await axios(`https://api.artic.edu/api/v1/artworks/${data[selectedArtwork].artwork_ids[0]}?fields=id,title,image_id`).then(res => res.data).catch(e => console.log(e.message));
-  console.log('what is test', test);
-  console.log('what is the link', `${test.config.iiif_url}/${test.data.image_id}/full/843,/0/default.jpg`);
-  // example of the data set (paste in firefox) https://api.artic.edu/api/v1/artworks/4S
-  const information = await axios(`https://api.artic.edu/api/v1/artworks/${test.data.id}`).then(res => res.data).catch(e => console.log(e.message));
-  console.log('what is information', information)
-}
-
-met().then(() => chicago())
+run();
