@@ -3,7 +3,7 @@ require('./config');
 
 
 async function run() {
-  const res = await axios.get(`https://site.web.api.espn.com/apis/site/v2/sports/basketball/nba/teams/14`).then(res => res.data);
+  const res = await axios.get(`https://site.web.api.espn.com/apis/site/v2/sports/basketball/nba/teams/14`).then(res => res.data).catch(e => console.log(e.code));
   console.log('what is res', res, res.team.nextEvent);
   console.log('===============================')
   // doesn't work for whatever reason
@@ -19,7 +19,10 @@ async function run() {
   console.log(teams);
   console.log(teams.leagues)
   console.log(teams.leagues[0].teams[0])
-  console.log(teams.leagues[0].teams.length)
+  console.log(teams.leagues[0].teams.length);
+
+  const leagues = await axios.get(`https://site.api.espn.com/apis/site/v2/sports/mens-college-basketball/scoreboard`).then(res => res.data).catch(e => e.code);
+  console.log('what is leagues', leagues)
 }
 
 run();
