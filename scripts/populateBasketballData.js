@@ -16,7 +16,7 @@ async function run() {
   const fileName = process.argv[2];
 
   const config = {
-    method: 'get',
+    method: 'GET',
     url: 'https://v1.basketball.api-sports.io/leagues',
     headers: {
       'x-rapidapi-key': process.env.SPORTSAPIKEY,
@@ -34,10 +34,10 @@ async function run() {
   const keys = Object.keys(basketballData);
   for (let i = 0; i < keys.length; i++) {
     console.log(basketballData[keys[i]].id)
-    // league=${basketballData[keys[i]].id}&country_id=${basketballData[keys[i]].countryId}&season=${basketballData[keys[i]].seasons[0].season}
-    config.url = `https://v1.basketball.api-sports.io/teams?id=139`;
+    // 
+    config.url = `https://v1.basketball.api-sports.io/teams?league=${basketballData[keys[i]].id}&country_id=${basketballData[keys[i]].countryId}&season=${basketballData[keys[i]].seasons[0].season}`;
     console.log('what is config', config);
-    const teamsData = await axios.get(config).then(res => res.data).catch(e => e.code);
+    const teamsData = await axios(config).then(res => res.data).catch(e => e.code);
     console.log('what is teamsData', teamsData);
     const reformattedData = teamsData.response.map(x => ({ id: x.id, name: x.name, logo: x.logo }));
     basketballData[keys[i]].teams = reformattedData;
