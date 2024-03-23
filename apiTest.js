@@ -6,19 +6,18 @@ async function run() {
 
   const config = {
     method: 'get',
-    url: 'https://v1.basketball.api-sports.io/leagues',
+    url: 'https://v1.hockey.api-sports.io/leagues',
     headers: {
       'x-rapidapi-key': process.env.SPORTSAPIKEY,
-      'x-rapidapi-host': 'v1.basketball.api-sports.io'
+      'x-rapidapi-host': 'v1.hockey.api-sports.io'
     }
   };
 
   const  { response } = await axios(config).then(res => res.data);
-  const NBA = response.find(x => x.name == 'NBA');
-  const NCAA = response.find(x => x.name == 'NCAA');
-  console.log(NBA, NCAA)
+  // console.log('what is response', response);
+  console.log(response.find(x => x.name == 'NHL'))
+  console.log(response.find(x => x.name == 'NCAA'))
 }
-
 run();
 
 // async function run() {
@@ -39,4 +38,4 @@ run();
 //   console.log(plantInformation);
 // }
 
-// run();
+// run()
