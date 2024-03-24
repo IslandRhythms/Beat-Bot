@@ -32,7 +32,15 @@ async function run() {
   };
   const keys = Object.keys(basketballData);
   for (let i = 0; i < keys.length; i++) {
-    config.url = `https://v1.basketball.api-sports.io/teams?league=${basketballData[keys[i]].id}&country_id=${basketballData[keys[i]].countryId}&season=${basketballData[keys[i]].seasons[0].season}`;
+    const season = basketballData[keys[i]].seasons.sort(function (a,b) {
+      if (a.season < b.season) {
+        return 1;
+      }
+      else {
+        return -1;
+      }
+    })[0];
+    config.url = `https://v1.basketball.api-sports.io/teams?league=${basketballData[keys[i]].id}&country_id=${basketballData[keys[i]].countryId}&season=${season.season}`;
     const teamsData = await axios(config).then(res => res.data).catch(e => e.code);
     const reformattedData = teamsData.response.map(x => ({ id: x.id, name: x.name, logo: x.logo }));
     basketballData[keys[i]].teams = reformattedData;

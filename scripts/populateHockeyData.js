@@ -32,7 +32,15 @@ async function run() {
   };
   const keys = Object.keys(hockeyData);
   for (let i = 0; i < keys.length; i++) {
-    config.url = `https://v1.hockey.api-sports.io/teams?league=${hockeyData[keys[i]].id}&country_id=${hockeyData[keys[i]].countryId}&season=${hockeyData[keys[i]].seasons[0].season}`;
+    const season = hockeyData[keys[i]].seasons.sort(function (a,b) {
+      if (a.season < b.season) {
+        return 1;
+      }
+      else {
+        return -1;
+      }
+    })[0];
+    config.url = `https://v1.hockey.api-sports.io/teams?league=${hockeyData[keys[i]].id}&country_id=${hockeyData[keys[i]].countryId}&season=${season.season}`;
     const teamsData = await axios(config).then(res => res.data).catch(e => e.code);
     const reformattedData = teamsData.response.map(x => ({ id: x.id, name: x.name, logo: x.logo }));
     hockeyData[keys[i]].teams = reformattedData;

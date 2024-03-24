@@ -26,20 +26,27 @@ async function run() {
 
   const  { response } = await axios(config).then(res => res.data);
   const MLB = response.find(x => x.name == 'MLB');
-  const NCAA = response.find(x => x.name == 'NCAA');
   const baseballData = { MLB: { id: MLB.id, logo: MLB.logo, seasons: MLB.seasons, countryId: MLB.country.id, teams: [] },
-    NCAA: { id: NCAA.id, logo: NCAA.logo, seasons: NCAA.seasons, countryId: NCAA.country.id, teams: [] }
+    // NCAA: { id: NCAA.id, logo: NCAA.logo, seasons: NCAA.seasons, countryId: NCAA.country.id, teams: [] }
   };
   const keys = Object.keys(baseballData);
   for (let i = 0; i < keys.length; i++) {
-    config.url = `https://v1.basketball.api-sports.io/teams?league=${baseballData[keys[i]].id}&country_id=${baseballData[keys[i]].countryId}&season=${baseballData[keys[i]].seasons[0].season}`;
+    const season = baseballData[keys[i]].seasons.sort(function (a,b) {
+      if (a.season < b.season) {
+        return 1;
+      }
+      else {
+        return -1;
+      }
+    })[0];
+    config.url = `https://v1.baseball.api-sports.io/teams?league=${baseballData[keys[i]].id}&country_id=${baseballData[keys[i]].countryId}&season=${season.season}`;
     const teamsData = await axios(config).then(res => res.data).catch(e => e.code);
-    const reformattedData = teamsData.response.map(x => ({ id: x.id, name: x.name, logo: x.logo }));
+    const reformattedData = teamsData.response.filter(x => !x.name.includes('League')).map(x => ({ id: x.id, name: x.name, logo: x.logo }));
     baseballData[keys[i]].teams = reformattedData;
   }
 
 
   
-  await fs.writeFile(`../${fileName}`, JSON.stringify(basketballData, null, 2))
+  await fs.writeFile(`../${fileName}`, JSON.stringify(baseballData, null, 2))
   console.log('done');
 }
