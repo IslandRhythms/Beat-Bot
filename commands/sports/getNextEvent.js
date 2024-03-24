@@ -1,6 +1,8 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
-const sportsOrgs = require('../../sportsOrgs.json');
+const Basketball = require('../../Basketball.json');
+const Football = require('../../Football.json');
+const Jimp = require('jimp');
 
 module.exports = {
   cooldown: 30,
@@ -9,39 +11,107 @@ module.exports = {
   .addSubcommand(subcommand =>
     subcommand.setName('basketball').setDescription('basketball')
       .addStringOption(option =>
-        option.setName('league').setDescription('the league (nba, ncaa)').setRequired(true))
-        .addStringOption(option =>
-          option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
+        option.setName('league').setDescription('the league (nba, ncaa)').setRequired(true).addChoices(
+          { name: 'NBA', value: 'NBA' },
+          { name: 'NCAA', value: 'NCAA' }
+        ))
+      .addStringOption(option =>
+        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
   .addSubcommand(subcommand => 
     subcommand.setName('football').setDescription('american football')
     .addStringOption(option =>
-      option.setName('league').setDescription('the league (nfl, ncaa)').setRequired(true))
+      option.setName('league').setDescription('the league (nfl, ncaa)').setRequired(true).addChoices(
+        { name: 'NFL', value: 'NFL' },
+        { name: 'NCAA', value: 'NFL' }
+      ))
       .addStringOption(option =>
         option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
   .addSubcommand(subcommand => 
     subcommand.setName('baseball').setDescription('baseball')
     .addStringOption(option =>
-      option.setName('league').setDescription('the league (mlb, ncaa)').setRequired(true))
+      option.setName('league').setDescription('the league (mlb, ncaa)').setRequired(true).addChoices(
+        { name: 'MLB', value: 'MLB' },
+        { name: 'NCAA', value: 'NCAA' }
+      ))
       .addStringOption(option =>
         option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
   .addSubcommand(subcommand => 
     subcommand.setName('hockey').setDescription('hockey')
     .addStringOption(option =>
-      option.setName('league').setDescription('the league (nhl, ncaa)').setRequired(true))
+      option.setName('league').setDescription('the league (nhl, ncaa)').setRequired(true).addChoices(
+        { name: 'NHL', value: 'NHL' },
+        { name: 'NCAA', value: 'NCAA' }
+      ))
       .addStringOption(option =>
-        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
-  .addSubcommand(subcommand => 
-    subcommand.setName('soccer').setDescription('soccer (futbol)')
-    .addStringOption(option =>
-      option.setName('league').setDescription('the league (nhl, ncaa)').setRequired(true))
-      .addStringOption(option =>
-        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
-  .addSubcommand(subcommand => 
-    subcommand.setName('tennis').setDescription('tennis')),
+        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true))),
   async execute(interaction) {
-    await interaction.deferReply();
-    console.log('what is team', interaction.options.getString('team'));
-    await interaction.followUp(`Under Construction`);
+    await interaction.deferReply({ ephemeral: true });
+    const league = interaction.options.getString('league');
+    const team = interaction.options.getString('team');
+    let sport = interaction.options._subcommand;
+    let leagueId = '';
+    let teamId = '';
+    let season = '';
+    if (sport == 'football') {
+      sport = 'american-football';
+    } else if (sport == 'basketball') {
+      leagueId = Basketball[league].id;
+      const selectedTeam = Basketball[league]['teams'].find(x => x.name == team);
+      if (!selectedTeam) {
+        return interaction.followUp(`${team} was not found in the ${league} league, please make sure you chose the correct team and league.`);
+      }
+      teamId = selectedTeam.id;
+      season = Basketball[league].seasons.sort(function(a,b) {
+        if (a.season < b.season) {
+          return 1;
+        } else {
+          return -1;
+        }
+      })[0].season;
+      console.log('what is season', season);
+    }
+    const config = {
+      method: 'GET',
+      url: `https://v1.${sport}.api-sports.io/games?league=${leagueId}&team=${teamId}&season=${season}`,
+      headers: {
+        'x-rapidapi-key': process.env.SPORTSAPIKEY,
+        'x-rapidapi-host': `v1.${sport}.api-sports.io`
+      }
+    };
+  
+    const  { response } = await axios(config).then(res => res.data);
+    const ignoreStatus = ['FT', 'AOT', 'POST', 'CANC', 'SUSP', 'AWD', 'ABD', 'Q1', 'Q2', 'Q3', 'Q4', 'OT', 'BT', 'HT'];
+    const futureGames = response.filter(x => !ignoreStatus.includes(x.status.short));
+    const nextGame = futureGames.sort( function(a,b) {
+      if(a.timestamp < b.timestamp) {
+        return -1;
+      } else {
+        return 1;
+      }
+    })[0];
+    console.log('what is nextGame', nextGame, new Date(nextGame.timestamp * 1000));
+    const homeImage = await downloadImage(nextGame.teams.home.logo)
+    const awayImage = await downloadImage(nextGame.teams.away.logo);
+
+    const width = Math.max(homeImage.getWidth(), awayImage.getWidth())
+    const height = Math.max(homeImage.getWidth(), awayImage.getWidth());
+
+
+    const canvas = new Jimp(width * 2, height);
+
+    const xPos1 = Math.floor((width - awayImage.getWidth()) / 2);
+    const xPos2 = Math.floor((width - homeImage.getWidth()) / 2) + width;
+
+    canvas.composite(awayImage, xPos1, Math.floor((height - awayImage.getHeight()) / 2));
+    canvas.composite(homeImage, xPos2, Math.floor((height - homeImage.getHeight()) / 2));
+    const outputPath = `../../next${sport}event.png`;
+    await canvas.writeAsync(outputPath);
+    const embed = new EmbedBuilder()
+      .setTitle(`${team}'s Next Game: ${nextGame.teams.away.name} at ${nextGame.teams.home.name} on ${new Date(nextGame.timestamp * 1000).toLocaleString()}`)
+      .setAuthor({ name: `${league}`, iconURL: `${nextGame.league.logo}`})
+      .setImage(`attachment://next${sport}event.png`)
+      .setFooter({ text: `Possible thanks to api-${sport}.com`})
+    await interaction.followUp({ embeds: [embed], files: [{ attachment: outputPath, name: `next${sport}event.png`}]});
   },
   async autocomplete(interaction) {
     let focusedValue = interaction.options.getFocused(true);
@@ -51,15 +121,27 @@ module.exports = {
     } else {
       focusedValue = focusedValue.value.toLowerCase();
     }
-    const org = interaction.options._subcommand;
-    const sport = sportsOrgs.find(x => x.org == org);
-    // this is spamming their api. Set a top level array so we only have to do this once.
-    // long term solution is to keep locally in the repository so no one is getting spammed.
-    const teams = await axios.get(`https://site.api.espn.com/apis/site/v2/sports/${sport.name}/${sport.org}/teams`).then(res => res.data.sports[0]);
-    const choices = teams.leagues[0].teams;
-		const filtered = choices.filter(choice => choice.team.location.toLowerCase().includes(focusedValue) || choice.team.name.toLowerCase().includes(focusedValue));
+    const sport = interaction.options._subcommand;
+    let teams = [];
+    // if league is not provided, it needs to list all teams in both leagues.
+    if (sport == 'basketball') {
+      const keys = Object.keys(Basketball);
+      for (let i = 0; i < keys.length; i++) {
+        teams = teams.concat(Basketball[keys[i]].teams)
+      }
+    }
+		let filtered = teams.filter(choice => choice.name.toLowerCase().includes(focusedValue));
+    if (filtered.length > 25) {
+      filtered = filtered.slice(0, 25);
+    }
 		await interaction.respond(
-			filtered.map(choice => ({ name: choice.team.displayName, value: choice.team.displayName })),
+			filtered.map(choice => ({ name: choice.name, value: choice.name })),
 		);
   }
+}
+
+
+async function downloadImage(url) {
+  const res = await axios.get(url, { responseType: 'arraybuffer' }).then(res => res.data);
+  return await Jimp.read(res);
 }

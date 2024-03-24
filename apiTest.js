@@ -15,8 +15,20 @@ async function run() {
 
   const  { response } = await axios(config).then(res => res.data);
   // console.log('what is response', response);
-  console.log(response.find(x => x.name == 'NHL'))
-  console.log(response.find(x => x.name == 'NCAA'))
+  // console.log(response.find(x => x.name == 'NHL'))
+  // console.log(response.find(x => x.name == 'NCAA'))
+
+  const test = {
+    method: 'GET',
+    url: `https://v1.basketball.api-sports.io/games?league=12&team=147&season=2023-2024`,
+    headers: {
+      'x-rapidapi-key': process.env.SPORTSAPIKEY,
+      'x-rapidapi-host': `v1.basketball.api-sports.io`
+    }
+  };
+
+  const res = await axios(test).then(res => res.data);
+  console.log(res.response, res.response.length, res.response[0])
 }
 run();
 
