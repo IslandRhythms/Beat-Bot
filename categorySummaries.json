@@ -1,5 +1,10 @@
 [
   {
+    "name:": "esports",
+    "summary": "a collection of commands related to everything esports.",
+    "emoji": "🎮"
+  },
+  {
     "name": "fun",
     "summary": "a collection of commands offering small games and other fun things.",
     "emoji": "🎉"
@@ -21,7 +26,7 @@
   },
   {
     "name": "sports",
-    "summary": "A collection of commands related to both sports and esports.",
+    "summary": "A collection of commands related to sports.",
     "emoji": "🏅"
   },
   {

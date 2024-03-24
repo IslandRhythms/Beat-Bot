@@ -40,6 +40,6 @@ async function run() {
 
 
   
-  await fs.writeFile(`../${fileName}`, JSON.stringify(basketballData, null, 2))
+  await fs.writeFile(`../${fileName}`, JSON.stringify(hockeyData, null, 2))
   console.log('done');
 }
