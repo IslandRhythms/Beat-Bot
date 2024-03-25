@@ -15,32 +15,49 @@ async function run() {
   // include file type
   const fileName = process.argv[2];
 
+  let url = 'https://v3.football.api-sports.io/leagues';
   const config = {
     method: 'GET',
-    url: 'https://v1.football.api-sports.io/leagues',
     headers: {
       'x-rapidapi-key': process.env.SPORTSAPIKEY,
-      'x-rapidapi-host': 'v1.football.api-sports.io'
+      'x-rapidapi-host': 'v3.football.api-sports.io'
     }
   };
 
-  const  { response } = await axios(config).then(res => res.data);
-  const NFL = response.find(x => x.league.name == 'NFL');
-  const NCAA = response.find(x => x.league.name == 'NCAA');
-  // not done, need to organize leagues and stuff.
-  const footballData = { NFL: { id: NFL.league.id, logo: NFL.league.logo, seasons: NFL.seasons, teams: [] },
-    NCAA: { id: NCAA.league.id, logo: NCAA.league.logo, seasons: NCAA.seasons, teams: [] }
-  };
-  const keys = Object.keys(footballData);
+  const leagues = [
+    { leagueName: 'Bundesliga', leagueId: 78 },
+    { leagueName: 'La Liga', leagueId: 140 },
+    { leagueName: 'Serie A', leagueId: 135 },
+    { leagueName: 'Premiere League', leagueId: 39 }
+  ];
+
+  const soccerData = {};
+  for (let i = 0; i < leagues.length; i++) {
+    config.url = url+`?id=${leagues[i].leagueId}`;
+    const { response } = await axios(config).then(res => res.data);
+    const data = response[0];
+    soccerData[leagues[i].leagueName] = { id: data.league.id, logo: data.league.logo, country: data.country.name, seasons: data.seasons, teams: [] };
+  }
+  console.log('what is soccer data', soccerData)
+  const keys = Object.keys(soccerData);
   for (let i = 0; i < keys.length; i++) {
-    config.url = `https://v1.football.api-sports.io/teams?league=${footballData[keys[i]].id}&season=${footballData[keys[i]].seasons[0].year}`;
+    const season = soccerData[keys[i]].seasons.sort(function (a,b) {
+      if (a.year < b.year) {
+        return 1;
+      }
+      else {
+        return -1;
+      }
+    })[0];
+    config.url = `https://v3.football.api-sports.io/teams?league=${soccerData[keys[i]].id}&season=${season.year}`;
     const teamsData = await axios(config).then(res => res.data).catch(e => e.code);
-    const reformattedData = teamsData.response.map(x => ({ id: x.id, name: x.name, logo: x.logo }));
-    footballData[keys[i]].teams = reformattedData;
+    console.log('what is teamsData', teamsData);
+    const reformattedData = teamsData.response.map(x => ({ id: x.team.id, name: x.team.name, logo: x.team.logo, country: x.team.country }));
+    soccerData[keys[i]].teams = reformattedData;
   }
 
 
   
-  await fs.writeFile(`../${fileName}`, JSON.stringify(footballData, null, 2))
+  await fs.writeFile(`../${fileName}`, JSON.stringify(soccerData, null, 2))
   console.log('done');
 }
