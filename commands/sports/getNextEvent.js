@@ -143,6 +143,9 @@ module.exports = {
       })[0].season;
       nextGame = await processHockey(leagueId, teamId, season);
     }
+    if (!nextGame) {
+      return interaction.followUp(`No upcoming game could be found for ${team}.`)
+    }
     // this is probably gonna have to change a little as well
     const embed = new EmbedBuilder()
       .setTitle(`${team}'s Next Game: ${nextGame.awayTeam} at ${nextGame.homeTeam} on ${nextGame.when}`)
@@ -237,6 +240,9 @@ async function processBasketball(leagueId, teamId, season) {
 
   const { response } = await axios(config).then(res => res.data);
   const futureGames = response.filter(x => x.status.short == 'NS');
+  if (futureGames && futureGames.length < 1) {
+    return;
+  }
   const nextGame = futureGames.sort(function(a,b) {
     if(a.timestamp < b.timestamp) {
       return -1;
@@ -270,6 +276,10 @@ async function processFootball(leagueId, teamId, season) {
 
   const { response } = await axios(config).then(res => res.data);
   const futureGames = response.filter(x => x.game.status.short == 'NS');
+
+  if (futureGames && futureGames.length < 1) {
+    return;
+  }
   const nextGame = futureGames.sort(function(a,b) {
     if (a.game.date.timestamp < b.game.date.timestamp) {
       return -1;
@@ -277,6 +287,7 @@ async function processFootball(leagueId, teamId, season) {
       return 1;
     }
   })[0];
+
 
   const homeImage = await downloadImage(nextGame.teams.home.logo)
   const awayImage = await downloadImage(nextGame.teams.away.logo);
@@ -303,6 +314,9 @@ async function processSoccer(leagueId, teamId, season) {
   };
   const { response } = await axios(config).then(res => res.data);
   const futureGames = response.filter(x => x.fixture.status.short == 'NS');
+  if (futureGames && futureGames.length < 1) {
+    return;
+  }
   const nextGame = futureGames.sort(function(a,b) {
     if(a.fixture.timestamp < b.fixture.timestamp) {
       return -1;
