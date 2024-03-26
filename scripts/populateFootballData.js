@@ -43,7 +43,8 @@ async function run() {
     })[0];
     config.url = `https://v1.american-football.api-sports.io/teams?league=${footballData[keys[i]].id}&season=${season.year}`;
     const teamsData = await axios(config).then(res => res.data).catch(e => e.code);
-    const reformattedData = teamsData.response.map(x => ({ id: x.id, name: x.name, logo: x.logo }));
+    const ignore = ['NFC', 'AFC']
+    const reformattedData = teamsData.response.filter(x => x.name != null || !ignore.includes(x.name)).map(x => ({ id: x.id, name: x.name, logo: x.logo }));
     footballData[keys[i]].teams = reformattedData;
   }
 

@@ -95,7 +95,7 @@ module.exports = {
         } else {
           return -1;
         }
-      })[0].season;
+      })[0].year;
       nextGame = await processSoccer(leagueId, teamId, season);
     } else if (sport == 'football') {
       leagueId = Football[league].id;
@@ -110,7 +110,7 @@ module.exports = {
         } else {
           return -1;
         }
-      })[0].season;
+      })[0].year;
       nextGame = await processFootball(leagueId, teamId, season);
     } else if (sport == 'baseball') {
       leagueId = Baseball[league].id;
@@ -190,6 +190,7 @@ module.exports = {
     } else if (sport == 'formula 1') {
 
     }
+
 		let filtered = teams.filter(choice => choice.name.toLowerCase().includes(focusedValue));
     if (filtered.length > 25) {
       filtered = filtered.slice(0, 25);
@@ -235,8 +236,7 @@ async function processBasketball(leagueId, teamId, season) {
   };
 
   const { response } = await axios(config).then(res => res.data);
-  const ignoreStatus = ['FT', 'AOT', 'POST', 'CANC', 'SUSP', 'AWD', 'ABD', 'Q1', 'Q2', 'Q3', 'Q4', 'OT', 'BT', 'HT'];
-  const futureGames = response.filter(x => !ignoreStatus.includes(x.status.short));
+  const futureGames = response.filter(x => x.status.short == 'NS');
   const nextGame = futureGames.sort(function(a,b) {
     if(a.timestamp < b.timestamp) {
       return -1;
@@ -259,19 +259,70 @@ async function processBasketball(leagueId, teamId, season) {
 }
 
 async function processFootball(leagueId, teamId, season) {
+  const config = {
+    method: 'GET',
+    url: `https://v1.american-football.api-sports.io/games?league=${leagueId}&team=${teamId}&season=${season}`,
+    headers: {
+      'x-rapidapi-host': 'v1.american-football.api-sports.io',
+      'x-rapidapi-key': process.env.SPORTSAPIKEY
+    }
+  };
 
+  const { response } = await axios(config).then(res => res.data);
+  const futureGames = response.filter(x => x.game.status.short == 'NS');
+  const nextGame = futureGames.sort(function(a,b) {
+    if (a.game.date.timestamp < b.game.date.timestamp) {
+      return -1;
+    } else {
+      return 1;
+    }
+  })[0];
+
+  const homeImage = await downloadImage(nextGame.teams.home.logo)
+  const awayImage = await downloadImage(nextGame.teams.away.logo);
+
+  const imageResult = await createImage(homeImage, awayImage, 'soccer');
+
+  return { awayTeam: nextGame.teams.away.name,
+    homeTeam: nextGame.teams.home.name,
+    when: new Date(nextGame.game.date.timestamp * 1000).toLocaleString(),
+    leagueLogo: nextGame.league.logo,
+    outputPath: imageResult.outputPath,
+    fileName: imageResult.fileName,
+    api: 'api-american-football.com' }
 }
 
 async function processSoccer(leagueId, teamId, season) {
   const config = {
     method: 'GET',
-    url: 'https://v3.football.api-sports.io/fixtures',
+    url: `https://v3.football.api-sports.io/fixtures?league=${leagueId}&team=${teamId}&season=${season}`,
     headers: {
       'x-rapidapi-host': 'v3.football.api-sports.io',
       'x-rapidapi-key': process.env.SPORTSAPIKEY
     }
   };
   const { response } = await axios(config).then(res => res.data);
+  const futureGames = response.filter(x => x.fixture.status.short == 'NS');
+  const nextGame = futureGames.sort(function(a,b) {
+    if(a.fixture.timestamp < b.fixture.timestamp) {
+      return -1;
+    } else {
+      return 1;
+    }
+  })[0];
+
+  const homeImage = await downloadImage(nextGame.teams.home.logo)
+  const awayImage = await downloadImage(nextGame.teams.away.logo);
+
+  const imageResult = await createImage(homeImage, awayImage, 'soccer');
+
+  return { awayTeam: nextGame.teams.away.name,
+    homeTeam: nextGame.teams.home.name,
+    when: new Date(nextGame.fixture.timestamp * 1000).toLocaleString(),
+    leagueLogo: nextGame.league.logo,
+    outputPath: imageResult.outputPath,
+    fileName: imageResult.fileName,
+    api: 'api-football.com' }
 }
 
 async function processBaseball(leagueId, teamId, season) {

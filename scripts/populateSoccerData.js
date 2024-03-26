@@ -52,7 +52,7 @@ async function run() {
     config.url = `https://v3.football.api-sports.io/teams?league=${soccerData[keys[i]].id}&season=${season.year}`;
     const teamsData = await axios(config).then(res => res.data).catch(e => e.code);
     console.log('what is teamsData', teamsData);
-    const reformattedData = teamsData.response.map(x => ({ id: x.team.id, name: x.team.name, logo: x.team.logo, country: x.team.country }));
+    const reformattedData = teamsData.response.filter(x => x.name != null).map(x => ({ id: x.team.id, name: x.team.name, logo: x.team.logo, country: x.team.country }));
     soccerData[keys[i]].teams = reformattedData;
   }
 

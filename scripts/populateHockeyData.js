@@ -42,7 +42,7 @@ async function run() {
     })[0];
     config.url = `https://v1.hockey.api-sports.io/teams?league=${hockeyData[keys[i]].id}&country_id=${hockeyData[keys[i]].countryId}&season=${season.season}`;
     const teamsData = await axios(config).then(res => res.data).catch(e => e.code);
-    const reformattedData = teamsData.response.map(x => ({ id: x.id, name: x.name, logo: x.logo }));
+    const reformattedData = teamsData.response.filter(x => x.name != null).map(x => ({ id: x.id, name: x.name, logo: x.logo }));
     hockeyData[keys[i]].teams = reformattedData;
   }
 

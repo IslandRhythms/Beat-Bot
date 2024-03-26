@@ -42,7 +42,8 @@ async function run() {
     })[0];
     config.url = `https://v1.basketball.api-sports.io/teams?league=${basketballData[keys[i]].id}&country_id=${basketballData[keys[i]].countryId}&season=${season.season}`;
     const teamsData = await axios(config).then(res => res.data).catch(e => e.code);
-    const reformattedData = teamsData.response.map(x => ({ id: x.id, name: x.name, logo: x.logo }));
+    const ignore = ['West', 'East'];
+    const reformattedData = teamsData.response.filter(x => x.name != null || !ignore.includes(x.name)).map(x => ({ id: x.id, name: x.name, logo: x.logo }));
     basketballData[keys[i]].teams = reformattedData;
   }
 
