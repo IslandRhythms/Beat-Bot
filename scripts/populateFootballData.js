@@ -33,7 +33,7 @@ async function run() {
   };
   const keys = Object.keys(footballData);
   for (let i = 0; i < keys.length; i++) {
-    const season = hockeyData[keys[i]].seasons.sort(function (a,b) {
+    const season = footballData[keys[i]].seasons.sort(function (a,b) {
       if (a.year < b.year) {
         return 1;
       }
@@ -44,8 +44,9 @@ async function run() {
     config.url = `https://v1.american-football.api-sports.io/teams?league=${footballData[keys[i]].id}&season=${season.year}`;
     const teamsData = await axios(config).then(res => res.data).catch(e => e.code);
     const ignore = ['NFC', 'AFC']
-    const reformattedData = teamsData.response.filter(x => x.name != null || !ignore.includes(x.name)).map(x => ({ id: x.id, name: x.name, logo: x.logo }));
+    const reformattedData = teamsData.response.filter(x => x.name != null && !ignore.includes(x.name)).map(x => ({ id: x.id, name: x.name, logo: x.logo }));
     footballData[keys[i]].teams = reformattedData;
+    console.log('what is teams', footballData['NFL'].teams)
   }
 
 

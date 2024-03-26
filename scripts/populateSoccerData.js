@@ -38,7 +38,6 @@ async function run() {
     const data = response[0];
     soccerData[leagues[i].leagueName] = { id: data.league.id, logo: data.league.logo, country: data.country.name, seasons: data.seasons, teams: [] };
   }
-  console.log('what is soccer data', soccerData)
   const keys = Object.keys(soccerData);
   for (let i = 0; i < keys.length; i++) {
     const season = soccerData[keys[i]].seasons.sort(function (a,b) {
@@ -51,8 +50,7 @@ async function run() {
     })[0];
     config.url = `https://v3.football.api-sports.io/teams?league=${soccerData[keys[i]].id}&season=${season.year}`;
     const teamsData = await axios(config).then(res => res.data).catch(e => e.code);
-    console.log('what is teamsData', teamsData);
-    const reformattedData = teamsData.response.filter(x => x.name != null).map(x => ({ id: x.team.id, name: x.team.name, logo: x.team.logo, country: x.team.country }));
+    const reformattedData = teamsData.response.filter(x => x.team.name != null).map(x => ({ id: x.team.id, name: x.team.name, logo: x.team.logo, country: x.team.country }));
     soccerData[keys[i]].teams = reformattedData;
   }
 
