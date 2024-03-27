@@ -9,8 +9,8 @@ const Jimp = require('jimp');
 
 module.exports = {
   cooldown: 30,
-  data: new SlashCommandBuilder().setName('getnextevent')
-  .setDescription('get the next event for the indicated team')
+  data: new SlashCommandBuilder().setName('getcurrentevent')
+  .setDescription('get the current event for the indicated team')
   .addSubcommand(subcommand =>
     subcommand.setName('basketball').setDescription('basketball')
       .addStringOption(option =>
