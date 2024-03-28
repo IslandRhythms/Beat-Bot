@@ -7,58 +7,11 @@ const Hockey = require('../../sportsData/Hockey.json');
 const Soccer = require('../../sportsData/Soccer.json')
 const Jimp = require('jimp');
 const sportsAutocomplete = require('./common/autocomplete.js')
+const commandDef = require('./common/commandDef.js');
 
 module.exports = {
   cooldown: 30,
-  data: new SlashCommandBuilder().setName('getnextevent')
-  .setDescription('get the next event for the indicated team')
-  .addSubcommand(subcommand =>
-    subcommand.setName('basketball').setDescription('basketball')
-      .addStringOption(option =>
-        option.setName('league').setDescription('the league (nba, ncaa)').setRequired(true).addChoices(
-          { name: 'NBA', value: 'NBA' },
-          { name: 'NCAA', value: 'NCAA' }
-        ))
-      .addStringOption(option =>
-        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
-  .addSubcommand(subcommand => 
-    subcommand.setName('football').setDescription('american football')
-    .addStringOption(option =>
-      option.setName('league').setDescription('the league (nfl, ncaa)').setRequired(true).addChoices(
-        { name: 'NFL', value: 'NFL' },
-        { name: 'NCAA', value: 'NFL' }
-      ))
-      .addStringOption(option =>
-        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
-  .addSubcommand(subcommand => 
-    subcommand.setName('baseball').setDescription('baseball')
-    .addStringOption(option =>
-      option.setName('league').setDescription('the league (mlb)').setRequired(true).addChoices(
-        { name: 'MLB', value: 'MLB' },
-        // { name: 'NCAA', value: 'NCAA' }
-      ))
-      .addStringOption(option =>
-        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
-  .addSubcommand(subcommand => 
-    subcommand.setName('hockey').setDescription('hockey')
-    .addStringOption(option =>
-      option.setName('league').setDescription('the league (nhl, ncaa)').setRequired(true).addChoices(
-        { name: 'NHL', value: 'NHL' },
-        { name: 'NCAA', value: 'NCAA' }
-      ))
-      .addStringOption(option =>
-        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
-  .addSubcommand(subcommand => 
-    subcommand.setName('soccer').setDescription('internationally known as football')
-    .addStringOption(option =>
-      option.setName('league').setDescription('the league').setRequired(true).addChoices(
-        { name: 'Bundesliga', value: 'Bundesliga' },
-        { name: 'La Liga', value: 'La Liga' },
-        { name: 'Serie A', value: 'Serie A' },
-        { name: 'Premiere League (UK)', value: 'Premiere League' }
-      ))
-      .addStringOption(option =>
-        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true))),
+  data: commandDef('getnextevent', 'get the next event for the indicated team'),
   async execute(interaction) {
     await interaction.deferReply({ ephemeral: true });
     const league = interaction.options.getString('league');
