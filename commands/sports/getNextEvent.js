@@ -105,7 +105,16 @@ module.exports = {
           return -1;
         }
       })[0].season;
-      nextGame = await processHockey(leagueId, teamId, season);
+
+      const config = {
+        method: 'GET',
+        url: `https://v1.hockey.api-sports.io/games?league=${leagueId}&team=${teamId}&season=${season}`,
+        headers: {
+          'x-rapidapi-host': 'v1.hockey.api-sports.io',
+          'x-rapidapi-key': process.env.SPORTSAPIKEY
+        }
+      };
+      nextGame = await processSport.processHockey(config, 'NS');
     }
     if (!nextGame) {
       return interaction.followUp(`No upcoming game could be found for ${team}.`)
@@ -259,39 +268,3 @@ async function processBaseball(leagueId, teamId, season) {
     api: 'api-baseball.com' }
 }
 
-// TODO: Hockey, Basketball, and Baseball have the same flow so possible optimization here.
-async function processHockey(leagueId, teamId, season) {
-  const config = {
-    method: 'GET',
-    url: `https://v1.hockey.api-sports.io/games?league=${leagueId}&team=${teamId}&season=${season}`,
-    headers: {
-      'x-rapidapi-host': 'v1.hockey.api-sports.io',
-      'x-rapidapi-key': process.env.SPORTSAPIKEY
-    }
-  };
-  const { response } = await axios(config).then(res => res.data);
-
-  const futureGames = response.filter(x => x.status.short == 'NS');
-  if (futureGames && futureGames.length < 1) {
-    return;
-  }
-  const nextGame = futureGames.sort(function(a,b) {
-    if(a.timestamp < b.timestamp) {
-      return -1;
-    } else {
-      return 1;
-    }
-  })[0];
-  const homeImage = await downloadImage(nextGame.teams.home.logo)
-  const awayImage = await downloadImage(nextGame.teams.away.logo);
-
-  const imageResult = await createImage(homeImage, awayImage, 'baseball');
-
-  return { awayTeam: nextGame.teams.away.name,
-    homeTeam: nextGame.teams.home.name,
-    when: new Date(nextGame.timestamp * 1000).toLocaleString(),
-    leagueLogo: nextGame.league.logo,
-    outputPath: imageResult.outputPath,
-    fileName: imageResult.fileName,
-    api: 'api-hockey.com' }
-}
