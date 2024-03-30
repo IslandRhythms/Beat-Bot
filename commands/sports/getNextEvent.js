@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const axios = require('axios');
 const Basketball = require('../../sportsData/Basketball.json');
 const Football = require('../../sportsData/Football.json');
@@ -8,6 +8,7 @@ const Soccer = require('../../sportsData/Soccer.json')
 const Jimp = require('jimp');
 const sportsAutocomplete = require('./common/autocomplete.js')
 const commandDef = require('./common/commandDef.js');
+const processSport = require('./common/processSport.js');
 
 module.exports = {
   cooldown: 30,
@@ -35,7 +36,16 @@ module.exports = {
           return -1;
         }
       })[0].season;
-      nextGame = await processBasketball(leagueId, teamId, season);
+
+      const config = {
+        method: 'GET',
+        url: `https://v1.basketball.api-sports.io/games?league=${leagueId}&team=${teamId}&season=${season}`,
+        headers: {
+          'x-rapidapi-key': process.env.SPORTSAPIKEY,
+          'x-rapidapi-host': `v1.basketball.api-sports.io`
+        }
+      };
+      nextGame = await processSport.processBasketball(config, 'NS');
     } else if (sport == 'soccer') { // use fixtures route
       leagueId = Soccer[league].id;
       const selectedTeam = Soccer[league]['teams'].find(x => x.name == team);
@@ -135,42 +145,6 @@ async function createImage(homeImage, awayImage, sport) {
   const outputPath = `../../next${sport}event.png`;
   await canvas.writeAsync(outputPath);
   return { outputPath: outputPath, fileName: `next${sport}event.png`}
-}
-
-async function processBasketball(leagueId, teamId, season) {
-  const config = {
-    method: 'GET',
-    url: `https://v1.basketball.api-sports.io/games?league=${leagueId}&team=${teamId}&season=${season}`,
-    headers: {
-      'x-rapidapi-key': process.env.SPORTSAPIKEY,
-      'x-rapidapi-host': `v1.basketball.api-sports.io`
-    }
-  };
-
-  const { response } = await axios(config).then(res => res.data);
-  const futureGames = response.filter(x => x.status.short == 'NS');
-  if (futureGames && futureGames.length < 1) {
-    return;
-  }
-  const nextGame = futureGames.sort(function(a,b) {
-    if(a.timestamp < b.timestamp) {
-      return -1;
-    } else {
-      return 1;
-    }
-  })[0];
-  const homeImage = await downloadImage(nextGame.teams.home.logo)
-  const awayImage = await downloadImage(nextGame.teams.away.logo);
-
-  const imageResult = await createImage(homeImage, awayImage, 'basketball');
-
-  return { awayTeam: nextGame.teams.away.name,
-    homeTeam: nextGame.teams.home.name,
-    when: new Date(nextGame.timestamp * 1000).toLocaleString(),
-    leagueLogo: nextGame.league.logo,
-    outputPath: imageResult.outputPath,
-    fileName: imageResult.fileName,
-    api: 'api-basketball.com' }
 }
 
 async function processFootball(leagueId, teamId, season) {

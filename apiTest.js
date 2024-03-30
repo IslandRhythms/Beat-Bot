@@ -4,31 +4,31 @@ require('./config');
 
 async function run() {
 
-  const config = {
-    method: 'get',
-    url: 'https://v3.football.api-sports.io/leagues',
-    headers: {
-      'x-rapidapi-key': process.env.SPORTSAPIKEY,
-      'x-rapidapi-host': 'v3.football.api-sports.io'
-    }
-  };
-
-  const  { response } = await axios(config).then(res => res.data);
-  const leagues = ['Premier League', 'La Liga', 'Seria A', 'Bundesliga', 'MLS', 'Liga Argentina', 'Liga Brasilena', 'Liga Mexicana'];
-
-  console.log(response.filter(x => leagues.includes(x.league.name)))
-
-  // const test = {
-  //   method: 'GET',
-  //   url: `https://v1.basketball.api-sports.io/games?league=12&team=147&season=2023-2024`,
+  // const config = {
+  //   method: 'get',
+  //   url: 'https://v3.football.api-sports.io/leagues',
   //   headers: {
   //     'x-rapidapi-key': process.env.SPORTSAPIKEY,
-  //     'x-rapidapi-host': `v1.basketball.api-sports.io`
+  //     'x-rapidapi-host': 'v3.football.api-sports.io'
   //   }
   // };
 
-  // const res = await axios(test).then(res => res.data);
-  // console.log(res.response, res.response.length, res.response[0])
+  // const  { response } = await axios(config).then(res => res.data);
+  // const leagues = ['Premier League', 'La Liga', 'Seria A', 'Bundesliga', 'MLS', 'Liga Argentina', 'Liga Brasilena', 'Liga Mexicana'];
+
+  // console.log(response.filter(x => leagues.includes(x.league.name)))
+
+  const test = {
+    method: 'GET',
+    url: `https://v1.basketball.api-sports.io/games?league=12&team=147&season=2023-2024`,
+    headers: {
+      'x-rapidapi-key': process.env.SPORTSAPIKEY,
+      'x-rapidapi-host': `v1.basketball.api-sports.io`
+    }
+  };
+
+  const res = await axios(test).then(res => res.data);
+  console.log(res.response, res.response.length, res.response[0])
 }
 
 // async function run() {
