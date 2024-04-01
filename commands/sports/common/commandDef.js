@@ -13,7 +13,12 @@ module.exports = function commandDef(commandName, commandDescription) {
           { name: 'NCAA', value: 'NCAA' }
         ))
       .addStringOption(option =>
-        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
+        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true))
+      .addStringOption(option => option.setName('status').setDescription('the current status of the game you\'re looking for.').addChoices(
+        { name: 'Next Game', value: 'NS' },
+        { name: 'Live', value: 'In Progress' },
+        { name: 'Last Game', value: 'FT' },
+      ).setRequired(true)))
   .addSubcommand(subcommand => 
     subcommand.setName('football').setDescription('american football')
     .addStringOption(option =>
@@ -22,7 +27,12 @@ module.exports = function commandDef(commandName, commandDescription) {
         { name: 'NCAA', value: 'NFL' }
       ))
       .addStringOption(option =>
-        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
+        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true))
+      .addStringOption(option => option.setName('status').setDescription('the current status of the game you\'re looking for.').addChoices(
+        { name: 'Next Game', value: 'NS' },
+        { name: 'Live', value: 'In Progress' },
+        { name: 'Last Game', value: 'FT' },
+      ).setRequired(true)))
   .addSubcommand(subcommand => 
     subcommand.setName('baseball').setDescription('baseball')
     .addStringOption(option =>
@@ -31,7 +41,12 @@ module.exports = function commandDef(commandName, commandDescription) {
         // { name: 'NCAA', value: 'NCAA' }
       ))
       .addStringOption(option =>
-        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
+        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true))
+      .addStringOption(option => option.setName('status').setDescription('the current status of the game you\'re looking for.').addChoices(
+        { name: 'Next Game', value: 'NS' },
+        { name: 'Live', value: 'In Progress' },
+        { name: 'Last Game', value: 'FT' },
+      ).setRequired(true)))
   .addSubcommand(subcommand => 
     subcommand.setName('hockey').setDescription('hockey')
     .addStringOption(option =>
@@ -40,7 +55,12 @@ module.exports = function commandDef(commandName, commandDescription) {
         { name: 'NCAA', value: 'NCAA' }
       ))
       .addStringOption(option =>
-        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
+        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true))
+      .addStringOption(option => option.setName('status').setDescription('the current status of the game you\'re looking for.').addChoices(
+        { name: 'Next Game', value: 'NS' },
+        { name: 'Live', value: 'In Progress' },
+        { name: 'Last Game', value: 'FT' },
+      ).setRequired(true)))
   .addSubcommand(subcommand => 
     subcommand.setName('soccer').setDescription('internationally known as football')
     .addStringOption(option =>
@@ -51,5 +71,10 @@ module.exports = function commandDef(commandName, commandDescription) {
         { name: 'Premiere League (UK)', value: 'Premiere League' }
       ))
       .addStringOption(option =>
-        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true)))
+        option.setName('team').setDescription('the name of the team').setRequired(true).setAutocomplete(true))
+      .addStringOption(option => option.setName('status').setDescription('the current status of the game you\'re looking for.').addChoices(
+        { name: 'Next Game', value: 'NS' },
+        { name: 'Live', value: 'In Progress' },
+        { name: 'Last Game', value: 'FT' },
+      ).setRequired(true)))
 }
