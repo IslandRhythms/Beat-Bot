@@ -3,6 +3,7 @@
 module.exports = async function preProcessSport(interaction) {
   const league = interaction.options.getString('league');
   const team = interaction.options.getString('team');
+  const status = interaction.options.getString('status');
   const sport = interaction.options._subcommand;
   let leagueId = '';
   let teamId = '';
@@ -31,7 +32,7 @@ module.exports = async function preProcessSport(interaction) {
         'x-rapidapi-host': `v1.basketball.api-sports.io`
       }
     };
-    nextGame = await processSport.processBasketball(config, 'NS');
+    nextGame = await processSport.processBasketball(config, status);
   } else if (sport == 'soccer') { // use fixtures route
     leagueId = Soccer[league].id;
     const selectedTeam = Soccer[league]['teams'].find(x => x.name == team);
