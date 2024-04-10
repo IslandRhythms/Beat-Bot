@@ -10,7 +10,7 @@ const processSport = require('./common/processSport.js');
 
 module.exports = {
   cooldown: 30,
-  data: commandDef('getnextevent', 'get the next event for the indicated team'),
+  data: commandDef('getnextevent', 'get the next game for the indicated team'),
   async execute(interaction) {
     await interaction.deferReply({ ephemeral: true });
     const league = interaction.options.getString('league');

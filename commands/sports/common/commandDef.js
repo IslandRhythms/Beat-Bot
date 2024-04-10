@@ -1,6 +1,8 @@
 'use strict';
 
-const { SlashCommandBuilder } = require('discord.js')
+const { SlashCommandBuilder } = require('discord.js');
+
+// idea: check command name. depending on the name maybe we can append an argument to the return result of this after everything is said and done i.e. addStringOption('status') for getnextevent
 
 module.exports = function commandDef(commandName, commandDescription) {
   return new SlashCommandBuilder().setName(commandName)

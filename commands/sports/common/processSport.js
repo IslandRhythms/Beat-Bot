@@ -4,6 +4,7 @@ const axios = require('axios');
 const Jimp = require('jimp');
 
 // multiple finished statuses for some sports. Include them in the if statements.
+// optimization: each command file has a similar config object. We could use the subcommands to change the relevant parts and eliminate the multiple config creations
 
 exports.processBasketball = async function processBasketball(config, status) {
   const { response } = await axios(config).then(res => res.data);
@@ -111,8 +112,14 @@ exports.processHockey = async function processHockey(config, status) {
 exports.processSoccer = async function processSoccer(config, status) {
   const { response } = await axios(config).then(res => res.data);
   let data = null;
-  if (status == 'NS' || status == 'FT') { // not started or Finished Game
-    const games = response.filter(x => x.fixture.status.short == status);
+
+  if (status == 'NS' || status.length > 0) { // not started or Finished Game
+    let games = null;
+    if (Array.isArray(status)) {
+      games = response.filter(x =>  status.includes(x.fixture.status.short));
+    } else {
+      games = response.filter(x => x.fixture.status.short == status);
+    }
     if (games && games.length < 1) {
       return;
     }
@@ -196,5 +203,5 @@ async function createImage(homeImage, awayImage, sport) {
   canvas.composite(homeImage, xPos2, Math.floor((height - homeImage.getHeight()) / 2));
   const outputPath = `../../../next${sport}event.png`;
   await canvas.writeAsync(outputPath);
-  return { outputPath: outputPath, fileName: `next${sport}event.png`}
+  return { outputPath: outputPath, fileName: `next${sport}event.png`} // change file name perhaps?
 }

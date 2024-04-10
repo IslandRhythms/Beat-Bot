@@ -10,14 +10,13 @@ const commandDef = require('./common/commandDef.js');
 
 module.exports = {
   cooldown: 30,
-  data: commandDef('getcurrentevent', 'get the current score for the ongoing match for the given team'),
+  data: commandDef('getrecentevent', 'get the most recent game for the given team'),
   async execute(interaction) {
     await interaction.deferReply({ ephemeral: true });
     const league = interaction.options.getString('league');
     const team = interaction.options.getString('team');
     const sport = interaction.options._subcommand;
-    const status = null;
-    const finishedStatuses = ['FT', 'PEN', 'AET']
+    const status = ['FT', 'PEN', 'AET'];
     let leagueId = '';
     let teamId = '';
     let season = '';
