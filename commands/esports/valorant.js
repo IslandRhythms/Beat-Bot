@@ -23,16 +23,28 @@ module.exports = {
       .setTimestamp(new Date(information.date))
       .setAuthor({ name: `${information.author}` });
     } else {
-      console.log('what is interaction', interaction.options);
       const { data } = await axios.get(`https://vlrggapi.vercel.app/${group}/${subcommand}`).then(res => res.data);
       const information = data.segments[0];
-      console.log('what is information', information);
       if (subcommand == 'upcoming') {
-
+        embed = new EmbedBuilder().setTitle(`:${information.flag1}: ${information.team1} vs ${information.team2} :${information.flag2}: ${new Date(information.unix_timestamp).toLocaleString('en-US', { timeZone: 'AST'})}`)
+        .setURL(`${information.match_page}`)
+        .setDescription(`${information.time_until_match}`)
+        .setAuthor({ name: `${information.match_event} ${information.match_series}` });
       } else if (subcommand == 'live_score') {
-
+        embed = new EmbedBuilder().setTitle(`:${information.flag1}: ${information.team1} vs ${information.team2} :${information.flag2}: ${new Date(information.unix_timestamp).toLocaleString('en-US', { timeZone: 'AST'})}`)
+        .setURL(`${information.match_page}`)
+        .setDescription(`${information.time_until_match} ${information.current_map} Map ${information.map_number}`)
+        .setAuthor({ name: `${information.match_event} ${information.match_series}` })
+        .addFields({ name: `:${information.flag1}: ${information.team1}`, value: `${information.score1}`, inline: true }, { name: `:${information.flag2}: ${information.team2}`, value: `${information.score2}`, inline: true }, { name: '\u200b', value: '\u200b', inline: true })
+        .addFields({ name: `${information.team1} CT side`, value: `${information.team1_round_ct}`, inline: true }, { name: `${information.team2} T side`, value: `${information.team2_round_t}`, inline: true }, { name: '\u200b', value: '\u200b', inline: true })
+        .addFields({ name: `${information.team1} T side`, value: `${information.team1_round_t}`, inline: true }, { name: `${information.team2} CT side`, value: `${information.team2_round_ct}`, inline: true }, { name: '\u200b', value: '\u200b', inline: true })
       } else if (subcommand == 'results') {
-        
+        embed = new EmbedBuilder().setTitle(`:${information.flag1}: ${information.team1} vs ${information.team2} :${information.flag2}: ${new Date(information.unix_timestamp).toLocaleString('en-US', { timeZone: 'AST'})}`)
+        .setURL(`https://www.vlr.gg${information.match_page}`)
+        .setDescription(`${information.time_completed}`)
+        .setAuthor({ name: `${information.tournament_name} ${information.round_info}` })
+        .addFields({ name: `:${information.flag1}: ${information.team1}`, value: `${information.score1}`, inline: true }, { name: `:${information.flag2}: ${information.team2}`, value: `${information.score2}`, inline: true }, { name: '\u200b', value: '\u200b', inline: true })
+        .setImage(`${information.tournament_icon}`);
       }
     }
 
