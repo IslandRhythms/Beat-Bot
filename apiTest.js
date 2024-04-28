@@ -1,46 +1,51 @@
 const axios = require('axios');
 require('./config');
+const fs = require('fs');
+const path = require ('path');
 
-
-async function run() {
-
-  // const config = {
-  //   method: 'get',
-  //   url: 'https://v3.football.api-sports.io/leagues',
-  //   headers: {
-  //     'x-rapidapi-key': process.env.SPORTSAPIKEY,
-  //     'x-rapidapi-host': 'v3.football.api-sports.io'
-  //   }
-  // };
-
-  // const  { response } = await axios(config).then(res => res.data);
-  // const leagues = ['Premier League', 'La Liga', 'Seria A', 'Bundesliga', 'MLS', 'Liga Argentina', 'Liga Brasilena', 'Liga Mexicana'];
-
-  // console.log(response.filter(x => leagues.includes(x.league.name)))
-
-  const test = {
-    method: 'GET',
-    url: `https://v1.basketball.api-sports.io/games?league=12&team=147&season=2023-2024`,
-    headers: {
-      'x-rapidapi-key': process.env.SPORTSAPIKEY,
-      'x-rapidapi-host': `v1.basketball.api-sports.io`
-    }
-  };
-
-  const res = await axios(test).then(res => res.data);
-  console.log(res.response, res.response.length, res.response[0])
-}
 
 // async function run() {
-//   const { data } = await axios.get(`https://vlrggapi.vercel.app/news`).then(res => res.data);
-//   console.log('what is res', data, data.segments[0]);
 
-//   const res = await axios.get(`https://vlrggapi.vercel.app/match/results`).then(res => res.data);
-//   console.log('what is response', res, res.data.segments)
+//   // const config = {
+//   //   method: 'get',
+//   //   url: 'https://v3.football.api-sports.io/leagues',
+//   //   headers: {
+//   //     'x-rapidapi-key': process.env.SPORTSAPIKEY,
+//   //     'x-rapidapi-host': 'v3.football.api-sports.io'
+//   //   }
+//   // };
 
-//   const test = await axios.get(`https://vlrggapi.vercel.app/match/upcoming`).then(res => res.data);
-//   console.log('what is test', test, test.data.segments, test.data.segments[0]);
+//   // const  { response } = await axios(config).then(res => res.data);
+//   // const leagues = ['Premier League', 'La Liga', 'Seria A', 'Bundesliga', 'MLS', 'Liga Argentina', 'Liga Brasilena', 'Liga Mexicana'];
+
+//   // console.log(response.filter(x => leagues.includes(x.league.name)))
+
+//   const test = {
+//     method: 'GET',
+//     url: `https://v1.basketball.api-sports.io/games?league=12&team=147&season=2023-2024`,
+//     headers: {
+//       'x-rapidapi-key': process.env.SPORTSAPIKEY,
+//       'x-rapidapi-host': `v1.basketball.api-sports.io`
+//     }
+//   };
+
+//   const res = await axios(test).then(res => res.data);
+//   console.log(res.response, res.response.length, res.response[0])
 // }
+
+async function run() {
+  const { data } = await axios.get(`https://vlrggapi.vercel.app/news`).then(res => res.data);
+  console.log('what is res', data, data.segments[0]);
+
+  const res = await axios.get(`https://vlrggapi.vercel.app/match/results`).then(res => res.data);
+  console.log('what is response', res, res.data.segments)
+
+  const test = await axios.get(`https://vlrggapi.vercel.app/match/upcoming`).then(res => res.data);
+  console.log('what is test', test, test.data.segments, test.data.segments[0]);
+}
+
+
+
 run();
 
 // async function run() {

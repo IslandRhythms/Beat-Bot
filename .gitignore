@@ -7,3 +7,5 @@ package-lock.json
 .env.local
 .env.production
 sportsData
+token.json
+credentials.json
