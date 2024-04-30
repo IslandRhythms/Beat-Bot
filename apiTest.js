@@ -2,6 +2,7 @@ const axios = require('axios');
 require('./config');
 const fs = require('fs');
 const path = require ('path');
+const puppeteer = require('puppeteer');
 
 
 // async function run() {
@@ -33,17 +34,58 @@ const path = require ('path');
 //   console.log(res.response, res.response.length, res.response[0])
 // }
 
+// async function run() {
+//   const { data } = await axios.get(`https://vlrggapi.vercel.app/news`).then(res => res.data);
+//   console.log('what is res', data, data.segments[0]);
+
+//   const res = await axios.get(`https://vlrggapi.vercel.app/match/results`).then(res => res.data);
+//   console.log('what is response', res, res.data.segments)
+
+//   const test = await axios.get(`https://vlrggapi.vercel.app/match/upcoming`).then(res => res.data);
+//   console.log('what is test', test, test.data.segments, test.data.segments[0]);
+// }
+
 async function run() {
-  const { data } = await axios.get(`https://vlrggapi.vercel.app/news`).then(res => res.data);
-  console.log('what is res', data, data.segments[0]);
+    // Launch a headless Chromium browser
+    const browser = await puppeteer.launch({
+      headless: false,
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+    });
 
-  const res = await axios.get(`https://vlrggapi.vercel.app/match/results`).then(res => res.data);
-  console.log('what is response', res, res.data.segments)
+   // Create a new page
+   const page = await browser.newPage();
 
-  const test = await axios.get(`https://vlrggapi.vercel.app/match/upcoming`).then(res => res.data);
-  console.log('what is test', test, test.data.segments, test.data.segments[0]);
+   // Enable request interception
+   await page.setRequestInterception(true);
+
+   // Array to store network requests
+   const requests = [];
+
+   // Listen for network requests
+   page.on('request', request => {
+       requests.push({
+           url: request.url(),
+           method: request.method(),
+           headers: request.headers(),
+           postData: request.postData(),
+       });
+
+       // Continue with the request
+       request.continue();
+   });
+
+   // Navigate to the webpage
+   await page.goto('https://battlefy.com/apex-legends-global-series-year-4/pro-league-split-1-playoffs/group-stage');
+
+   // Wait for some time for the page to load (you might need to adjust this)
+   await page.waitForTimeout(5000);
+
+   // Write network requests to a JSON file
+   fs.writeFileSync('network_activity.json', JSON.stringify(requests, null, 2));
+
+   // Close the browser
+   await browser.close();
 }
-
 
 
 run();
