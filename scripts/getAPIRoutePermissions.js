@@ -1,4 +1,4 @@
-require('./config');
+require('../config');
 const fetch = require('node-fetch');
 
 const { Timer } = require('timer-node');

@@ -9,8 +9,14 @@ const Jimp = require('jimp');
 exports.processBasketball = async function processBasketball(config, status) {
   const { response } = await axios(config).then(res => res.data);
   let data = null;
-  if (status == 'NS' || status == 'FT') { // not started or Finished Game
-    const games = response.filter(x => x.status.short == status);
+  let scores = null;
+  if (status == 'NS' || status.length > 0) { // not started or Finished Game
+    let games = null;
+    if (Array.isArray(status)) {
+      games = response.filter(x =>  status.includes(x.status.short));
+    } else {
+      games = response.filter(x => x.status.short == status);
+    }
     if (games && games.length < 1) {
       return;
     }
@@ -24,6 +30,24 @@ exports.processBasketball = async function processBasketball(config, status) {
   } else { // in progress game
     const inProgressStatuses = ['Q1', 'Q2', 'Q3', 'Q4', 'OT', 'BT', 'HT'];
     data = response.filter(x => inProgressStatuses.includes(x.status.short))[0];
+    const keys = Object.keys(data.scores.home);
+    for (let i = 0; i < keys.length; i++) {
+      const abbreviation = snakeCaseToAbbreviation(keys[i]);
+      if (data.status.short == 'HT') {
+        const obj = {};
+        obj.home = data.scores.home['quarter_2'];
+        obj.away = data.scores.away['quarter_2'];
+        scores = obj;
+        break;
+      }
+      else if (abbreviation == data.status.short) {
+        const obj = {};
+        obj.home = data.scores.home[keys[i]];
+        obj.away = data.scores.away[keys[i]];
+        scores = obj;
+        break;
+      }
+    }
   }
   const homeImage = await downloadImage(data.teams.home.logo)
   const awayImage = await downloadImage(data.teams.away.logo);
@@ -33,8 +57,10 @@ exports.processBasketball = async function processBasketball(config, status) {
   return { awayTeam: data.teams.away.name,
     homeTeam: data.teams.home.name,
     when: new Date(data.timestamp * 1000).toLocaleString(),
-    scores: data.scores,
+    scores: scores,
+    rawScores: data.scores,
     leagueLogo: data.league.logo,
+    status: data.status,
     outputPath: imageResult.outputPath,
     fileName: imageResult.fileName,
     api: 'api-basketball.com' }
@@ -69,6 +95,7 @@ exports.processBaseball = async function processBaseball(config, status) {
     when: new Date(data.timestamp * 1000).toLocaleString(),
     scores: data.scores,
     leagueLogo: data.league.logo,
+    status: data.status,
     outputPath: imageResult.outputPath,
     fileName: imageResult.fileName,
     api: 'api-baseball.com' }
@@ -77,8 +104,13 @@ exports.processBaseball = async function processBaseball(config, status) {
 exports.processHockey = async function processHockey(config, status) {
   const { response } = await axios(config).then(res => res.data);
   let data = null;
-  if (status == 'NS' || status == 'FT') { // not started or Finished Game
-    const games = response.filter(x => x.status.short == status);
+  if (status == 'NS' || status.length > 0) { // not started or Finished Game
+    let games = null;
+    if (Array.isArray(status)) {
+      games = response.filter(x =>  status.includes(x.status.short));
+    } else {
+      games = response.filter(x => x.status.short == status);
+    }
     if (games && games.length < 1) {
       return;
     }
@@ -103,6 +135,7 @@ exports.processHockey = async function processHockey(config, status) {
     scores: data.scores,
     when: new Date(data.timestamp * 1000).toLocaleString(),
     leagueLogo: data.league.logo,
+    status: data.status,
     outputPath: imageResult.outputPath,
     fileName: imageResult.fileName,
     api: 'api-hockey.com' }
@@ -144,6 +177,7 @@ exports.processSoccer = async function processSoccer(config, status) {
     scores: data.score,
     when: new Date(data.fixture.timestamp * 1000).toLocaleString(),
     leagueLogo: data.league.logo,
+    status: data.status,
     outputPath: imageResult.outputPath,
     fileName: imageResult.fileName,
     api: 'api-football.com' }
@@ -153,7 +187,12 @@ exports.processFootball = async function processFootball(config, status) {
   const { response } = await axios(config).then(res => res.data);
   let data = null;
   if (status == 'NS' || status == 'FT') { // not started or Finished Game
-    const games = response.filter(x => x.game.status.short == status);
+    let games = null;
+    if (Array.isArray(status)) {
+      games = response.filter(x =>  status.includes(x.game.status.short));
+    } else {
+      games = response.filter(x => x.game.status.short == status);
+    }
     if (games && games.length < 1) {
       return;
     }
@@ -179,6 +218,7 @@ exports.processFootball = async function processFootball(config, status) {
     when: new Date(data.game.date.timestamp * 1000).toLocaleString(),
     leagueLogo: data.league.logo,
     outputPath: imageResult.outputPath,
+    status: data.status,
     fileName: imageResult.fileName,
     api: 'api-american-football.com' }
 };
@@ -201,7 +241,24 @@ async function createImage(homeImage, awayImage, sport) {
 
   canvas.composite(awayImage, xPos1, Math.floor((height - awayImage.getHeight()) / 2));
   canvas.composite(homeImage, xPos2, Math.floor((height - homeImage.getHeight()) / 2));
-  const outputPath = `../../../next${sport}event.png`;
+  const outputPath = `../next${sport}event.png`;
   await canvas.writeAsync(outputPath);
   return { outputPath: outputPath, fileName: `next${sport}event.png`} // change file name perhaps?
+}
+
+function snakeCaseToAbbreviation(str) {
+  // Split the string by underscores
+  const parts = str.split('_');
+
+  // Initialize an empty string to store the abbreviation
+  let abbreviation = '';
+
+  // Iterate over each part of the string
+  for (const part of parts) {
+      // Add the first character of each part to the abbreviation string
+      abbreviation += part.charAt(0).toUpperCase();
+  }
+
+  // Return the abbreviation
+  return abbreviation;
 }

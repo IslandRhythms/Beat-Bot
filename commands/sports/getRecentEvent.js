@@ -6,6 +6,7 @@ const Hockey = require('../../sportsData/Hockey.json');
 const Soccer = require('../../sportsData/Soccer.json')
 const sportsAutocomplete = require('./common/autocomplete.js')
 const commandDef = require('./common/commandDef.js');
+const processSport = require('./common/processSport.js');
 
 
 module.exports = {
@@ -16,12 +17,13 @@ module.exports = {
     const league = interaction.options.getString('league');
     const team = interaction.options.getString('team');
     const sport = interaction.options._subcommand;
-    const status = ['FT', 'PEN', 'AET'];
     let leagueId = '';
     let teamId = '';
     let season = '';
-    let currentGame = null;
+    let recentGame = null;
+    // status must be declared per sport
     if (sport == 'basketball') {
+      const status = ['FT', 'AOT']
       leagueId = Basketball[league].id;
       const selectedTeam = Basketball[league]['teams'].find(x => x.name == team);
       if (!selectedTeam) {
@@ -44,8 +46,9 @@ module.exports = {
           'x-rapidapi-host': `v1.basketball.api-sports.io`
         }
       };
-      currentGame = await processSport.processBasketball(config, status);
+      recentGame = await processSport.processBasketball(config, status);
     } else if (sport == 'soccer') { // use fixtures route
+      const status = ['FT', 'PEN', 'AET'];
       leagueId = Soccer[league].id;
       const selectedTeam = Soccer[league]['teams'].find(x => x.name == team);
       if (!selectedTeam) {
@@ -68,8 +71,9 @@ module.exports = {
           'x-rapidapi-key': process.env.SPORTSAPIKEY
         }
       };
-      currentGame = await processSport.processSoccer(config, status);
+      recentGame = await processSport.processSoccer(config, status);
     } else if (sport == 'football') {
+      const status = ['FT', 'AOT'];
       leagueId = Football[league].id;
       const selectedTeam = Football[league]['teams'].find(x => x.name == team);
       if (!selectedTeam) {
@@ -92,8 +96,9 @@ module.exports = {
           'x-rapidapi-key': process.env.SPORTSAPIKEY
         }
       };
-      currentGame = await processSport.processFootball(config, status);
+      recentGame = await processSport.processFootball(config, status);
     } else if (sport == 'baseball') {
+      const status = 'FT';
       leagueId = Baseball[league].id;
       const selectedTeam = Baseball[league]['teams'].find(x => x.name == team);
       if (!selectedTeam) {
@@ -116,8 +121,9 @@ module.exports = {
           'x-rapidapi-host': 'v1.baseball.api-sports.io'
         }
       };    
-      currentGame = await processSport.processBaseball(config, status);
+      recentGame = await processSport.processBaseball(config, status);
     } else if (sport == 'hockey') {
+      const status = ['FT', 'AOT', 'AP'];
       leagueId = Hockey[league].id;
       const selectedTeam = Hockey[league]['teams'].find(x => x.name == team);
       if (!selectedTeam) {
@@ -140,20 +146,27 @@ module.exports = {
           'x-rapidapi-key': process.env.SPORTSAPIKEY
         }
       };
-      currentGame = await processSport.processHockey(config, status);
+      recentGame = await processSport.processHockey(config, status);
     }
-    if (!currentGame) {
+    if (!recentGame) {
       return interaction.followUp(`No upcoming game could be found for ${team}.`)
     }
     // this is probably gonna have to change a little as well
     // Need to decide whether to show current score or current score as well as the past scores before this point
     // just current score is easier I think
+    const winner = recentGame.scores.away.total > recentGame.scores.home.total ? `The ${recentGame.awayTeam} Won!` : `The ${recentGame.homeTeam} Won!`;
+    console.log('what is recentGame', recentGame);
     const embed = new EmbedBuilder()
-      .setTitle(`${team}'s Current Game: ${currentGame.awayTeam} at ${currentGame.homeTeam} happening now`)
-      .setAuthor({ name: `${league}`, iconURL: `${currentGame.leagueLogo}`})
-      .setImage(`attachment://${currentGame.fileName}`)
-      .setFooter({ text: `Possible thanks to ${currentGame.api}`})
-    await interaction.followUp({ embeds: [embed], files: [{ attachment: currentGame.outputPath, name: `${currentGame.fileName}`}]});
+      .setTitle(`${team}'s Recent Game: ${recentGame.awayTeam} at ${recentGame.homeTeam}. ${winner}`)
+      .setAuthor({ name: `${league}`, iconURL: `${recentGame.leagueLogo}`})
+      .setImage(`attachment://${recentGame.fileName}`)
+      .setFooter({ text: `Possible thanks to ${recentGame.api}`})
+      .addFields(
+        { name: `${recentGame.awayTeam}`, value: `${recentGame.scores.away.total}`, inline: true },
+        { name: '\u200b', value: '\u200b', inline: true },
+        { name: `${recentGame.homeTeam}`, value: `${recentGame.scores.home.total}`, inline: true }
+      )
+    await interaction.followUp({ embeds: [embed], files: [{ attachment: recentGame.outputPath, name: `${recentGame.fileName}`}]});
   },
   async autocomplete(interaction) {
     return sportsAutocomplete(interaction);

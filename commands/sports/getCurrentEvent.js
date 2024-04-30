@@ -17,7 +17,6 @@ module.exports = {
     const team = interaction.options.getString('team');
     const sport = interaction.options._subcommand;
     const status = null;
-    const finishedStatuses = ['FT', 'PEN', 'AET']
     let leagueId = '';
     let teamId = '';
     let season = '';
@@ -149,9 +148,15 @@ module.exports = {
     // this is probably gonna have to change a little as well
     // Need to decide whether to show current score or current score as well as the past scores before this point
     // just current score is easier I think
+    
     const embed = new EmbedBuilder()
-      .setTitle(`${team}'s Current Game: ${currentGame.awayTeam} at ${currentGame.homeTeam} happening now`)
+      .setTitle(`${team}'s Current Game: ${currentGame.awayTeam} at ${currentGame.homeTeam} happening now ${data.status.long}`)
       .setAuthor({ name: `${league}`, iconURL: `${currentGame.leagueLogo}`})
+      .addFields(
+        { name: `${currentGame.awayteam}`, value: `${currentGame.scores.away}`, inline: true },
+        { name: '\u200b', value: '\u200b', inline: true },
+        { name: `${currentGame.hometeam}`, value: `${currentGame.scores.home}`, inline: true }
+      )
       .setImage(`attachment://${currentGame.fileName}`)
       .setFooter({ text: `Possible thanks to ${currentGame.api}`})
     await interaction.followUp({ embeds: [embed], files: [{ attachment: currentGame.outputPath, name: `${currentGame.fileName}`}]});
