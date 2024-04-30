@@ -14,6 +14,8 @@ const memeOfTheDay = require('./memeOfTheDay');
 const astropicOfTheDay = require('./astropicOfTheDay');
 const animalOfTheDay = require('./animalOfTheDay');
 const songOfTheDay = require('./songOfTheDay');
+const artworkOfTheDay = require('./artworkOfTheDay');
+const riddleOfTheDay = require('./riddleOfTheDay');
 
 const startQueue = require('./startQueue');
 
@@ -33,6 +35,7 @@ module.exports = async function tasks(db) {
 // https://pagination-djs.js.org/#md:other-send-options
 async function ofTheDay(db) {
   const { Daily } = db.models;
+  const obj = { };
   const { WOTD } = await wordOfTheDay();
   const { pokemonOfTheDay } = await pokeOfTheDay(); // copy more or less what we do for the fun command
   const { phaseOfTheMoon } = await moonPhase();
@@ -43,8 +46,15 @@ async function ofTheDay(db) {
   const { memeOTD } = await memeOfTheDay();
   const { astropicOTD } = await astropicOfTheDay();
   const { AOTD } = await animalOfTheDay();
+  const { riddleOTD } = await riddleOfTheDay();
   const sOTD = await songOfTheDay();
-
+  const artOTD = await artworkOfTheDay();
+  obj.metTitle = artOTD.met.title;
+  obj.metImageLink = artOTD.met.image;
+  obj.metArtist = artOTD.met.artist;
+  obj.chicagoTitle = artOTD.chicago.title;
+  obj.chicagoImageLink = artOTD.chicago.image;
+  obj.chicagoArtist = artOTD.chicago.artist;
   const doc = await Daily.create();
 }
 function next6am() {
