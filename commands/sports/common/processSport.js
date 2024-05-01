@@ -220,7 +220,7 @@ async function createImage(homeImage, awayImage, sport) {
 
   canvas.composite(awayImage, xPos1, Math.floor((height - awayImage.getHeight()) / 2));
   canvas.composite(homeImage, xPos2, Math.floor((height - homeImage.getHeight()) / 2));
-  const outputPath = `../next${sport}event.png`;
+  const outputPath = `./next${sport}event.png`;
   await canvas.writeAsync(outputPath);
   return { outputPath: outputPath, fileName: `next${sport}event.png`} // change file name perhaps?
 }
