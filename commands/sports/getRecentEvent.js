@@ -151,20 +151,18 @@ module.exports = {
     if (!recentGame) {
       return interaction.followUp(`No upcoming game could be found for ${team}.`)
     }
-    // this is probably gonna have to change a little as well
-    // Need to decide whether to show current score or current score as well as the past scores before this point
-    // just current score is easier I think
-    const winner = recentGame.scores.away.total > recentGame.scores.home.total ? `The ${recentGame.awayTeam} Won!` : `The ${recentGame.homeTeam} Won!`;
-    console.log('what is recentGame', recentGame);
+
+    const winner = recentGame.scores.away > recentGame.scores.home ? `The ${recentGame.awayTeam} Won!` : `The ${recentGame.homeTeam} Won!`;
+    // this should only show the total
     const embed = new EmbedBuilder()
       .setTitle(`${team}'s Recent Game: ${recentGame.awayTeam} at ${recentGame.homeTeam}. ${winner}`)
       .setAuthor({ name: `${league}`, iconURL: `${recentGame.leagueLogo}`})
       .setImage(`attachment://${recentGame.fileName}`)
       .setFooter({ text: `Possible thanks to ${recentGame.api}`})
       .addFields(
-        { name: `${recentGame.awayTeam}`, value: `${recentGame.scores.away.total}`, inline: true },
+        { name: `${recentGame.awayTeam}`, value: `${recentGame.scores.away}`, inline: true },
         { name: '\u200b', value: '\u200b', inline: true },
-        { name: `${recentGame.homeTeam}`, value: `${recentGame.scores.home.total}`, inline: true }
+        { name: `${recentGame.homeTeam}`, value: `${recentGame.scores.home}`, inline: true }
       )
     await interaction.followUp({ embeds: [embed], files: [{ attachment: recentGame.outputPath, name: `${recentGame.fileName}`}]});
   },

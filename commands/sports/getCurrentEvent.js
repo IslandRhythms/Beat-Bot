@@ -6,6 +6,7 @@ const Hockey = require('../../sportsData/Hockey.json');
 const Soccer = require('../../sportsData/Soccer.json')
 const sportsAutocomplete = require('./common/autocomplete.js')
 const commandDef = require('./common/commandDef.js');
+const processSport = require('./common/processSport.js')
 
 
 module.exports = {
@@ -145,17 +146,14 @@ module.exports = {
     if (!currentGame) {
       return interaction.followUp(`No upcoming game could be found for ${team}.`)
     }
-    // this is probably gonna have to change a little as well
-    // Need to decide whether to show current score or current score as well as the past scores before this point
-    // just current score is easier I think
-    
+    // this should have round breakdowns, but current score is easer to implement
     const embed = new EmbedBuilder()
-      .setTitle(`${team}'s Current Game: ${currentGame.awayTeam} at ${currentGame.homeTeam} happening now ${data.status.long}`)
+      .setTitle(`${team}'s Current Game: ${currentGame.awayTeam} at ${currentGame.homeTeam} happening now ${currentGame.status.long}`)
       .setAuthor({ name: `${league}`, iconURL: `${currentGame.leagueLogo}`})
       .addFields(
-        { name: `${currentGame.awayteam}`, value: `${currentGame.scores.away}`, inline: true },
+        { name: `${currentGame.awayTeam}`, value: `${currentGame.scores.away}`, inline: true },
         { name: '\u200b', value: '\u200b', inline: true },
-        { name: `${currentGame.hometeam}`, value: `${currentGame.scores.home}`, inline: true }
+        { name: `${currentGame.homeTeam}`, value: `${currentGame.scores.home}`, inline: true }
       )
       .setImage(`attachment://${currentGame.fileName}`)
       .setFooter({ text: `Possible thanks to ${currentGame.api}`})
