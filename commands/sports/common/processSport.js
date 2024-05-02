@@ -30,10 +30,10 @@ exports.processBasketball = async function processBasketball(config, status) {
     const inProgressStatuses = ['Q1', 'Q2', 'Q3', 'Q4', 'OT', 'BT', 'HT'];
     data = response.filter(x => inProgressStatuses.includes(x.status.short))[0];
   }
-  const homeImage = await downloadImage(data.teams.home.logo)
-  const awayImage = await downloadImage(data.teams.away.logo);
+  const homeImage = await exports.downloadImage(data.teams.home.logo)
+  const awayImage = await exports.downloadImage(data.teams.away.logo);
 
-  const imageResult = await createImage(homeImage, awayImage, 'basketball');
+  const imageResult = await exports.createImage(homeImage, awayImage, 'basketball');
   return { awayTeam: data.teams.away.name,
     homeTeam: data.teams.home.name,
     when: new Date(data.timestamp * 1000).toLocaleString(),
@@ -64,10 +64,10 @@ exports.processBaseball = async function processBaseball(config, status) {
     const inProgressStatuses = ['IN1', 'IN2', 'IN3', 'IN4', 'IN5', 'IN6', 'IN7', 'IN8', 'IN9'];
     data = response.filter(x => inProgressStatuses.includes(x.status.short))[0];
   }
-  const homeImage = await downloadImage(data.teams.home.logo)
-  const awayImage = await downloadImage(data.teams.away.logo);
+  const homeImage = await exports.downloadImage(data.teams.home.logo)
+  const awayImage = await exports.downloadImage(data.teams.away.logo);
 
-  const imageResult = await createImage(homeImage, awayImage, 'baseball');
+  const imageResult = await exports.createImage(homeImage, awayImage, 'baseball');
 
   return { awayTeam: data.teams.away.name,
     homeTeam: data.teams.home.name,
@@ -104,10 +104,10 @@ exports.processHockey = async function processHockey(config, status) {
     const inProgressStatuses = ['P1', 'P2', 'P3', 'OT', 'PT', 'BT'];
     data = response.filter(x => inProgressStatuses.includes(x.status.short))[0];
   }
-  const homeImage = await downloadImage(data.teams.home.logo)
-  const awayImage = await downloadImage(data.teams.away.logo);
+  const homeImage = await exports.downloadImage(data.teams.home.logo)
+  const awayImage = await exports.downloadImage(data.teams.away.logo);
 
-  const imageResult = await createImage(homeImage, awayImage, 'hockey');
+  const imageResult = await exports.createImage(homeImage, awayImage, 'hockey');
 
   return { awayTeam: data.teams.away.name,
     homeTeam: data.teams.home.name,
@@ -146,10 +146,10 @@ exports.processSoccer = async function processSoccer(config, status) {
     const inProgressStatuses = ['1H', 'HT', '2H', 'ET', 'BT', 'P', 'LIVE'];
     data = response.filter(x => inProgressStatuses.includes(x.fixture.status.short))[0];
   }
-  const homeImage = await downloadImage(data.teams.home.logo)
-  const awayImage = await downloadImage(data.teams.away.logo);
+  const homeImage = await exports.downloadImage(data.teams.home.logo)
+  const awayImage = await exports.downloadImage(data.teams.away.logo);
 
-  const imageResult = await createImage(homeImage, awayImage, 'soccer');
+  const imageResult = await exports.createImage(homeImage, awayImage, 'soccer');
 
   return { awayTeam: data.teams.away.name,
     homeTeam: data.teams.home.name,
@@ -186,10 +186,10 @@ exports.processFootball = async function processFootball(config, status) {
     const inProgressStatuses = ['Q1', 'Q2', 'Q3', 'Q4', 'OT', 'HT'];
     data = response.filter(x => inProgressStatuses.includes(x.game.status.short))[0];
   }
-  const homeImage = await downloadImage(data.teams.home.logo)
-  const awayImage = await downloadImage(data.teams.away.logo);
+  const homeImage = await exports.downloadImage(data.teams.home.logo)
+  const awayImage = await exports.downloadImage(data.teams.away.logo);
 
-  const imageResult = await createImage(homeImage, awayImage, 'football');
+  const imageResult = await exports.createImage(homeImage, awayImage, 'football');
 
   return { awayTeam: data.teams.away.name,
     homeTeam: data.teams.home.name,
@@ -202,12 +202,12 @@ exports.processFootball = async function processFootball(config, status) {
     api: 'api-american-football.com' }
 };
 
-async function downloadImage(url) {
+exports.downloadImage = async function(url) {
   const res = await axios.get(url, { responseType: 'arraybuffer' }).then(res => res.data);
   return await Jimp.read(res);
 }
 
-async function createImage(homeImage, awayImage, sport) {
+exports.createImage = async function(homeImage, awayImage, sport) {
 
   const width = Math.max(homeImage.getWidth(), awayImage.getWidth())
   const height = Math.max(homeImage.getWidth(), awayImage.getWidth());
