@@ -59,6 +59,9 @@ const dailySchema = new mongoose.Schema({
     riddle: String,
     answer: String
   },
+  historyOTD: {
+    type: String
+  },
   countryOTD: String,
   dateString: String, // MM/DD/YYYY
   pings: Number, // how many times people have called the bot

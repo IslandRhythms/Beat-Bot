@@ -105,6 +105,9 @@ async function ofTheDay(db) {
   obj.plantOTD.name = plantInformation.common_name;
   obj.plantOTD.id = plantInformation.id;
   fields.push({ name: 'Plant of the Day', value: plantInformation.common_name });
+  const { historyOTD } = await onThisDay();
+  obj.historyOTD = historyOTD;
+  fields.push({ name: 'History of the Day', value: historyOTD });
   const doc = await Daily.create(obj);
 }
 function next6am() {

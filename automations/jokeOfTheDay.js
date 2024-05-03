@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-module.exports = async function jokeOfTheDay(db) {
+module.exports = async function jokeOfTheDay() {
   
   let url = null;
   const today = new Date();
