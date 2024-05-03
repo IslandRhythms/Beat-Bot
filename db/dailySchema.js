@@ -20,7 +20,8 @@ const dailySchema = new mongoose.Schema({
     chicagoArtist: String
   },
   plantOTD: {
-    type: String
+    name: String,
+    id: Number
   },
   pokemonOTD: {
     type: String

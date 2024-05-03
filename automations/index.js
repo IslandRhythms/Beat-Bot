@@ -1,21 +1,22 @@
 
 const initTasks = require('@mongoosejs/task');
-const { Pagination } = require('pagination.djs');
 
-const onThisDay = require('./onThisDay');
-const wordOfTheDay = require('./wordOfTheDay');
-const pokeOfTheDay = require('./pokemonOfTheDay');
-const poetryOfTheDay = require('./poemOfTheDay');
+const animalOfTheDay = require('./animalOfTheDay');
+const artworkOfTheDay = require('./artworkOfTheDay');
+const astropicOfTheDay = require('./astropicOfTheDay');
+const factOfTheDay = require('./factOfTheDay');
+const jokeOfTheDay = require('./jokeOfTheDay');
+const memeOfTheDay = require('./memeOfTheDay');
 const moonPhase = require('./phaseOfTheMoon');
 const numberOfTheDay = require('./numberOfTheDay');
-const jokeOfTheDay = require('./jokeOfTheDay');
-const factOfTheDay = require('./factOfTheDay');
-const memeOfTheDay = require('./memeOfTheDay');
-const astropicOfTheDay = require('./astropicOfTheDay');
-const animalOfTheDay = require('./animalOfTheDay');
-const songOfTheDay = require('./songOfTheDay');
-const artworkOfTheDay = require('./artworkOfTheDay');
+const onThisDay = require('./onThisDay');
+const plantOTD = require('./plantOfTheDay');
+const poetryOfTheDay = require('./poemOfTheDay');
+const pokeOfTheDay = require('./pokemonOfTheDay');
 const riddleOfTheDay = require('./riddleOfTheDay');
+const songOfTheDay = require('./songOfTheDay');
+const wordOfTheDay = require('./wordOfTheDay');
+
 
 const startQueue = require('./startQueue');
 
@@ -100,10 +101,11 @@ async function ofTheDay(db) {
   obj.chicagoImageLink = artOTD.chicago.image;
   obj.chicagoArtist = artOTD.chicago.artist;
   fields.push({ name: 'Artworks of the Day', value: `Met: ${artOTD.met.image} | Chicago: ${artOTD.chicago.image}`});
+  const { plantInformation } = await plantOTD();
+  obj.plantOTD.name = plantInformation.common_name;
+  obj.plantOTD.id = plantInformation.id;
+  fields.push({ name: 'Plant of the Day', value: plantInformation.common_name });
   const doc = await Daily.create(obj);
-  const paginate = new Pagination();
-  paginate.ready();
-
 }
 function next6am() {
   const today = Date.now();
