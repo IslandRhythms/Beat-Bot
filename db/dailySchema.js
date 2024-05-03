@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { stringify } = require('vdf-parser');
 
 const dailySchema = new mongoose.Schema({
   wordOTD: String,
@@ -21,7 +22,9 @@ const dailySchema = new mongoose.Schema({
   plantOTD: {
     type: String
   },
-  pokemonOTD: String,
+  pokemonOTD: {
+    type: String
+  },
   poemOTD: String,
   factOTD: { fact: String, source: String },
   memeOTD: String,
@@ -45,12 +48,11 @@ const dailySchema = new mongoose.Schema({
     name: String,
     artist: String,
     url: String,
-    image: String
+    image: String,
+    genre: String
   },
   numberOTD: {
-    number: Number,
-    trivia: String,
-    mathFact: String
+    type: Number
   },
   riddleOTD: {
     riddle: String,

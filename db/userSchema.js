@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   discordServers: [],
-  birthday: String,
+  birthday: Date,
   campaigns: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Campaign' }],
   profile: { type: mongoose.Schema.Types.ObjectId, ref: 'GameProfile' },
   subscribers: { // always increment by 1
@@ -38,7 +38,13 @@ const userSchema = new mongoose.Schema({
     shows: [{ name: String, url: String }],
     foods: [{ name: String, url: String }],
     books: [{ name: String, url: String }]
-  }
+  },
+  accounts: [{
+    game: String,
+    accountName: String,
+    accountPassword: String,
+    usersHaveAccess: [String]
+  }]
 });
 
 

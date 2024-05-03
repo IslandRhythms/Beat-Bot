@@ -1,4 +1,6 @@
+'use strict';
 const axios = require('axios');
+
 
 module.exports = async function pokemonOfTheDay() {
   
@@ -6,6 +8,6 @@ module.exports = async function pokemonOfTheDay() {
   const pokedexEntries = res.count;
   const index = Math.floor(Math.random() * pokedexEntries);
   const selectedPokemon = res.results[index].name;
-  const pokemonOTD = await axios.get(`https://pokeapi.co/api/v2/pokemon/${selectedPokemon}`).then(res => res.data);
-  return { pokemonOTD }
+
+  return { pokemonOTD: selectedPokemon }
 };
