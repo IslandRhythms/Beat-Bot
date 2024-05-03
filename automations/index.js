@@ -1,6 +1,11 @@
 
 const initTasks = require('@mongoosejs/task');
+const startQueue = require('./startQueue');
 
+const millisecondsInDay = 86400000;
+const millisecondsInWeek = 604800000;
+
+// of the day daily automation
 const animalOfTheDay = require('./animalOfTheDay');
 const artworkOfTheDay = require('./artworkOfTheDay');
 const astropicOfTheDay = require('./astropicOfTheDay');
@@ -16,12 +21,6 @@ const pokeOfTheDay = require('./pokemonOfTheDay');
 const riddleOfTheDay = require('./riddleOfTheDay');
 const songOfTheDay = require('./songOfTheDay');
 const wordOfTheDay = require('./wordOfTheDay');
-
-
-const startQueue = require('./startQueue');
-
-const millisecondsInDay = 86400000;
-const millisecondsInWeek = 604800000;
 
 // https://discordjs.guide/popular-topics/faq.html#how-do-i-send-a-message-to-a-specific-channel
 // gonna need to pass the discord client for some of these automations
