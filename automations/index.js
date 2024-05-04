@@ -115,6 +115,12 @@ async function ofTheDay(db) {
   const { countryOTD, countryEmojiFlag } = await countryOfTheDay();
   obj.countryOTD = countryOTD;
   fields.push({ name: 'Country of the Day', value: `${countryEmojiFlag} ${countryOTD} ${countryEmojiFlag}`})
+  const date = new Date();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
+  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getFullYear();
+  const formattedDate = `${month}/${day}/${year}`;
+  obj.dateString = formattedDate;
   await Daily.create(obj);
 }
 function next6am() {

@@ -88,19 +88,8 @@ const puppeteer = require('puppeteer');
 // }
 
 async function run() {
-  const data = await axios.get(`https://openlibrary.org/random`).then(res => res.data);
-  const { oclc_numbers, isbn_10, isbn_13, title, key} = data;
+  const data = await axios.get(`https://puzzle.org/`).then(res => res.data);
   console.log('what is data', data);
-  if(oclc_numbers) {
-    console.log(oclc_numbers[0])
-  }
-  if (isbn_10) {
-    console.log(isbn_10[0])
-  }
-  if (isbn_13) {
-    console.log(isbn_13[0])
-  }
-  console.log(title, key)
 }
 
 
