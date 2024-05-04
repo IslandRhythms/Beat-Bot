@@ -41,7 +41,10 @@ const dailySchema = new mongoose.Schema({
     delivery: String,
     joke: String
   },
-  plantOTD: String,
+  plantOTD: {
+    name: String,
+    id: String
+  },
   astropicOTD: {
     url: String,
     title: String,

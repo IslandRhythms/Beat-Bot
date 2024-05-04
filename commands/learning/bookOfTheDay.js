@@ -9,11 +9,16 @@ module.exports = {
   .setDescription('Get more information on the book of the day.'),
   async execute(interaction, conn) {
     const { Daily } = conn.models;
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const doc = await Daily.findOne().sort({ createdAt: -1 });
     const url = `https://openlibrary.org${doc.bookOTD.bookRoute}`
-    await axios.get(url).then(res => res.data);
-    const embed = new EmbedBuilder();
+    const data = await axios.get(url).then(res => res.data);
+    const embed = new EmbedBuilder()
+      .setTitle(data.title)
+      .setDescription(data.description.value);
+    for (let i = 0; i < data.subjects.length; i++) {
+      embed.addFields({ name: 'Subject', value: data.subjects[i], inline: true })
+    }
     await interaction.followUp({ embeds: [embed] })
   }
 }
