@@ -19,6 +19,13 @@ const dailySchema = new mongoose.Schema({
     chicagoImageLink: String,
     chicagoArtist: String
   },
+  bookOTD: {
+    title: String,
+    bookRoute: String,
+    ISBNX: String,
+    ISBN13: String,
+    OCLC: String
+  },
   plantOTD: {
     name: String,
     id: Number

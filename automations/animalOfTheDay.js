@@ -1,3 +1,4 @@
+'use strict';
 const puppeteer = require('puppeteer');
 
 module.exports = async function animalOfTheDay() {

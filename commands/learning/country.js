@@ -6,10 +6,20 @@ const countryNamesAndCodes = require('../../countryNamesAndCodes.json');
 module.exports = {
   data: new SlashCommandBuilder().setName('country')
   .setDescription('Get information about a country')
-  .addStringOption(option => option.setName('country').setDescription('the name of the country').setRequired(true).setAutocomplete(true)),
-  async execute(interaction) {
+  .addSubcommand(subcommand => subcommand.setName('oftheday').setDescription('get detailed information on the country of the day'))
+  .addSubcommand(subcommand => 
+    subcommand.setName('search').setDescription('Look up detailed information about a country you choose')
+    .addStringOption(option => option.setName('country').setDescription('the name of the country').setRequired(true).setAutocomplete(true))),
+  async execute(interaction, conn) {
     await interaction.deferReply({ ephemeral: true });
-    const country = interaction.options.getString('country');
+    let country = '';
+    if (interaction.options._subcommand == 'oftheday') {
+      const { Daily } = conn.models;
+      const doc = await Daily.findOne().sort({ createdAt: -1 });
+      country = doc.countryOTD;
+    } else {
+      country = interaction.options.getString('country');
+    }
 
     const countryData = await axios.get(`https://restcountries.com/v3.1/name/${country}?fullText=true`).then(res => res.data[0])
     const embed = new EmbedBuilder().setTitle(`${countryData.name.official}`).setImage(countryData.coatOfArms.png).setAuthor({ name: countryData.name.common, iconURL: countryData.flags.png });

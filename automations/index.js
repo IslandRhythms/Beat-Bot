@@ -9,6 +9,8 @@ const millisecondsInWeek = 604800000;
 const animalOfTheDay = require('./animalOfTheDay');
 const artworkOfTheDay = require('./artworkOfTheDay');
 const astropicOfTheDay = require('./astropicOfTheDay');
+const bookOfTheDay = require('./bookOfTheDay');
+const countryOfTheDay = require('./countryOfTheDay');
 const factOfTheDay = require('./factOfTheDay');
 const jokeOfTheDay = require('./jokeOfTheDay');
 const memeOfTheDay = require('./memeOfTheDay');
@@ -107,7 +109,13 @@ async function ofTheDay(db) {
   const { historyOTD } = await onThisDay();
   obj.historyOTD = historyOTD;
   fields.push({ name: 'History of the Day', value: historyOTD });
-  const doc = await Daily.create(obj);
+  const { bookOTD } = await bookOfTheDay();
+  obj.bookOTD = bookOTD;
+  fields.push({ name: 'Book of the Day', value: `${bookOTD.title} https://openlibrary.org${bookOTD.bookRoute}` })
+  const { countryOTD, countryEmojiFlag } = await countryOfTheDay();
+  obj.countryOTD = countryOTD;
+  fields.push({ name: 'Country of the Day', value: `${countryEmojiFlag} ${countryOTD} ${countryEmojiFlag}`})
+  await Daily.create(obj);
 }
 function next6am() {
   const today = Date.now();
