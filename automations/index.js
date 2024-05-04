@@ -26,7 +26,7 @@ const wordOfTheDay = require('./wordOfTheDay');
 
 // https://discordjs.guide/popular-topics/faq.html#how-do-i-send-a-message-to-a-specific-channel
 // gonna need to pass the discord client for some of these automations
-module.exports = async function tasks(db) {
+module.exports = async function tasks(db, bot) {
   const { Task } = db.models;
   initTasks(null, db);
   Task.registerHandler('ofTheDay', ofTheDay(db));

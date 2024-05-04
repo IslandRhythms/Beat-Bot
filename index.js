@@ -88,9 +88,6 @@ const date = require("dateformat");
 
   const conn = await db().asPromise();
 
-  if (process.env.NODE_ENV === 'production') {
-    await tasks(db);
-  }
   bot.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isChatInputCommand() && !interaction.isAutocomplete()) return; // bot ignores if not command or autocomplete setup
     const command = interaction.client.commands.get(interaction.commandName);
@@ -189,4 +186,12 @@ const date = require("dateformat");
   });
   bot.login(process.env.TOKEN);
   console.log('logged in');
+  try {
+    if (process.env.NODE_ENV === 'production') {
+      await tasks(db, bot);
+      console.log('Automations initiated');
+    }
+  } catch (e) {
+    console.log('Something went wrong with the automations', e);
+  }
 })();
