@@ -2,6 +2,7 @@
 const puppeteer = require('puppeteer');
 
 module.exports = async function animalOfTheDay() {
+  console.log('getting animal of the day ...')
   const browser = await puppeteer.launch({
     headless: false,
     userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
@@ -9,16 +10,14 @@ module.exports = async function animalOfTheDay() {
   const page = await browser.newPage();
   const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
   const index = Math.floor(Math.random() * alphabet.length);
-  console.log('what is index', index);
   const letter = alphabet[index];
-  console.log('what is letter', letter);
   await page.goto(`https://a-z-animals.com/animals/animals-that-start-with-${letter.toLowerCase()}`);
   const animalChoices = await page.evaluate((letter) => {
-    console.log('letter inside evaluate', letter)
-    const header = document.querySelector(`#h-alphabetical-list-of-animals-that-start-with-${letter.toLowerCase()}`);
-    console.log('what is header', header)
+    let header = document.querySelector(`#h-alphabetical-list-of-animals-that-start-with-${letter.toLowerCase()}`);
+    if (header == null) {
+      header = document.querySelector(`#h-animals-by-letter-count-letter-${letter.toLowerCase()}-animals-that-start-with-${letter.toLowerCase()}`);
+    }
     const container = header.nextElementSibling;
-    console.log('what is container', container);
     const ul = container.querySelector('ul');
     let listItems = Array.from(ul.querySelectorAll('li')).map(li => {
         const link = li.querySelector('a');
@@ -32,9 +31,11 @@ module.exports = async function animalOfTheDay() {
   
   const animalIndex = Math.floor(Math.random() * animalChoices.length);
   const AOTD = animalChoices[animalIndex];
-  console.log('what is AOTD', AOTD)
   const data = await page.evaluate((animalObj) => {
-    const header = document.querySelector(`#h-animals-that-start-with-${animalObj.letter.toLowerCase()}`);
+    let header = document.querySelector(`#h-animals-that-start-with-${animalObj.letter.toLowerCase()}`);
+    if (header == null) {
+      header = document.querySelector(`#h-animals-that-start-with-${animalObj.letter.toLowerCase()}-pictures-and-facts`);
+    }
     const container = header.nextElementSibling;
     const animals = Array.from(container.querySelectorAll('h3 a'));
     let info = {};

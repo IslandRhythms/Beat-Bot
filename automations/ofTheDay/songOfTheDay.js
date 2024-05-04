@@ -1,11 +1,11 @@
 'use strict';
 
-const getSpotifyCredentials = require('../helpers/getSpotifyCredentials');
+const getSpotifyCredentials = require('../../helpers/getSpotifyCredentials');
 const axios = require('axios');
 const querystring = require('querystring');
 
 module.exports = async function songOfTheDay() {
-
+  console.log('getting song of the day ...')
   const { access_token } = await getSpotifyCredentials();
 
   const headers = {
@@ -36,7 +36,7 @@ module.exports = async function songOfTheDay() {
     url: trackData.external_urls.spotify,
     artist: trackData.artists[0].name,
     genre: selectedGenre,
-    image: trackData.album.images[0]
+    image: trackData.album.images[0].url
   }
   return songOfTheDay;
 }

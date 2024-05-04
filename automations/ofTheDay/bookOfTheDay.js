@@ -2,6 +2,7 @@
 const axios = require('axios');
 
 module.exports = async function bookOfTheDay() {
+  console.log('getting book of the day ...')
   const data = await axios.get(`https://openlibrary.org/random`).then(res => res.data);
   const { oclc_numbers, isbn_10, isbn_13, title, key} = data;
   const obj = {};

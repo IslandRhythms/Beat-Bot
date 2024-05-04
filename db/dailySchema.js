@@ -33,7 +33,10 @@ const dailySchema = new mongoose.Schema({
   pokemonOTD: {
     type: String
   },
-  poemOTD: String,
+  poemOTD: {
+    title: String,
+    author: String
+  },
   factOTD: { fact: String, source: String },
   memeOTD: String,
   jokeOTD: {
@@ -44,6 +47,9 @@ const dailySchema = new mongoose.Schema({
   plantOTD: {
     name: String,
     id: String
+  },
+  puzzleOTD: {
+    type: String
   },
   astropicOTD: {
     url: String,

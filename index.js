@@ -187,7 +187,7 @@ const date = require("dateformat");
   bot.login(process.env.TOKEN);
   console.log('logged in');
   try {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       await tasks(db, bot);
       console.log('Automations initiated');
     }

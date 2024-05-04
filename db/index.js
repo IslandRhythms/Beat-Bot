@@ -3,6 +3,8 @@
 const mongoose = require('mongoose');
 require('../config');
 
+const initTasks = require('@mongoosejs/task');
+
 const noteSchema = require('./noteSchema');
 const pollSchema = require('./pollSchema');
 const userSchema = require('./userSchema');
@@ -18,6 +20,8 @@ module.exports = function models() {
   const connection = mongoose.createConnection(process.env.MONGODB_CONNECTION_STRING, {
     serverSelectionTimeoutMS: 30000
   });
+
+  initTasks(null, connection);
   connection.model('Note', noteSchema);
   connection.model('User', userSchema);
   connection.model('Error', errorSchema);

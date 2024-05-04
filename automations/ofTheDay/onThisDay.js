@@ -3,6 +3,7 @@ const wikipedia = require('wikipedia');
 // could also use http://numbersapi.com/#1/28/date instead of wikipedia
 
 module.exports = async function onThisDay() {
+  console.log('getting what happened on this day ...')
   const events = await wikipedia.onThisDay();
   const choices = Object.keys(events);
   const index = Math.floor(Math.random() * choices.length);

@@ -1,4 +1,6 @@
 
+
+const db = require('../db');
 const initTasks = require('@mongoosejs/task');
 const startQueue = require('./startQueue');
 
@@ -6,38 +8,51 @@ const millisecondsInDay = 86400000;
 const millisecondsInWeek = 604800000;
 
 // of the day daily automation
-const animalOfTheDay = require('./animalOfTheDay');
-const artworkOfTheDay = require('./artworkOfTheDay');
-const astropicOfTheDay = require('./astropicOfTheDay');
-const bookOfTheDay = require('./bookOfTheDay');
-const countryOfTheDay = require('./countryOfTheDay');
-const factOfTheDay = require('./factOfTheDay');
-const jokeOfTheDay = require('./jokeOfTheDay');
-const memeOfTheDay = require('./memeOfTheDay');
-const moonPhase = require('./phaseOfTheMoon');
-const numberOfTheDay = require('./numberOfTheDay');
-const onThisDay = require('./onThisDay');
-const plantOTD = require('./plantOfTheDay');
-const poetryOfTheDay = require('./poemOfTheDay');
-const pokeOfTheDay = require('./pokemonOfTheDay');
-const riddleOfTheDay = require('./riddleOfTheDay');
-const songOfTheDay = require('./songOfTheDay');
-const wordOfTheDay = require('./wordOfTheDay');
+const animalOfTheDay = require('./ofTheDay/animalOfTheDay');
+const artworkOfTheDay = require('./ofTheDay/artworkOfTheDay');
+const astropicOfTheDay = require('./ofTheDay/astropicOfTheDay');
+const bookOfTheDay = require('./ofTheDay/bookOfTheDay');
+const countryOfTheDay = require('./ofTheDay/countryOfTheDay');
+const factOfTheDay = require('./ofTheDay/factOfTheDay');
+const jokeOfTheDay = require('./ofTheDay/jokeOfTheDay');
+const memeOfTheDay = require('./ofTheDay/memeOfTheDay');
+const moonPhase = require('./ofTheDay/phaseOfTheMoon');
+const numberOfTheDay = require('./ofTheDay/numberOfTheDay');
+const onThisDay = require('./ofTheDay/onThisDay');
+const plantOTD = require('./ofTheDay/plantOfTheDay');
+const poetryOfTheDay = require('./ofTheDay/poemOfTheDay');
+const pokeOfTheDay = require('./ofTheDay/pokemonOfTheDay');
+const puzzleOfTheDay = require('./ofTheDay/puzzleOfTheDay');
+const riddleOfTheDay = require('./ofTheDay/riddleOfTheDay');
+const songOfTheDay = require('./ofTheDay/songOfTheDay');
+const wordOfTheDay = require('./ofTheDay/wordOfTheDay');
+
 
 // https://discordjs.guide/popular-topics/faq.html#how-do-i-send-a-message-to-a-specific-channel
 // gonna need to pass the discord client for some of these automations
-module.exports = async function tasks(db, bot) {
-  const { Task } = db.models;
-  initTasks(null, db);
-  Task.registerHandler('ofTheDay', ofTheDay(db));
-  await Task.startPolling();
-  await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: next6am, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
+module.exports = async function tasks(bot) {
+  try {
+    const conn = await db().asPromise();
+    const setup = { db: conn }
+    initTasks(null, setup.db);
+    const { Task } = setup.db.models;
+    Task.registerHandler('ofTheDay', ofTheDay(setup.db));
+    await Task.startPolling();
+    // Testing Date
+    const testDate = new Date(2024, 5, 4, 12, 57, 0);
+    console.log(testDate)
+    await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: testDate/*next6am*/, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
+  } catch(error) {
+    console.log('something went wrong registering all the handlers', error);
+  }
 }
 // use pagination so that each entry can have their own embed
 // https://pagination-djs.js.org/#md:other-send-options
 async function ofTheDay(db) {
-  const { Daily } = db.models;
-  const obj = {};
+  try {
+    const { Daily } = db.models;
+  // if obj pathing is doubly nested, need to predefine key in the obj
+  const obj = { jokeOTD: {}, factOTD: {}, astropicOTD: {}, animalOTD: {}, riddleOTD: {}, songOTD: {}, plantOTD: {}, poemOTD: {} };
   const fields = [];
   const { WOTD } = await wordOfTheDay();
   obj.wordOTD = WOTD;
@@ -49,8 +64,9 @@ async function ofTheDay(db) {
   obj.phaseOfTheMoon = phaseOfTheMoon;
   fields.push({ name: 'Moon Phase Today', value: `${phaseOfTheMoon.icon} ${phaseOfTheMoon.phase} ${phaseOfTheMoon.moon} ${phaseOfTheMoon.icon}`});
   const { poemOfTheDay } = await poetryOfTheDay();
-  obj.poemOTD = poemOfTheDay;
-  fields.push({ name: 'Poem of the Day', value: poemOfTheDay });
+  obj.poemOTD.title = poemOfTheDay.title;
+  obj.poemOTD.author = poemOfTheDay.author;
+  fields.push({ name: 'Poem of the Day', value: `${poemOfTheDay.title} by ${poemOfTheDay.author}` });
   const { numberOTD } = await numberOfTheDay();
   obj.numberOTD = numberOTD;
   fields.push({ name: 'Number of the Day', value: numberOTD });
@@ -76,13 +92,17 @@ async function ofTheDay(db) {
   obj.astropicOTD.description = astropicOTD.description;
   fields.push({ name: 'Astronomy Picture of the Day', value: `${astropicOTD.title} ${astropicOTD.description} ${astropicOTD.url}`});
   const { AOTD } = await animalOfTheDay();
-  obj.animalOTD.name = AOTD.name;
-  obj.animalOTD.scientificName = AOTD.scientificName;
-  obj.animalOTD.image = AOTD.image;
-  obj.animalOTD.funFact = AOTD.funFact;
-  obj.animalOTD.link = AOTD.link;
-  obj.animalOTD.briefSummary = AOTD.briefSummary;
-  fields.push({ name: 'Animal of the Day', value: AOTD.name });
+  if (AOTD) {
+    obj.animalOTD.name = AOTD.animalName;
+    obj.animalOTD.scientificName = AOTD.scientificName;
+    obj.animalOTD.image = AOTD.image;
+    obj.animalOTD.funFact = AOTD.funFact;
+    obj.animalOTD.link = AOTD.link;
+    obj.animalOTD.briefSummary = AOTD.briefSummary;
+    fields.push({ name: 'Animal of the Day', value: AOTD.name });
+  } else {
+    fields.push({ name: 'Animal of the Day', value: `None today` });
+  }
   const { riddleOTD } = await riddleOfTheDay();
   obj.riddleOTD.riddle = riddleOTD.riddle;
   obj.riddleOTD.answer = riddleOTD.answer;
@@ -95,13 +115,18 @@ async function ofTheDay(db) {
   obj.songOTD.genre = sOTD.genre;
   fields.push({ name: 'Song of the Day', value: `${sOTD.name} by ${sOTD.artist} ${sOTD.url}` });
   const artOTD = await artworkOfTheDay();
-  obj.metTitle = artOTD.met.title;
-  obj.metImageLink = artOTD.met.image;
-  obj.metArtist = artOTD.met.artist;
-  obj.chicagoTitle = artOTD.chicago.title;
-  obj.chicagoImageLink = artOTD.chicago.image;
-  obj.chicagoArtist = artOTD.chicago.artist;
-  fields.push({ name: 'Artworks of the Day', value: `Met: ${artOTD.met.image} | Chicago: ${artOTD.chicago.image}`});
+  if (artOTD.met) {
+    obj.metTitle = artOTD.met.title;
+    obj.metImageLink = artOTD.met.image;
+    obj.metArtist = artOTD.met.artist;
+    fields.push({ name: 'Met Artwork of the Day', value: `${artOTD.met.image}`});
+  }
+  if (artOTD.chicago) {
+    obj.chicagoTitle = artOTD.chicago.title;
+    obj.chicagoImageLink = artOTD.chicago.image;
+    obj.chicagoArtist = artOTD.chicago.artist;
+    fields.push({ name: 'Chicago Artwork of the Day', value: `${artOTD.chicago.image}`});
+  }
   const { plantInformation } = await plantOTD();
   obj.plantOTD.name = plantInformation.common_name;
   obj.plantOTD.id = plantInformation.id;
@@ -115,13 +140,20 @@ async function ofTheDay(db) {
   const { countryOTD, countryEmojiFlag } = await countryOfTheDay();
   obj.countryOTD = countryOTD;
   fields.push({ name: 'Country of the Day', value: `${countryEmojiFlag} ${countryOTD} ${countryEmojiFlag}`})
+  const { puzzleOTD } = await puzzleOfTheDay();
+  obj.puzzleOTD = puzzleOTD;
+  fields.push({ name: 'Puzzle of the Day', value: puzzleOTD });
   const date = new Date();
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
   const day = String(date.getDate()).padStart(2, '0');
   const year = date.getFullYear();
   const formattedDate = `${month}/${day}/${year}`;
   obj.dateString = formattedDate;
-  await Daily.create(obj);
+  const doc = await Daily.create(obj);
+  console.log('what is doc', doc);
+  } catch (error) {
+    console.log('Of the day automation crashed', error);
+  }
 }
 function next6am() {
   const today = Date.now();

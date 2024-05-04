@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 module.exports = async function jokeOfTheDay() {
-  
+  console.log('getting joke of the day')
   let url = null;
   const today = new Date();
   if (today.getMonth() == 9) { // October
