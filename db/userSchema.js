@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const zodiac = require('../zodiac.json');
 const userSchema = new mongoose.Schema({
   discordName: String, // username
   discordId: { // id
@@ -53,6 +53,11 @@ userSchema.virtual('zodiac').get(function() {
   if(!this.birthday) {
     return `You have not set your birthday. Please use \\setbirthday to set your birthday and receive information about your zodiac sign when its your birthday`
   }
+  const birthYear = this.birthday.getFullYear();
+  const sign = zodiac.filter(sign => {
+    sign.years.some(year => year == birthYear)
+  })[0];
+  return sign;
 });
 
 module.exports = userSchema;
