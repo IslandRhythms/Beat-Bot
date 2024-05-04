@@ -43,7 +43,13 @@ const userSchema = new mongoose.Schema({
     game: String,
     accountName: String,
     accountPassword: String,
-    usersHaveAccess: [String]
+    rank: String,
+    usersHaveAccess: [String],
+    discordAccountId: String,
+    viewedBy: [{ // helpful to track down bad actors
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }]
   }]
 });
 

@@ -17,7 +17,8 @@ const date = require("dateformat");
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.MessageContent,
       GatewayIntentBits.GuildMembers,
-      GatewayIntentBits.GuildVoiceStates
+      GatewayIntentBits.GuildVoiceStates,
+      GatewayIntentBits.GuildMessagePolls
     ] 
   });
   bot.commands = new Collection();
