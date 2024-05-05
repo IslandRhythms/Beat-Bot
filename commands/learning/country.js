@@ -1,7 +1,7 @@
 
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
-const countryNamesAndCodes = require('../../countryNamesAndCodes.json');
+const countryNamesAndCodes = require('../../resources/countryNamesAndCodes.json');
 
 module.exports = {
   data: new SlashCommandBuilder().setName('country')

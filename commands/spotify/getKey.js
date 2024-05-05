@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const axios = require('axios');
 const getSpotifyCredentials = require('../../helpers/getSpotifyCredentials');
-const { musicKeys, musicModes } = require('../../constants');
+const { musicKeys, musicModes } = require('../../resources/constants');
 
 // https://developer.spotify.com/documentation/web-api
 

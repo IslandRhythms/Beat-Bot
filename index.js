@@ -6,7 +6,7 @@ const path = require("path");
 const fs = require('fs');
 const db = require('./db');
 const tasks = require('./automations');
-const Occasions = require("./Events.json");
+const Occasions = require("./resources/Events.json");
 const date = require("dateformat");
 
 (async () => {
