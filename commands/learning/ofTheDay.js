@@ -226,8 +226,20 @@ module.exports = {
     }
     else if (sub == 'word') {
       const pagination = new Pagination(interaction);
-      const wordOfTheDay = doc.WOTD;
-      const information = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${wordOfTheDay}`).then(res => res.data);
+      const wordOfTheDay = doc.wordOTD;
+      let err = null;
+      const information = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${wordOfTheDay}`).then(res => res.data).catch(error => {
+        err = error;
+        return error;
+      });
+      if (err) {
+        if (err.response && err.response.data) {
+          embed.setTitle(`${err.response.data.title}`).setDescription(`${err.response.data.message} ${err.response.data.resolution}`)
+        } else {
+          embed.setTitle(`Something went wrong`)
+        }
+        return interaction.followUp({ embeds: [embed] });
+      }
       const embeds = [];
       const synonyms = [];
       const antonyms = [];
