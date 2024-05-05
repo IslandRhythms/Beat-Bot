@@ -25,7 +25,7 @@ module.exports = {
   .addSubcommand(subcommand => subcommand.setName('songOTD').setDescription('get the song of the day'))
   .addSubcommand(subcommand => subcommand.setName('wordOTD').setDescription('get detailed information on the word of the day')),
   async execute(interaction, conn) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const { Daily } = conn.models;
     const doc = await Daily.findOne().sort({ createdAt: -1 });
     const sub = interaction.options._subcommand;
