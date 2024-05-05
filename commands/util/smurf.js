@@ -1,4 +1,5 @@
-const { SlashCommandBuilder } = require('discord.js');
+'use strict';
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 
 module.exports = {
@@ -43,23 +44,94 @@ module.exports = {
       const owner = await User.findOne({ discordId: interaction.user.id });
       const game = interaction.options.getString('game');
       const rank = interaction.options.getString('rank');
+
+      // Initialize the query object
       const query = { $or: [] };
-      const ownerQuery = {
-        $or: [{
-        'accounts.usersHaveAccess': interaction.user.id,
-        _id: owner._id
-        }]
-      }
+
+      // Define conditions related to the user's accounts
+      const ownerQuery = [
+        { 'accounts.usersHaveAccess': interaction.user.id },
+        { 'accounts.usersHaveAccess': { $exists: false } },
+        { _id: owner._id },
+        { 'accounts.usersHaveAccess': { $size: 0 } }
+      ];
+
+      // Add conditions to the query based on user input
       if (game) {
         query.$or.push({ 'accounts.game': game });
       }
       if (rank) {
         query.$or.push({ 'accounts.rank': rank });
       }
-      query.$or.push(ownerQuery);
-      const accounts = await User.find(query);
-      console.log('what is accounts', accounts);
-      return interaction.followUp(`${accounts.length} found`)
+
+      // Add the owner-related conditions to the query
+      query.$or.push({ $or: ownerQuery });
+
+      // Find documents that match the constructed query
+      const documents = await User.find(query);
+      if (documents.length == 0) {
+        return interaction.followUp(`No accounts found :(`);
+      }
+      const smurfData = [];
+      for (let i = 0; i < documents.length; i++) {
+        const accounts = documents[i].accounts.sort(function (a, b) {
+          if (a.game < b.game) {
+            return 1;
+          } else {
+            return -1;
+          }
+        });
+        for (let index = 0; index < accounts.length; index++) {
+          const dataObj = { game: '', values: [] };
+          if (accounts[index].usersHaveAccess.includes(interaction.user.id) || accounts[index].usersHaveAccess.length == 0) {
+            dataObj.game = accounts[index].game; // doesn't harm anything, just inefficient
+            dataObj.values.push(
+              { name: 'username', value: accounts[index].accountName, inline: true },
+              { name: 'password', value: accounts[index].accountPassword, inline: true },
+              { name: 'rank/id', value: `${accounts[index].rank} / ${accounts[index].discordAccountId}`, inline: true }
+            );
+            smurfData.push(dataObj);
+          }
+        }
+      }
+      // go through smurf data. If the player wants a specific game, only return accounts for that game.
+      // otherwise, make a new embed for each game
+      smurfData.sort(function(a,b) {
+        if (a.game < b.game) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+      if (game) {
+        const data = smurfData.filter(x => x.game == game);
+        const embed = new EmbedBuilder().setTitle(`Smurf accounts for ${game}`);
+        for (let i = 0; i < data.length; i++) {
+          embed.addFields(...data[i].values);
+        }
+        return interaction.followUp({ embeds: [embed] });
+      } else {
+        const embeds = [];
+        let currentGame = smurfData[0].game;
+        const fields = [];
+        for (let i = 0; i < smurfData.length; i++) {
+          if (currentGame != smurfData[i].game) {
+            const embed = new EmbedBuilder().setTitle(`Smurf Accounts for ${currentGame}`);
+            embed.addFields(...fields);
+            fields.length = 0;
+            currentGame = smurfData[i].game;
+            embeds.push(embed);
+          }
+
+          fields.push(...smurfData[i].values);
+          if (i === smurfData.length - 1) {
+            const embed = new EmbedBuilder().setTitle(`Smurf Accounts for ${currentGame}`);
+            embed.addFields(...fields);
+            embeds.push(embed);
+          }
+        }
+        return interaction.followUp({ embeds });
+      }
     } else if (sub == 'add') {
       const accountName = interaction.options.getString('accountname');
       const accountPassword = interaction.options.getString('password');
