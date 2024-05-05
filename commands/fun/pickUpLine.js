@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const lines = require('../../lines.json');
+const lines = require('../../resources/lines.json');
 
 module.exports = {
   data: new SlashCommandBuilder().setName('pickupline')

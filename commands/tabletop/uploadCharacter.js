@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const parseRollTwentySheet = require('../../helpers/parseRollTwentySheet');
 const parseHtmlPage = require('../../helpers/parseHtmlPage');
-const { DNDAdvancement } = require('../../constants');
+const { DNDAdvancement } = require('../../resources/constants');
 const { Pagination } = require('pagination.djs');
 
 module.exports = {

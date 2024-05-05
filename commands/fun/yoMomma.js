@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const yoMommaJokes = require('../../jokes.json');
+const yoMommaJokes = require('../../resources/jokes.json');
 
 module.exports = {
   data: new SlashCommandBuilder().setName('yomomma').setDescription('sends a yo momma joke')

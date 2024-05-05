@@ -1,8 +1,8 @@
 
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
-const calendarMonths = require('../../calendarMonths.json');
-const calendarDays = require('../../calendarDays.json');
+const calendarMonths = require('../../resources/calendarMonths.json');
+const calendarDays = require('../../resources/calendarDays.json');
 
 // https://discord.js.org/#/docs/builders/main/class/SlashCommandBuilder?scrollTo=addMentionableOption
 // need to have a check so that if someone puts more days than allowed in the month i.e. 32 days in december or 31 days in november

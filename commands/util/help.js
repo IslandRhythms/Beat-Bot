@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const capitalizeFirstLetter = require('../../helpers/capitalizeFirstLetter');
 const { Pagination, ExtraRowPosition } = require('pagination.djs');
-const categorySummaries = require('../../categorySummaries.json'); // be sure to update the file if a new folder is added
+const categorySummaries = require('../../resources/categorySummaries.json'); // be sure to update the file if a new folder is added
 module.exports = {
   data: new SlashCommandBuilder().setName('help').setDescription('Lists the commands of the bot'),
   async execute(interaction) {

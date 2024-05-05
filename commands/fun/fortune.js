@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const advice = require("../../fortune-cookie.json");
+const advice = require("../../resources/fortune-cookie.json");
 
 // https://discord.js.org/#/docs/builders/main/class/SlashCommandBuilder?scrollTo=addMentionableOption
 

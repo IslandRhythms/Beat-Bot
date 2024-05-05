@@ -1,5 +1,5 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const months = require('../../calendarMonths.json');
+const { SlashCommandBuilder } = require('discord.js');
+const months = require('../../resources/calendarMonths.json');
 const jsMonths = months.map(x => ({ name: x.name, value: x.value - 1 }));
 const minimumYear = 1940;
 
