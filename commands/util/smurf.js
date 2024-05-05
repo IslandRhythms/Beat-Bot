@@ -7,18 +7,24 @@ module.exports = {
     .addStringOption(option => option.setName('accountname').setDescription('the username for the account login').setRequired(true))
     .addStringOption(option => option.setName('password').setDescription('DO NOT ADD AN ACCOUNT WITH A PASSWORD YOU USE ELSEWHERE').setRequired(true))
     .addStringOption(option => option.setName('rank').setDescription('the rank of the account').setRequired(true))
-    .addStringOption(option => option.setName('game').setDescription('the game the account belongs to').setRequired(true))
-    .addUserOption(option => option.setName('user').setDescription('leave empty if you want everyone to have access to this account. Otherwise, pick yourself or someone.'))
+    .addStringOption(option => option.setName('game').setDescription('the game the account belongs to').addChoices(
+      { name: 'Valorant', value: 'Valorant'},
+      { name: 'Apex', value: 'Apex' }
+    ).setRequired(true))
+    .addUserOption(option => option.setName('user').setDescription('leave empty if you want everyone to have access to this account. Otherwise, pick someone.'))
   )
   .addSubcommand(subcommand => subcommand.setName('update').setDescription('update one of your smurf accounts')
+    .addStringOption(option => option.setName('id').setDescription('the discord id of the account. use \\smurf get to find it.').setRequired(true))
     .addStringOption(option => option.setName('accountname').setDescription('the username for the account login'))
     .addStringOption(option => option.setName('password').setDescription('DO NOT ADD AN ACCOUNT WITH A PASSWORD YOU USE ELSEWHERE'))
     .addStringOption(option => option.setName('rank').setDescription('the rank of the account'))
-    .addStringOption(option => option.setName('game').setDescription('the game the account belongs to'))
-    .addStringOption(option => option.setName('id').setDescription('the discord id of the account. use \\smurf get to find it.'))
+    .addStringOption(option => option.setName('game').setDescription('the game the account belongs to').addChoices(
+      { name: 'Valorant', value: 'Valorant'},
+      { name: 'Apex', value: 'Apex' }
+    ))
     .addUserOption(option => option.setName('user').setDescription('give or remove access to/from the indicated user')))
   .addSubcommand(subcommand => subcommand.setName('remove').setDescription('remove one of your smurf accounts')
-  .addStringOption(option => option.setName('id').setDescription('the id of the account. Use \\smurf get to find the correct id').setRequired(true)))
+    .addStringOption(option => option.setName('id').setDescription('the id of the account. Use \\smurf get to find the correct id').setRequired(true)))
   .addSubcommand(subcomand => subcomand.setName('get').setDescription('get a smurf account')
     .addStringOption(option =>
       option.setName('game').setDescription('the game you need a smurf for')
@@ -32,6 +38,7 @@ module.exports = {
     await interaction.deferReply({ ephemeral: true });
     const { User } = conn.models;
     const sub = interaction.options._subcommand;
+    // this is gonna need serious work
     if (sub == 'get') {
       const owner = await User.findOne({ discordId: interaction.user.id });
       const game = interaction.options.getString('game');
@@ -51,9 +58,11 @@ module.exports = {
       }
       query.$or.push(ownerQuery);
       const accounts = await User.find(query);
+      console.log('what is accounts', accounts);
+      return interaction.followUp(`${accounts.length} found`)
     } else if (sub == 'add') {
       const accountName = interaction.options.getString('accountname');
-      const accountPassword = interaction.options.getString('accountpassword');
+      const accountPassword = interaction.options.getString('password');
       const game = interaction.options.getString('game');
       const rank = interaction.options.getString('rank');
       const user = interaction.options.getUser('user');
@@ -72,8 +81,8 @@ module.exports = {
     } else if (sub == 'remove') {
       const user = await User.findOne({ discordId: interaction.user.id });
       const id = interaction.options.getString('id');
-      const account = user.accounts.find(account => account.discordAccountId === discordAccountId);
-      if (index > -1) {
+      const account = user.accounts.find(acc => acc.discordAccountId === id);
+      if (account) {
         user.accounts.pull({ discordAccountId: id });
         await user.save();
         return interaction.followUp(`Smurf Account ${id} removed successfully!`);
@@ -83,7 +92,7 @@ module.exports = {
     } else if (sub == 'update') {
       const user = await User.findOne({ discordId: interaction.user.id });
       const id = interaction.options.getString('id');
-      const account = user.accounts.find(account => account.discordAccountId === discordAccountId);
+      const account = user.accounts.find(account => account.discordAccountId === id);
       if (!account) {
         return interaction.followUp(`Smurf account ${id} not found.`)
       }
@@ -115,10 +124,11 @@ module.exports = {
       }
 
       if (Object.keys(updateQuery).length > 0) {
+        console.log('what is updateQuery', updateQuery)
         const updatedUser = await User.findOneAndUpdate(
           { _id: user._id },
-          { $set: { 'accounts.$': updateQuery } },
-          { new: true }
+          { $set: { 'accounts.$[elem]': { ...account.toObject(), ...updateQuery } } },
+          { arrayFilters: [{ 'elem.discordAccountId': id }], new: true }
         );
         return interaction.followUp(`Smurf account updated!`);
       } else {
@@ -128,6 +138,5 @@ module.exports = {
     } else {
       return interaction.followUp('Please inform Beat what you did to get this message.')
     }
-    await interaction.followUp(`Under Construction`);
   }
 }
