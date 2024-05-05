@@ -15,6 +15,7 @@ module.exports = {
     .addStringOption(option => option.setName('password').setDescription('DO NOT ADD AN ACCOUNT WITH A PASSWORD YOU USE ELSEWHERE'))
     .addStringOption(option => option.setName('rank').setDescription('the rank of the account'))
     .addStringOption(option => option.setName('game').setDescription('the game the account belongs to'))
+    .addStringOption(option => option.setName('id').setDescription('the discord id of the account. use \\smurf get to find it.'))
     .addUserOption(option => option.setName('user').setDescription('give or remove access to/from the indicated user')))
   .addSubcommand(subcommand => subcommand.setName('remove').setDescription('remove one of your smurf accounts')
   .addStringOption(option => option.setName('id').setDescription('the id of the account. Use \\smurf get to find the correct id').setRequired(true)))
@@ -32,7 +33,24 @@ module.exports = {
     const { User } = conn.models;
     const sub = interaction.options._subcommand;
     if (sub == 'get') {
-
+      const owner = await User.findOne({ discordId: interaction.user.id });
+      const game = interaction.options.getString('game');
+      const rank = interaction.options.getString('rank');
+      const query = { $or: [] };
+      const ownerQuery = {
+        $or: [{
+        'accounts.usersHaveAccess': interaction.user.id,
+        _id: owner._id
+        }]
+      }
+      if (game) {
+        query.$or.push({ 'accounts.game': game });
+      }
+      if (rank) {
+        query.$or.push({ 'accounts.rank': rank });
+      }
+      query.$or.push(ownerQuery);
+      const accounts = await User.find(query);
     } else if (sub == 'add') {
       const accountName = interaction.options.getString('accountname');
       const accountPassword = interaction.options.getString('accountpassword');
@@ -52,9 +70,61 @@ module.exports = {
       return interaction.followUp(`smurf account ${id} has been added`)
 
     } else if (sub == 'remove') {
-
+      const user = await User.findOne({ discordId: interaction.user.id });
+      const id = interaction.options.getString('id');
+      const account = user.accounts.find(account => account.discordAccountId === discordAccountId);
+      if (index > -1) {
+        user.accounts.pull({ discordAccountId: id });
+        await user.save();
+        return interaction.followUp(`Smurf Account ${id} removed successfully!`);
+      } else {
+        return interaction.followUp(`Smurf account not found :(`);
+      }
     } else if (sub == 'update') {
+      const user = await User.findOne({ discordId: interaction.user.id });
+      const id = interaction.options.getString('id');
+      const account = user.accounts.find(account => account.discordAccountId === discordAccountId);
+      if (!account) {
+        return interaction.followUp(`Smurf account ${id} not found.`)
+      }
+  
+      const usersHaveAccess = account.usersHaveAccess || [];
+      const updateQuery = {};
+      const entry = interaction.options.getUser('user');
+      if (entry) {
+        updateQuery.usersHaveAccess = usersHaveAccess.includes(entry.id)
+        ? usersHaveAccess.filter(str => str !== entry.id)
+        : [...usersHaveAccess, entry.id]
+      }
+      const accountName = interaction.options.getString('accountname');
+      if (accountName) {
+        updateQuery.accountName = accountName;
+      }
+      const accountPassword = interaction.options.getString('password');
+      if (accountPassword) {
+        updateQuery.accountPassword = accountPassword;
+      }
+      const rank = interaction.options.getString('rank');
+      if (rank) {
+        updateQuery.rank = rank;
+      }
 
+      const game = interaction.options.getString('game');
+      if (game) {
+        updateQuery.game = game;
+      }
+
+      if (Object.keys(updateQuery).length > 0) {
+        const updatedUser = await User.findOneAndUpdate(
+          { _id: user._id },
+          { $set: { 'accounts.$': updateQuery } },
+          { new: true }
+        );
+        return interaction.followUp(`Smurf account updated!`);
+      } else {
+        return interaction.followUp(`Nothing provided to update, aborting ...`);
+      }
+  
     } else {
       return interaction.followUp('Please inform Beat what you did to get this message.')
     }
