@@ -89,6 +89,20 @@ const date = require("dateformat");
 
   const conn = await db().asPromise();
 
+  bot.on(Events.MessagePollVoteAdd, (answer, userId) => {
+    console.log(`User ${userId} voted for answer ${answer.id}`);
+  });
+  
+  bot.on(Events.MessagePollVoteRemove, (answer, userId) => {
+    console.log(`User ${userId} removed their vote for answer ${answer.id}`);
+  });
+  
+  bot.on(Events.MessageUpdate, async (_oldMessage, newMessage) => {
+    if (!newMessage.poll) return;
+  
+    console.log('Poll was updated', newMessage.poll);
+  });
+
   bot.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isChatInputCommand() && !interaction.isAutocomplete()) return; // bot ignores if not command or autocomplete setup
     const command = interaction.client.commands.get(interaction.commandName);
