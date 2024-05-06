@@ -11,7 +11,6 @@ module.exports = {
   .addBooleanOption(option => option.setName('multiple').setDescription('true to allow multiple answers. Default is no.'))
   .addNumberOption(option => option.setName('duration').setDescription('how long, in hours, the poll should remain active.')),
   async execute(interaction) {
-    await interaction.deferReply();
     const message = {
       poll: {
         question: {
@@ -32,6 +31,11 @@ module.exports = {
       message.poll.answers = [{ text: 'Yes', emoji: `👍` }, { text: 'No', emoji: `👎`}];
     }
     console.log(message);
-    await interaction.followUp({ content: `Poll started by ${interaction.user.id}`, poll: message.poll })
+    let content = `Poll started by ${interaction.user.username}.`;
+    if (interaction.options.getRole('audience')) {
+      content += `${interaction.options.getRole('audience')}, please respond.`
+    }
+    content += `You have ${interaction.options.getNumber('duration') ?? 1} hour`
+    await interaction.reply({ content, poll: message.poll })
   }
 }
