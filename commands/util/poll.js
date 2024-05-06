@@ -26,7 +26,7 @@ module.exports = {
       const answers = choices.split(',');
       message.poll.answers = [];
       for (let i = 0; i < answers.length; i++) {
-        message.answers.push({ text: answers[i].trim(), emoji: emojiCharacters[i + 1] });
+        message.poll.answers.push({ text: answers[i].trim(), emoji: emojiCharacters[i + 1] });
       }
     } else {
       message.poll.answers = [{ text: 'Yes', emoji: `👍` }, { text: 'No', emoji: `👎`}];
