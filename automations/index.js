@@ -4,6 +4,7 @@ const db = require('../db');
 const initTasks = require('@mongoosejs/task');
 const startQueue = require('./startQueue');
 const happyBirthday = require('./happyBirthday');
+const remind = require('./remind');
 
 const millisecondsInDay = 86400000;
 const millisecondsInWeek = 604800000;
@@ -37,13 +38,14 @@ module.exports = async function tasks(bot) {
     const setup = { db: conn }
     initTasks(null, setup.db);
     const { Task } = setup.db.models;
-    Task.registerHandler('ofTheDay', ofTheDay(setup.db, bot));
+    // Task.registerHandler('ofTheDay', ofTheDay(setup.db, bot));
     Task.registerHandler('happyBirthday', happyBirthday(setup.db, bot));
+    Task.registerHandler('remind', remind(params, bot));
     await Task.startPolling();
     // Testing Date
     // const testDate = new Date(2024, 5, 4, 12, 57, 0);
     // console.log(testDate)
-    await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: next6am, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
+    // await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: next6am, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
   } catch(error) {
     console.log('something went wrong registering all the handlers', error);
   }

@@ -23,7 +23,7 @@
     "csv-parse": "^5.3.6",
     "dateformat": "^3.0.3",
     "discord-player": "^6.1.1",
-    "discord.js": "^14.15.1",
+    "discord.js": "^14.15.2",
     "dotenv": "^16.3.1",
     "eslint": "^6.8.0",
     "ffmpeg": "0.0.4",

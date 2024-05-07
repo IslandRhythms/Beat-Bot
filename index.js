@@ -84,24 +84,74 @@ const date = require("dateformat");
   });
 
   bot.on('reconnecting', () => {
-    bot.user.setActivity(" type /help to see what I can do");
+    bot.user.setActivity("type /help to see what I can do");
   })
 
   const conn = await db().asPromise();
 
-  bot.on(Events.MessagePollVoteAdd, (answer, userId) => {
-    console.log(`User ${userId} voted for answer ${answer.id}`);
-  });
+  // bot.on(Events.MessagePollVoteAdd, (answer, userId) => {
+  //   console.log(`User ${userId} voted for answer ${answer.id}`);
+  // });
   
-  bot.on(Events.MessagePollVoteRemove, (answer, userId) => {
-    console.log(`User ${userId} removed their vote for answer ${answer.id}`);
-  });
+  // bot.on(Events.MessagePollVoteRemove, (answer, userId) => {
+  //   console.log(`User ${userId} removed their vote for answer ${answer.id}`);
+  // });
   
   bot.on(Events.MessageUpdate, async (_oldMessage, newMessage) => {
-    console.log('what is newMessage', newMessage);
-    if (!newMessage.poll) return;
-  
-    console.log('Poll was updated', newMessage.poll);
+    if (!newMessage.poll || ( newMessage.poll && !newMessage.poll.resultsFinalized)) return;
+    const { Poll } = conn.models;
+    const doc = await Poll.findOne({ messageId: newMessage.id, guildId: newMessage.guildId });
+    const pollId = await Poll.countDocuments();
+    const guild = bot.guilds.cache.get(newMessage.guildId);
+    const role = guild.roles.cache.find(role => role.id == doc.target);
+    newMessage.poll.answers.forEach(async (option) => {
+      const voters = await option.fetchVoters();
+      doc.choices.push({ id: option.id, text: option.text, voteCount: option.voteCount });
+      voters.forEach((voter) => {
+        if(role && !!role.members.find(x => x.id == voter.id)) {  // if there is a target audience, need to filter out people not authorized to vote
+          doc.eligibleVoters.push(voter.id);
+        }
+        doc.voters.push({ voter: { discordId: voter.id, discordName: voter.username }, choice: { id: option.id, text: option.text }})
+      });
+    });
+
+    // tally the results
+    let highestVoteCount = 0;
+    const result = [];
+    function tallyVote(vote) {
+      if (highestVoteCount < vote.voteCount) {
+        highestVoteCount = vote.voteCount;
+        result.length = 0;
+        result.push(vote.text);
+      } else if (highestVoteCount == vote.voteCount) { // handle ties
+        result.push(vote.text);
+      }
+    };
+    newMessage.poll.answers.forEach(async (option) => {
+      if (role) {
+        const voters = await option.fetchVoters();
+        voters.forEach((voter) => {
+          if (!!role.members.find(x => x.id == voter.id)) {
+            tallyVote(option);
+          }
+        })
+      } else {
+        tallyVote(option);
+      }
+    })
+
+    doc.results.count = highestVoteCount;
+    doc.results.selectedAnswer = result;
+    doc.isRecorded = true;
+    doc.pollId = `${pollId + 1}`
+    await doc.save();
+    const channel = bot.channels.cache.get(newMessage.channelId);
+    if (highestVoteCount == 0) {
+      channel.send(`The results of the Poll are in and it would appear that no one voted.`)
+    } else {
+      channel.send(`The results of the Poll are in! ${doc.results.selectedAnswer.join(',')} won with ${doc.results.count} votes!`)
+    }
+    
   });
 
   bot.on(Events.InteractionCreate, async interaction => {
@@ -203,7 +253,7 @@ const date = require("dateformat");
   bot.login(process.env.TOKEN);
   console.log('logged in');
   try {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       await tasks(db, bot);
       console.log('Automations initiated');
     }

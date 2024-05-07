@@ -15,14 +15,21 @@ const pollSchema = new mongoose.Schema({
       discordId: String,
       discordName: String
     },
-    choice: String,
+    choice: { id: Number, text: String }
   }],
-  choices: [String],
+  choices: [{ id: Number, text: String, voteCount: Number }],
   eligibleVoters: [String], // array of strings of discordIds
   target: String, // optional string indicating who the poll was directed toward.
   question: String,
-  result: String,
-  guildId: String, // get from message link
+  results: {
+    selectedAnswer: [String],
+    count: Number
+  },
+  pollster: {
+    discordId: String,
+    mongooseId: { ref: 'User', type: mongoose.Schema.Types.ObjectId }
+  },
+  guildId: String,
   pollId: String // the total number of poll documents at this documents creation
 });
 
