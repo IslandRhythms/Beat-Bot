@@ -98,6 +98,7 @@ const date = require("dateformat");
   });
   
   bot.on(Events.MessageUpdate, async (_oldMessage, newMessage) => {
+    console.log('what is newMessage', newMessage);
     if (!newMessage.poll) return;
   
     console.log('Poll was updated', newMessage.poll);
