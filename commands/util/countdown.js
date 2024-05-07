@@ -21,17 +21,20 @@ module.exports = {
     const canvasWidth = 200;
     const canvasHeight = 100;
     const encoder = new GIFEncoder(canvasWidth, canvasHeight);
-    const stream = await fs.createWriteStream('countdown.gif');
+    const stream = fs.createWriteStream('countdown.gif');
 
-    await encoder.createReadStream().pipe(stream);
+    encoder.createReadStream().pipe(stream);
     encoder.start();
     encoder.setRepeat(-1); // 0 for repeat, -1 for no-repeat
-    encoder.setDelay(1000); // 1 ms delay between frames
-    encoder.setQuality(10); // Lower quality for faster processing
+    encoder.setDelay(1000); // 1 s delay between frames
+    encoder.setQuality(1); // Lower quality for faster processing
 
     for (let currentTime = startingTime; currentTime <= endTime; currentTime += 1000) {
-      const millisecondsRemaining = endTime - currentTime;
-      const secondsRemaining = Math.ceil(millisecondsRemaining / 1000);
+      const timeRemaining = endTime - currentTime;
+      const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+      const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
       const canvas = createCanvas(canvasWidth, canvasHeight);
       const ctx = canvas.getContext('2d');
 
@@ -43,7 +46,7 @@ module.exports = {
       ctx.fillStyle = 'red';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(`${secondsRemaining}s`, canvasWidth / 2, canvasHeight / 2);
+      ctx.fillText(`${hours}h ${minutes}m ${seconds}s`, canvasWidth / 2, canvasHeight / 2);
 
       // Add the canvas to the GIF encoder
       encoder.addFrame(ctx);
