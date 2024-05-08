@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const zodiac = require('../zodiac.json');
+const zodiac = require('../resources/zodiac.json');
 const userSchema = new mongoose.Schema({
   discordName: String, // username
   discordId: { // id
