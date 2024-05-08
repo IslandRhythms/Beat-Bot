@@ -40,7 +40,7 @@ module.exports = async function tasks(bot) {
     const { Task } = setup.db.models;
     // Task.registerHandler('ofTheDay', ofTheDay(setup.db, bot));
     Task.registerHandler('happyBirthday', happyBirthday(setup.db, bot));
-    Task.registerHandler('remind', remind(params, bot));
+    Task.registerHandler('remind', remind(bot));
     await Task.startPolling();
     // Testing Date
     // const testDate = new Date(2024, 5, 4, 12, 57, 0);

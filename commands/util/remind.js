@@ -24,7 +24,7 @@ module.exports = {
     const second = interaction.options.getInteger('second') ?? new Date().getSeconds();
     const millisecond = interaction.options.getInteger('millisecond') ?? new Date().getMilliseconds();
     const date = new Date(year, month, day, hour, minute, second, millisecond)
-    await Task.schedule(`remind`, date.valueOf(), { message, discordId: interaction.user.id });
+    await Task.schedule(`remind`, date.valueOf(), { message, discordId: interaction.user.id, reminderSetOn: new Date() });
     await interaction.followUp(`You will be sent a DM on ${date.toLocaleString()} about ${message}`);
   }
 }

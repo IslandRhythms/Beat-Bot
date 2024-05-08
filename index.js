@@ -250,11 +250,10 @@ const date = require("dateformat");
     //const args = message.content.split(/ +/);
     
   });
-  bot.login(process.env.TOKEN);
-  console.log('logged in');
+  await bot.login(process.env.TOKEN);
   try {
     if (process.env.NODE_ENV !== 'production') {
-      await tasks(db, bot);
+      await tasks(bot);
       console.log('Automations initiated');
     }
   } catch (e) {
