@@ -2,12 +2,13 @@
 
 const db = require('../db');
 const initTasks = require('@mongoosejs/task');
-const startQueue = require('./startQueue');
-const happyBirthday = require('./happyBirthday');
-const remind = require('./remind');
-
 const millisecondsInDay = 86400000;
 const millisecondsInWeek = 604800000;
+
+const getHolidaysForTheYear = require('./getHolidaysForTheYear.js');
+const happyBirthday = require('./happyBirthday');
+const remind = require('./remind');
+const startQueue = require('./startQueue');
 
 // of the day daily automation
 const animalOfTheDay = require('./ofTheDay/animalOfTheDay');
@@ -16,6 +17,7 @@ const astropicOfTheDay = require('./ofTheDay/astropicOfTheDay');
 const bookOfTheDay = require('./ofTheDay/bookOfTheDay');
 const countryOfTheDay = require('./ofTheDay/countryOfTheDay');
 const factOfTheDay = require('./ofTheDay/factOfTheDay');
+const holidayOfTheDay = require('./ofTheDay/holidayOfTheDay.js');
 const jokeOfTheDay = require('./ofTheDay/jokeOfTheDay');
 const memeOfTheDay = require('./ofTheDay/memeOfTheDay');
 const moonPhase = require('./ofTheDay/phaseOfTheMoon');
@@ -41,11 +43,13 @@ module.exports = async function tasks(bot) {
     // Task.registerHandler('ofTheDay', ofTheDay(setup.db, bot));
     Task.registerHandler('happyBirthday', happyBirthday(setup.db, bot));
     Task.registerHandler('remind', remind(bot));
+    Task.registerHandler('getHolidaysForTheYear', getHolidaysForTheYear());
     await Task.startPolling();
     // Testing Date
-    // const testDate = new Date(2024, 5, 4, 12, 57, 0);
+    // const testDate = new Date(2024, 5, 7, 10, 39, 0);
     // console.log(testDate)
     // await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: next6am, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
+    // await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: testDate, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
   } catch(error) {
     console.log('something went wrong registering all the handlers', error);
   }
@@ -148,6 +152,8 @@ async function ofTheDay(db, bot) {
     obj.puzzleOTD = puzzleOTD;
     fields.push({ name: 'Puzzle of the Day', value: puzzleOTD });
     const date = new Date();
+    const holidayOTD = holidayOfTheDay();
+    obj.holidayOTD = holidayOTD; // now what
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
     const day = String(date.getDate()).padStart(2, '0');
     const year = date.getFullYear();

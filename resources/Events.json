@@ -1,10 +1,31 @@
+
 [
-
-    {"1/1": "New Year"},
-    {"2/14": "Valentine's Day"},
-    {"3/17": "St. Patrick's Day"},
-    {"7/4": "Independence Day"},
-    {"10/31": "Halloween"},
-    {"12/25": "Christmas Day"}
-
+  {
+    "date": "02-14",
+    "name": "Valentine's Day"
+  },
+  {
+    "date": "03-17",
+    "name": "St. Patrick's Day"
+  },
+  {
+    "date": "10-31",
+    "name": "Halloween"
+  },
+  {
+    "date": "05-05",
+    "name": "Cinco De Mayo"
+  },
+  {
+    "date": "05-04",
+    "name": "May the Fourth be with you"
+  },
+  {
+    "date": "05-10",
+    "name": "Mario Day"
+  },
+  {
+    "date": "12-31",
+    "name": "New Year's Eve"
+  }
 ]
