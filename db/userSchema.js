@@ -59,11 +59,22 @@ userSchema.virtual('zodiac').get(function() {
   if(!this.birthday) {
     return `You have not set your birthday. Please use \\setbirthday to set your birthday and receive information about your zodiac sign when its your birthday`
   }
-  const birthYear = this.birthday.getFullYear();
-  const sign = zodiac.filter(sign => {
-    sign.years.some(year => year == birthYear)
-  })[0];
-  return sign;
+  const maxYear = zodiac[zodiac.length - 1];
+  const birthYear = this.birthday.getUTCFullYear();
+  if (birthYear <= maxYear) {
+    const sign = zodiac.filter(sign => {
+      sign.years.some(year => year == birthYear)
+    })[0];
+    return sign;
+  } else { // do math to figure out what year they belong to.
+    const startYear = zodiac[0].years[0];
+    const index = (birthYear - startYear) % zodiac.length;
+  
+    // Adjust negative remainders to positive
+    const adjustedIndex = index >= 0 ? index : index + zodiac.length;
+  
+    return zodiac[adjustedIndex];
+  }
 });
 
 module.exports = userSchema;

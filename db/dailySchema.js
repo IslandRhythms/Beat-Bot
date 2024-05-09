@@ -81,8 +81,14 @@ const dailySchema = new mongoose.Schema({
   countryOTD: String,
   holidayOTD: String,
   dateString: String, // MM/DD/YYYY
-  pings: Number, // how many times people have called the bot
-  totalBugReports: Number
+  pings: [{
+    name: String,
+    called: Number
+  }],
+  totalBugReports: {
+    type: Number,
+    default: 0
+  }
 });
 
 module.exports = dailySchema;

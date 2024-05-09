@@ -6,8 +6,6 @@ const path = require("path");
 const fs = require('fs');
 const db = require('./db');
 const tasks = require('./automations');
-const Occasions = require("./resources/Events.json");
-const date = require("dateformat");
 
 (async () => {
 
@@ -56,31 +54,10 @@ const date = require("dateformat");
     }
   }
 
-  /*
-  bot.setInterval(() => {
-    let today = new Date();
-    let format = date(today, "m/d");
-    let greeting = "";
-    for (let i = 0; i < Occasions.length; i++) {
-      if (format == Object.keys(Occasions[i]) && format != "12/25") {
-        greeting = "Happy " + Object.values(Occasions[i]);
-      }
-      if (format == "12/25") {
-        greeting = "Merry Christmas";
-      }
-    }
-  if (greeting != ""){
-      for(let j = 0; j < channelids.length; j++){
-    let channel = bot.channels.cache.get(channelids[j]); 
-    channel.send("@everyone "+greeting);
-      }
-    }
-  }, 86400000);
 
-  */
-  // put tasks call here so we can pass client
   bot.on("ready", () => {
     bot.user.setActivity("type /help to see what I can do");
+    console.log('bot ready');
   });
 
   bot.on('reconnecting', () => {
@@ -185,12 +162,17 @@ const date = require("dateformat");
 
     try {
       const { User, Daily, GameProfile } = conn.models;
-      // const doc = await Daily.findOne({}).sort({ createdAt: 1 });
-      // doc.pings += 1;
-      // await doc.save();
+      const doc = await Daily.findOne({}).sort({ createdAt: 1 });
+      const pingedCommand = doc.pings.findIndex(x => x.name == interaction.commandName );
+      if (pingedCommand) {
+        doc.pings[pingedCommand].called = doc.pings[pingedCommand].called + 1;
+      } else {
+        doc.pings.push({ name: interaction.commandName, called: 1 });
+      }
+      await doc.save();
       // need to update discord pics in the db so check when the user runs a command if their profile pic has changed.
       const user = await User.findOneAndUpdate({ discordName: interaction.user.username, discordId: interaction.user.id }, { discordName: interaction.user.username, discordId: interaction.user.id, discordPic: interaction.user.avatar }, { upsert: true });
-      // await GameProfile.findOneAndUpdate({ player: user._id }, { player: user._id }, { upsert: true });
+      await GameProfile.findOneAndUpdate({ player: user._id }, { player: user._id }, { upsert: true });
       if (interaction.isAutocomplete()) {
         await command.autocomplete(interaction);
       } else {
@@ -200,8 +182,8 @@ const date = require("dateformat");
       console.error(`Error executing ${interaction.commandName}`);
       console.error(error);
       if (process.env.NODE_ENV === 'production') {
-        const { Error } = conn.models;
-        await Error.create({ commandname: interaction.commandName, message: error.message, data: error, commandOptions: interaction.options });
+        const { Log } = conn.models;
+        await Log.create({ commandname: interaction.commandName, message: error.message, data: error, commandOptions: interaction.options });
       }
       if (!interaction.replied) {
         if (interaction.deferred) {

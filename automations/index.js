@@ -4,10 +4,16 @@ const db = require('../db');
 const initTasks = require('@mongoosejs/task');
 const millisecondsInDay = 86400000;
 const millisecondsInWeek = 604800000;
+const millisecondsInYear = 31556952000;
+
+const { EmbedBuilder } = require('discord.js');
+
+const sendMessageToGeneral = require('../helpers/sendMessageToGeneral.js');
 
 const getHolidaysForTheYear = require('./getHolidaysForTheYear.js');
 const happyBirthday = require('./happyBirthday');
 const remind = require('./remind');
+const september = require('./september.js');
 const startQueue = require('./startQueue');
 
 // of the day daily automation
@@ -41,15 +47,17 @@ module.exports = async function tasks(bot) {
     initTasks(null, setup.db);
     const { Task } = setup.db.models;
     // Task.registerHandler('ofTheDay', ofTheDay(setup.db, bot));
-    Task.registerHandler('happyBirthday', happyBirthday(setup.db, bot));
-    Task.registerHandler('remind', remind(bot));
-    Task.registerHandler('getHolidaysForTheYear', getHolidaysForTheYear());
-    await Task.startPolling();
+    // Task.registerHandler('happyBirthday', happyBirthday(setup.db, bot));
+    // Task.registerHandler('remind', remind(bot));
+    // Task.registerHandler('getHolidaysForTheYear', getHolidaysForTheYear());
+    // Task.registerHandler('september', september(bot));
+    // await Task.startPolling();
     // Testing Date
     // const testDate = new Date(2024, 5, 7, 10, 39, 0);
     // console.log(testDate)
     // await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: next6am, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
     // await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: testDate, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
+    // await Task.findOneAndUpdate({ name: 'september', status: 'pending' }, { scheduledAt: earthWindAndFire, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
   } catch(error) {
     console.log('something went wrong registering all the handlers', error);
   }
@@ -179,6 +187,13 @@ function next6am() {
   tomorrow.setMinutes(0);
   tomorrow.setSeconds(5); // add a buffer between starting the script and it getting to the task start.
   return tomorrow;
+}
+
+function earthWindAndFire() {
+  const date = new Date()
+  const year = date.getFullYear();
+  const septemberTwentyFirst = new Date(year, 8, 21, 19);
+  return septemberTwentyFirst;
 }
 
 // https://codereview.stackexchange.com/questions/33527/find-next-occurring-friday-or-any-dayofweek

@@ -8,7 +8,7 @@ const initTasks = require('@mongoosejs/task');
 const noteSchema = require('./noteSchema');
 const pollSchema = require('./pollSchema');
 const userSchema = require('./userSchema');
-const errorSchema = require('./errorSchema');
+const logSchema = require('./logSchema');
 const dailySchema = require('./dailySchema');
 const campaignSchema = require('./campaignSchema');
 const gameProfileSchema = require('./gameProfileSchema');
@@ -24,7 +24,7 @@ module.exports = function models() {
   initTasks(null, connection);
   connection.model('Note', noteSchema);
   connection.model('User', userSchema);
-  connection.model('Error', errorSchema);
+  connection.model('Log', logSchema);
   connection.model('Poll', pollSchema);
   connection.model('Daily', dailySchema);
   connection.model('Campaign', campaignSchema);
