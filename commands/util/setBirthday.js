@@ -24,6 +24,6 @@ module.exports = {
     const date = new Date(year, month, day);
     user.birthday = date;
     await user.save();
-    await interaction.followUp(`Birthday updated to ${date.toLocaleString()}`);
+    await interaction.followUp(`Birthday updated to ${date.toLocaleString()}. I've updated my calendar!`);
   }
 }

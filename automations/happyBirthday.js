@@ -1,6 +1,6 @@
 'use strict';
 const wikipedia = require('wikipedia');
-const sendMessageToGeneral = require('../helpers/sendMessageToGeneral');
+const sendMessageTo = require('../helpers/sendMessageTo');
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = async function happyBirthday(db, bot) {
@@ -24,7 +24,7 @@ module.exports = async function happyBirthday(db, bot) {
     }
   
     const embed = new EmbedBuilder().setTitle(`Happy Birthday to the Following Users!`);
-    const zodiac = users.find(x => typeof x.zodiac != 'string');
+    const zodiac = users.find(x => typeof x.zodiac != 'string').zodiac;
     users.forEach(user => {
       if (typeof user.birthday == 'string') {
         return;
@@ -42,10 +42,13 @@ module.exports = async function happyBirthday(db, bot) {
     const pageEntry = selectedArray[onThisDayIndex].pages[0];
     const history = `For ${choices[index]} on this day, ${selectedArray[onThisDayIndex].year ? `in the year ${selectedArray[onThisDayIndex].year},` : ''} ${selectedArray[onThisDayIndex].text}
     link: ${pageEntry.content_urls.mobile.page}`;
-    embed.setDescription(`You were born in the year of the ${zodiac.name}. ${zodiac.description} You are most compatible with ${zodiac.compatible.join(', ')} and least compatible with ${zodiac.incompatible} ${history}`)
+    embed.setDescription(`You were born in the year of the ${zodiac.name}. ${zodiac.description} You are most compatible with ${zodiac.compatible.join(', ')} and least compatible with ${zodiac.incompatible}. ${history}`)
     // send message into channel here / maybe send a DM?
-    sendMessageToGeneral(bot, { embeds: [embed] });
+    // sendMessageTo.sendMessageToGeneral(bot, { embeds: [embed] });
+    // sendMessageTo.sendMessageToTest(bot, { embeds: [embed] });
+    // sendMessageTo.sendMessageToOwner(bot, { embeds: [embed] });
   } catch (error) {
+    console.log('something went wrong with happy birthday automation', error);
     await Log.create({ message: error.message, commandName: `happyBirthdayAutomation`, data: error });
   }
 }

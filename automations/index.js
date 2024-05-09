@@ -8,7 +8,7 @@ const millisecondsInYear = 31556952000;
 
 const { EmbedBuilder } = require('discord.js');
 
-const sendMessageToGeneral = require('../helpers/sendMessageToGeneral.js');
+const sendMessageTo = require('../helpers/sendMessageTo.js');
 
 const getHolidaysForTheYear = require('./getHolidaysForTheYear.js');
 const happyBirthday = require('./happyBirthday');
@@ -53,10 +53,10 @@ module.exports = async function tasks(bot) {
     // Task.registerHandler('september', september(bot));
     // await Task.startPolling();
     // Testing Date
-    // const testDate = new Date(2024, 5, 7, 10, 39, 0);
+    // const testDate = new Date(2024, 4, 9, 14, 52, 0);
     // console.log(testDate)
     // await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: next6am, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
-    // await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: testDate, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
+    // await Task.findOneAndUpdate({ name: 'happyBirthday', status: 'pending' }, { scheduledAt: next6am, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
     // await Task.findOneAndUpdate({ name: 'september', status: 'pending' }, { scheduledAt: earthWindAndFire, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
   } catch(error) {
     console.log('something went wrong registering all the handlers', error);

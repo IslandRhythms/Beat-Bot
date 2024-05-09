@@ -7,6 +7,7 @@ const fs = require('fs');
 const db = require('./db');
 const tasks = require('./automations');
 
+
 (async () => {
 
   const bot = new Client({ 
@@ -55,14 +56,66 @@ const tasks = require('./automations');
   }
 
 
-  bot.on("ready", () => {
+  bot.on("ready", async () => {
     bot.user.setActivity("type /help to see what I can do");
+    // console.log(bot.application.owner)
+    await bot.application.fetch();
+    try {
+      if (process.env.NODE_ENV !== 'production') {
+        await tasks(bot);
+        console.log('Automations initiated');
+      }
+    } catch (e) {
+      console.log('Something went wrong with the automations', e);
+    }
     console.log('bot ready');
   });
 
   bot.on('reconnecting', () => {
     bot.user.setActivity("type /help to see what I can do");
-  })
+    console.log('reconnected');
+  });
+
+  bot.on('messageReactionAdd', async (reaction, user) => {
+    if (reaction.message.partial) await reaction.message.fetch(); // Fetch the message if it's partial
+    if (user.bot) return; // Ignore reactions from bots
+  
+    const { message, emoji } = reaction;
+    // I think this makes it so that if I edit this file while in prod, the updates propogate through and don't require a restart.
+    const roles = require('./resources/roles.json');
+    if (message.channel.id === channelId && message.author.id === bot.user.id) { // Check if the reaction is on the roles message sent by the bot
+      // if (roleMap[emoji.name]) {
+      //   const role = message.guild.roles.cache.get(roleMap[emoji.name]);
+      //   if (role) {
+      //     const member = message.guild.members.cache.get(user.id);
+      //     if (member) {
+      //       await member.roles.add(role);
+      //       console.log(`Added role ${role.name} to ${user.tag}`);
+      //     }
+      //   }
+      // }
+    }
+  });
+
+  bot.on('messageReactionRemove', (reaction, user) => {
+
+  });
+
+
+  bot.on("messageCreate", (message) => {
+    if (message.author.bot) return; // prevent bot from replying to itself.
+    if(message.content.includes('<@596812405733064734>')) {
+      const res = Math.floor(Math.random()*(responses.length - 1)) + 1;
+      return message.channel.send(`<@${message.author.id}> ${responses[res]}`)
+    }
+    // only works if I send it
+    if (message.content == '!addRoles' && message.author.id == bot.application.owner.id) {
+      // do stuff
+    }
+    
+  });
+
+
 
   const conn = await db().asPromise();
 
@@ -164,7 +217,7 @@ const tasks = require('./automations');
       const { User, Daily, GameProfile } = conn.models;
       const doc = await Daily.findOne({}).sort({ createdAt: 1 });
       const pingedCommand = doc.pings.findIndex(x => x.name == interaction.commandName );
-      if (pingedCommand) {
+      if (pingedCommand > -1) {
         doc.pings[pingedCommand].called = doc.pings[pingedCommand].called + 1;
       } else {
         doc.pings.push({ name: interaction.commandName, called: 1 });
@@ -202,43 +255,6 @@ const tasks = require('./automations');
   });
   */
 
-  bot.on("messageCreate", (message) => {
-    if (message.author.bot) return; // prevent bot from replying to itself.
-    if(message.content.includes('<@596812405733064734>')) {
-      const res = Math.floor(Math.random()*(responses.length - 1)) + 1;
-      return message.channel.send(`<@${message.author.id}> ${responses[res]}`)
-    }
-    /*
-      if (message.content.includes("god") || message.content.includes("God")) {
-        return message.channel.sendMessage("Tell me though, Can it bleed?");
-      }
-
-      //random responses from bot
-      if (
-        message.content.includes("beat bot") ||
-        message.content.includes("Beat Bot")
-      ) {
-        return message.channel.sendMessage(
-          responses[Math.floor(Math.random() * 8)]
-        );
-      }
-
-      //Captain America Event
-      if (language.some((word) => message.content.includes(word))) {
-        return message.channel.sendMessage("Hey, language");
-      }
-      */
-    //will take message, split it up and then put parts into array
-    //const args = message.content.split(/ +/);
-    
-  });
-  await bot.login(process.env.TOKEN);
-  try {
-    if (process.env.NODE_ENV !== 'production') {
-      await tasks(bot);
-      console.log('Automations initiated');
-    }
-  } catch (e) {
-    console.log('Something went wrong with the automations', e);
-  }
+ 
+  bot.login(process.env.TOKEN);
 })();
