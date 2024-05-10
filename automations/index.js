@@ -15,6 +15,7 @@ const happyBirthday = require('./happyBirthday');
 const remind = require('./remind');
 const september = require('./september.js');
 const startQueue = require('./startQueue');
+const valorantMatchesOfTheDay = require('./valorantMatchesOfTheDay.js');
 
 // of the day daily automation
 const animalOfTheDay = require('./ofTheDay/animalOfTheDay');
@@ -51,6 +52,7 @@ module.exports = async function tasks(bot) {
     // Task.registerHandler('remind', remind(bot));
     // Task.registerHandler('getHolidaysForTheYear', getHolidaysForTheYear());
     // Task.registerHandler('september', september(bot));
+    // Task.registerHandler('valorantMatchesOfTheDay', valorantMatchesOfTheDay(bot));
     // await Task.startPolling();
     // Testing Date
     // const testDate = new Date(2024, 4, 9, 14, 52, 0);

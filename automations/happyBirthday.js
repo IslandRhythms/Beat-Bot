@@ -23,7 +23,7 @@ module.exports = async function happyBirthday(db, bot) {
       return;
     }
   
-    const embed = new EmbedBuilder().setTitle(`Happy Birthday to the Following Users!`);
+    const embed = new EmbedBuilder().setTitle(`:birthday: :confetti_ball: :balloon: Happy Birthday to the Following Users! :balloon: :confetti_ball: :birthday:`);
     const zodiac = users.find(x => typeof x.zodiac != 'string').zodiac;
     users.forEach(user => {
       if (typeof user.birthday == 'string') {

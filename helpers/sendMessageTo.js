@@ -29,3 +29,15 @@ exports.sendMessageToTest = function(bot, message) {
     }
   });
 }
+
+exports.sendMessageToEsports = function(bot, message) {
+  bot.guilds.cache.forEach(guild => {
+    const testChannel = guild.channels.cache.find(x => x.name.includes('esports'))
+    if (testChannel) {
+      const channel = bot.channels.cache.get(testChannel.id);
+      channel.send(message)
+    } else {
+      console.log(`No esports text channel found for guild "${guild.name}"`);
+    }
+  });
+}
