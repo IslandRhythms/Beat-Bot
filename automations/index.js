@@ -71,7 +71,16 @@ async function ofTheDay(db, bot) {
     const { Daily, BugReport } = db.models;
     const yesterDoc = await Daily.findOne().sort({ createdAt: -1 });
     if (yesterDoc) {
-      sendMessageTo.sendMessageToOwner(bot);
+      const yesterEmbed = new EmbedBuilder();
+      const bugReports = await BugReport.countDocuments({ status: { $nin: ['Done', 'Third Party Problem', 'Expected', 'Feature Request'] } });
+      const features = await BugReport.countDocuments({ status: `Feature Request` });
+      yesterEmbed.setTitle(`Daily Report: ${new Date().toLocaleString()}`)
+      .setDescription(`${yesterDoc.pings.map(ping => `${ping.name} - ${ping.called}`).join('\n')}`)
+      .addFields(
+        { name: `Total Bug Reports`, value: `${bugReports}`, inline: true },
+        { name: `Total Feature Requests`, value: `${features}`, inline: true }
+      );
+      sendMessageTo.sendMessageToOwner(bot, { embeds: [yesterEmbed] });
     }
     // if obj pathing is doubly nested, need to predefine key in the obj
     const obj = { jokeOTD: {}, factOTD: {}, astropicOTD: {}, animalOTD: {}, riddleOTD: {}, songOTD: {}, plantOTD: {}, poemOTD: {} };

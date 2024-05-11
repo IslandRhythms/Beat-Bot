@@ -129,7 +129,8 @@ const tasks = require('./automations');
 
   bot.on("messageCreate", async (message) => {
     if (message.author.bot) return; // prevent bot from replying to itself.
-    if(message.content.includes('<@596812405733064734>')) {
+    // get snarky with people that are not me
+    if(message.content.includes('<@596812405733064734>') && message.author.id != bot.application.owner.id) {
       const res = Math.floor(Math.random()*(responses.length - 1));
       return message.channel.send(`<@${message.author.id}> ${responses[res]}`)
     }
@@ -144,7 +145,6 @@ const tasks = require('./automations');
         await roleAssignment.react(roles[i].emoji)
       }
     }
-    
   });
 
 
