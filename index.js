@@ -1,6 +1,6 @@
 require('./config');
 
-const { Client, Events, GatewayIntentBits, Collection } = require('discord.js');
+const { Client, Events, GatewayIntentBits, Collection, EmbedBuilder } = require('discord.js');
 const { Player } = require('discord-player');
 const path = require("path");
 const fs = require('fs');
@@ -17,7 +17,8 @@ const tasks = require('./automations');
       GatewayIntentBits.MessageContent,
       GatewayIntentBits.GuildMembers,
       GatewayIntentBits.GuildVoiceStates,
-      GatewayIntentBits.GuildMessagePolls
+      GatewayIntentBits.GuildMessagePolls,
+      GatewayIntentBits.GuildMessageReactions
     ] 
   });
   bot.commands = new Collection();
@@ -32,11 +33,9 @@ const tasks = require('./automations');
   const responses = [
     "I'm busy!",
     "Leave me alone",
-    "You can get yourself out of this situation",
     "Don't you ever message me again, you stupid fuck.",
     "Is your need for attention so great that you have to ping me?",
     "If everyone is ignoring you to the point where you have to ping me, you should reflect on your life choices up until this moment.",
-
   ];
   const channelids = ["784509591006347325"];//,"488053636060938242"]; //bot-testing and the-hut
 
@@ -79,38 +78,69 @@ const tasks = require('./automations');
   bot.on('messageReactionAdd', async (reaction, user) => {
     if (reaction.message.partial) await reaction.message.fetch(); // Fetch the message if it's partial
     if (user.bot) return; // Ignore reactions from bots
-  
+    const channel = await bot.channels.cache.find(x => x.name == 'bot-testing');
+    const channelId = channel.id;
     const { message, emoji } = reaction;
     // I think this makes it so that if I edit this file while in prod, the updates propogate through and don't require a restart.
     const roles = require('./resources/roles.json');
     if (message.channel.id === channelId && message.author.id === bot.user.id) { // Check if the reaction is on the roles message sent by the bot
-      // if (roleMap[emoji.name]) {
-      //   const role = message.guild.roles.cache.get(roleMap[emoji.name]);
-      //   if (role) {
-      //     const member = message.guild.members.cache.get(user.id);
-      //     if (member) {
-      //       await member.roles.add(role);
-      //       console.log(`Added role ${role.name} to ${user.tag}`);
-      //     }
-      //   }
-      // }
+      const role = roles.find(x => x.emoji == emoji.name);
+      if (role) {
+        const member = message.guild.members.cache.get(user.id);
+        if (member) {
+          if (!member.roles.cache.has(role.roleId)) { // Check if the member already has the role
+            await member.roles.add(role.roleId);
+            console.log(`Added role ${role.name} to ${user.tag}`);
+          } else {
+            console.log(`${user.tag} already has the role ${role.name}`);
+          }
+        }
+      }
     }
   });
 
-  bot.on('messageReactionRemove', (reaction, user) => {
-
+  bot.on('messageReactionRemove', async (reaction, user) => {
+    if (reaction.message.partial) await reaction.message.fetch(); // Fetch the message if it's partial
+    if (user.bot) return; // Ignore reactions from bots
+    const channel = await bot.channels.cache.find(x => x.name == 'bot-testing');
+    const channelId = channel.id;
+    const { message, emoji } = reaction;
+    console.log(message, emoji, user);
+    // I think this makes it so that if I edit this file while in prod, the updates propagate through and don't require a restart.
+    const roles = require('./resources/roles.json');
+    if (message.channel.id === channelId && message.author.id === bot.user.id) { // Check if the reaction is on the roles message sent by the bot
+      const role = roles.find(x => x.emoji == emoji.name)
+      if (role) {
+        const member = message.guild.members.cache.get(user.id);
+        if (member) {
+          if (member.roles.cache.has(role.roleId)) { // Check if the member has the role
+            await member.roles.remove(role.roleId);
+            console.log(`Removed role ${role.name} from ${user.tag}`);
+          } else {
+            console.log(`${user.tag} does not have the role ${role.name}`);
+          }
+        }
+      }
+    }
   });
 
 
-  bot.on("messageCreate", (message) => {
+  bot.on("messageCreate", async (message) => {
     if (message.author.bot) return; // prevent bot from replying to itself.
     if(message.content.includes('<@596812405733064734>')) {
-      const res = Math.floor(Math.random()*(responses.length - 1)) + 1;
+      const res = Math.floor(Math.random()*(responses.length - 1));
       return message.channel.send(`<@${message.author.id}> ${responses[res]}`)
     }
     // only works if I send it
     if (message.content == '!addRoles' && message.author.id == bot.application.owner.id) {
+      const roles = require('./resources/roles.json');
       // do stuff
+      const embed = new EmbedBuilder().setTitle('React to get the corresponding role');
+      embed.setDescription(`${roles.map(role => `${role.name} - ${role.emoji}`).join('\n')}`)
+      const roleAssignment = await message.channel.send({ embeds: [embed] });
+      for (let i = 0; i < roles.length; i++) {
+        await roleAssignment.react(roles[i].emoji)
+      }
     }
     
   });
