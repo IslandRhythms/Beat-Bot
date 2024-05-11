@@ -169,6 +169,7 @@ async function ofTheDay(db, bot) {
     const year = date.getFullYear();
     const formattedDate = `${month}/${day}/${year}`;
     obj.dateString = formattedDate;
+    obj.totalBugReports = await BugReport.countDocuments({ status: { $nin: ['Done', 'Third Party Problem', 'Expected'] } });
     const doc = await Daily.create(obj);
     console.log('what is doc', doc);
     } catch (error) {

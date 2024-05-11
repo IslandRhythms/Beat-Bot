@@ -19,7 +19,7 @@ const bugReportSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ['Confirmed', 'Expected', 'Fixed', 'Third Party Problem', 'Feature Request', 'Pending']
+    enum: ['Confirmed', 'Expected', 'Done', 'Third Party Problem', 'Feature Request', 'Pending']
   },
   bugId: {
     type: String,

@@ -32,8 +32,10 @@ const tasks = require('./automations');
 
   const responses = [
     "I'm busy!",
-    "Leave me alone",
+    "Leave me alone.",
     "Don't you ever message me again, you stupid fuck.",
+    "Oh look, another interruption.",
+    "Congratulations, you've succeeded in annoying me.",
     "Is your need for attention so great that you have to ping me?",
     "If everyone is ignoring you to the point where you have to ping me, you should reflect on your life choices up until this moment.",
   ];
