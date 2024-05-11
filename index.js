@@ -77,6 +77,8 @@ const tasks = require('./automations');
     console.log('reconnected');
   });
 
+  const conn = await db().asPromise();
+
   bot.on('messageReactionAdd', async (reaction, user) => {
     if (reaction.message.partial) await reaction.message.fetch(); // Fetch the message if it's partial
     if (user.bot) return; // Ignore reactions from bots
@@ -146,10 +148,6 @@ const tasks = require('./automations');
       }
     }
   });
-
-
-
-  const conn = await db().asPromise();
 
   // bot.on(Events.MessagePollVoteAdd, (answer, userId) => {
   //   console.log(`User ${userId} voted for answer ${answer.id}`);
