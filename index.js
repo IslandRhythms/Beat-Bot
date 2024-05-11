@@ -149,6 +149,11 @@ const tasks = require('./automations');
     }
   });
 
+  bot.on('guildMemberAdd', async (guildMember) => {
+    const { User } = conn.models;
+    await User.create({ discordId: guildMember.user.id, discordName: guildMember.user.username })
+  });
+
   // bot.on(Events.MessagePollVoteAdd, (answer, userId) => {
   //   console.log(`User ${userId} voted for answer ${answer.id}`);
   // });
@@ -278,12 +283,11 @@ const tasks = require('./automations');
       }
     }
   });
-  /*
-  bot.on('guildMemberAdd', guildMember => {
-    let title = guildMember.guild.roles.cache.find(role => role.name === 'Band Kids');
-    guildMember.roles.add(title);
-  });
-  */
+
+  // bot.on('guildMemberAdd', guildMember => {
+  //   let title = guildMember.guild.roles.cache.find(role => role.name === 'Band Kids');
+  //   guildMember.roles.add(title);
+  // });
 
  
   bot.login(process.env.TOKEN);

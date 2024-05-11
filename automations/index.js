@@ -185,6 +185,9 @@ async function ofTheDay(db, bot) {
     obj.totalBugReports = await BugReport.countDocuments({ status: { $nin: ['Done', 'Third Party Problem', 'Expected'] } });
     const doc = await Daily.create(obj);
     console.log('what is doc', doc);
+    const embed = new EmbedBuilder().setTitle(`Daily Automated Message. ${doc.holidayOTD ? `Today is ${doc.holidayOTD}` : ``}`)
+    .addFields(...fields)
+    sendMessageTo.sendMessageToTest(bot, { embeds: [embed]})
     } catch (error) {
       console.log('Of the day automation crashed', error);
     }

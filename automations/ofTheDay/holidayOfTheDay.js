@@ -14,7 +14,7 @@ module.exports = function holidayOfTheDay() {
           return holidays[i].name;
       }
     }
-    return 'no holidays';
+    return null;
   } catch (error) {
     console.log('something went wrong with holdiay of the day', error);
   }
