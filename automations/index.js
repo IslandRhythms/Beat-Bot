@@ -68,7 +68,11 @@ module.exports = async function tasks(bot) {
 // https://pagination-djs.js.org/#md:other-send-options
 async function ofTheDay(db, bot) {
   try {
-    const { Daily } = db.models;
+    const { Daily, BugReport } = db.models;
+    const yesterDoc = await Daily.findOne().sort({ createdAt: -1 });
+    if (yesterDoc) {
+      sendMessageTo.sendMessageToOwner(bot);
+    }
     // if obj pathing is doubly nested, need to predefine key in the obj
     const obj = { jokeOTD: {}, factOTD: {}, astropicOTD: {}, animalOTD: {}, riddleOTD: {}, songOTD: {}, plantOTD: {}, poemOTD: {} };
     const fields = [];

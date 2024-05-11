@@ -2,6 +2,7 @@ const axios = require('axios');
 
 module.exports = async function artworkOfTheDay() {
   console.log('getting artwork of the day ...');
+  try {
   // first check the met
   const res = await axios.get('https://collectionapi.metmuseum.org/public/collection/v1/objects').then(res => res.data);
   // objectIds are not sequential in the array, meaning objectid 52 might be missing but 53 and 51 are there. Therefore need to pull objectId out of the array.
@@ -30,6 +31,9 @@ module.exports = async function artworkOfTheDay() {
     };
   } else {
     return { met: { image: artwork.primaryImage, title: artwork.title, artist: artwork.artistDisplayName } }
+  }
+  } catch (error) {
+    console.log('something went wrong with artwork of the day', error);
   }
 
 }
