@@ -1,5 +1,5 @@
 const axios = require('axios');
-require('./config');
+require('../config');
 const fs = require('fs');
 const path = require ('path');
 const puppeteer = require('puppeteer');

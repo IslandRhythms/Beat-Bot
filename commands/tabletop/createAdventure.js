@@ -1,5 +1,8 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const getDiscordAvatar = require('../../helpers/getDiscordAvatar');
+const uploadFileToGoogle = require('../../helpers/uploadFileToGoogle');
+const downloadFile = require('../../helpers/downloadFile');
+const fs = require('fs');
 
 module.exports = {
   data: new SlashCommandBuilder().setName('createadventure')
@@ -24,15 +27,26 @@ module.exports = {
     const obj = { designer: user._id, title, description };
     if (url && document) {
       obj.url = url;
-      obj.document = document.url;
+      await downloadFile(document.url, `./${document.name}`)
+      const links = await uploadFileToGoogle(document.name, `./${document.name}`, document.contentType);
+      obj.document = links.webViewLink;
+      fs.unlinkSync(`./${document.name}`)
     } else if (url) {
       obj.url = url;
     } else {
       obj.document = document.url;
+      await downloadFile(document.url, `./${document.name}`)
+      const links = await uploadFileToGoogle(document.name, `./${document.name}`, document.contentType);
+      obj.document = links.webViewLink;
+      fs.unlinkSync(`./${document.name}`)
     }
 
     if (picture) {
-      obj.picture = picture.url;
+      const outputPath = `./${picture.name}`
+      await downloadFile(picture.url, outputPath);
+      const links = await uploadFileToGoogle(picture.name, outputPath, picture.contentType)
+      fs.unlinkSync(outputPath);
+      obj.picture = links.webViewLink;
     }
 
     const adventure = await Adventure.create(obj);
@@ -42,7 +56,10 @@ module.exports = {
     .setAuthor({ name: interaction.user.username, iconURL: avatar })
     .setTitle(`${adventure.title}`)
     .setDescription(`${adventure.description}`)
-    .setImage(`${adventure.picture}`);
+    if (picture) {
+      embed.setImage(`${picture.url}`);
+      embed.addFields({ name: 'Image', value: adventure.picture })
+    }
     if (adventure.url) {
       embed.setURL(adventure.url)
     } else {

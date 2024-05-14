@@ -1,4 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const downloadFile = require('../../helpers/downloadFile');
+const uploadFileToGoogle = require('../../helpers/uploadFileToGoogle');
+const fs = require('fs');
 
 module.exports = {
   data: new SlashCommandBuilder().setName('createnote')
@@ -12,7 +15,8 @@ module.exports = {
   .addAttachmentOption(option => option.setName('file').setDescription('a text document or similar to save on the note.'))
   .addStringOption(option => option.setName('tags').setDescription('a comma separated list of tags to categorize the note')),
   async execute(interaction, conn) {
-    await interaction.deferReply();
+    const private = interaction.options.getBoolean('private');
+    await interaction.deferReply({ ephemeral: private });
     const { User, Note } = conn.models;
     const user = await User.findOne({ $or: [{ discordName: interaction.user.username }, { discordId: interaction.user.id }] });
     
@@ -20,20 +24,17 @@ module.exports = {
     const text = interaction.options.getString('text');
     const discordUser = interaction.options.getUser('user');
     const role = interaction.options.getRole('role');
-    const private = interaction.options.getBoolean('private');
     const checkImage = interaction.options.getAttachment('image') ? isImage(interaction.options.getAttachment('image').contentType) : false;
-    const image = checkImage ? interaction.options.getAttachment('image').url : '';
     const fileAttachment = interaction.options.getAttachment('file');
     console.log('what is fileAttachment', fileAttachment);
     const checkFile = fileAttachment ? isAcceptableFile(fileAttachment.contentType) : false;
-    const file = checkFile ? fileAttachment.url : '';
-    const fileName = fileAttachment ? fileAttachment.name : '';
     const tags = interaction.options.getString('tags') ?? '';
     const tagArray = tags.length ? tags.split(',') : [];
     const searchArray = [];
     for (let i = 0; i < tagArray.length; i++) {
       searchArray.push(tagArray[i].trim());
     }
+
 
     const existingNotes = await Note.find({ 'noteCreator.discordId' : interaction.user.id });
     const noteId = interaction.user.username + existingNotes.length;
@@ -46,12 +47,32 @@ module.exports = {
       },
       text: text.length > 4096 ? text.slice(0, 4096) : text,
       title: title.length > 256 ? title.slice(0, 256) : title,
-      image,
-      file,
       guildId: interaction.guildId,
       tags: searchArray,
       noteId
     }
+    const file = checkFile ? fileAttachment.url : '';
+    const fileName = fileAttachment ? fileAttachment.name : '';
+    // need to do the same for images
+    if (file) {
+      const outputPath = `./${fileName}`;
+      await downloadFile(file, outputPath);
+      const links = await uploadFileToGoogle(fileName, outputPath, fileAttachment.contentType);
+      fs.unlinkSync(outputPath);
+      dataObject.file = links.webViewLink;
+    }
+
+    const imageData = checkImage ? interaction.options.getAttachment('image') : '';
+    const image = checkImage ? interaction.options.getAttachment('image').url : '';
+
+    if (image) {
+      const outputPath = `./${imageData.name}`
+      await downloadFile(image, outputPath);
+      const links = await uploadFileToGoogle(imageData.name, outputPath, imageData.contentType)
+      fs.unlinkSync(outputPath);
+      dataObject.image = links.webViewLink
+    }
+    console.log('what is image', image, 'what is file', file);
 
     const fieldArray = [{ name: 'noteId', value: dataObject.noteId }];
     
@@ -64,7 +85,7 @@ module.exports = {
       fieldArray.push({ name: 'rolesHaveAccess', value: role.name });
     }
     if (file) {
-      fieldArray.push({ name: fileName, value: file });
+      fieldArray.push({ name: fileName, value: dataObject.file });
     }
     if (dataObject.tags && dataObject.tags.join(',').length) {
       fieldArray.push({ name: 'tags', value: dataObject.tags.join(',')});
@@ -73,7 +94,10 @@ module.exports = {
     const embed = new EmbedBuilder();
     embed.setTitle(dataObject.title);
     if (dataObject.image) {
-      embed.setImage(dataObject.image);
+      embed.setImage(image);
+      embed.addFields({
+        name: 'Image Link', value: dataObject.image
+      });
     }
     embed.setAuthor({ name: dataObject.noteCreator.discordName })
     embed.setDescription(dataObject.text);
@@ -83,7 +107,7 @@ module.exports = {
       );
     }
     await Note.create(dataObject);
-    await interaction.followUp({ content: `Document created. Be sure to remember the title or noteId for easy lookup. `, embeds: [embed], ephemeral: private });
+    await interaction.followUp({ content: `Document created. Be sure to remember the title or noteId for easy lookup. `, embeds: [embed] });
   }
 }
 
