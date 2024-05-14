@@ -21,12 +21,14 @@ module.exports = {
       ).setRequired(true))
       .addStringOption(option => option.setName('region').setDescription('what region groups to look up').addChoices(
         { name: 'North America', value: 'north-america' },
+        { name: 'South America', value: 'south-america' },
         { name: 'EMEA', value: 'europe-middle-east-and-africa' },
         { name: 'APAC-N', value: 'asia-pacific-north'},
         { name: 'APAC-S', value: 'asia=pacific-south'}
       ).setRequired(true))
   ),
   async execute(interaction, conn) {
+    await interaction.deferReply({ ephemeral: true })
     const year = interaction.options.getString('year');
     const stage = interaction.options.getString('stage');
     const region = interaction.options.getString('region');
@@ -45,6 +47,13 @@ module.exports = {
       // look at regionalEvents property. Should use region here
       // only works for group stages
       const data = await axios.get(`https://majestic.battlefy.com/algs-season-${year}/events/event-by-slug/${stage}`).then(res => res.data);
+      console.log('what is data', data);
+      const matches = data.regionalEvents[region].matches;
+      if (!matches) {
+        return interaction.followUp(`Could not find match times for region ${region}`);
+      }
+      console.log('what is matches', matches);
+      // paginate. Title is `${groups[0]} vs ${groups[1]} at new Date(${matchStartTime})`
     }
 
     return interaction.followUp(`Under Construction`)
