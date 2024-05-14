@@ -66,7 +66,7 @@ module.exports = {
         profile.preferredSystem.push(system);
       }
     }
-    profile.set(...obj);
+    profile.set(obj);
     await profile.save();
     await interaction.followUp({ content: 'Profile Updated!', ephemeral: true });
   }

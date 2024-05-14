@@ -72,7 +72,7 @@ module.exports = {
     encoder.finish();
     stream.on('finish', async () => {
       console.log(`GIF generated successfully, took ${Date.now() - startingTime}ms`);
-      return interaction.followUp({ files: ['countdown.gif'] });
+      return interaction.followUp({ content: `Click on the GIF if you need to do something in another window`, files: ['countdown.gif'] });
     });
   }
 };
