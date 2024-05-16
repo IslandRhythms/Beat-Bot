@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const parseDateString = require('../../helpers/parseDateString');
+const { Pagination } = require('pagination.djs');
 
 
 module.exports = {
@@ -12,11 +13,12 @@ module.exports = {
   .addStringOption(option => option.setName('whenend').setDescription('another date in the form MMDDYYYY. Use to determine a range of dates.'))
   .addBooleanOption(option => option.setName('private').setDescription('set to true so only you can see the result')),
   async execute(interaction, conn) {
-    await interaction.deferReply();
+    const pagination = new Pagination(interaction);
+    const private = interaction.options.getBoolean('private');
+    await interaction.deferReply({ ephemeral: private });
     const title = interaction.options.getString('title');
     const start = interaction.options.getString('whenstart');
     const end = interaction.options.getString('whenend');
-    const private = interaction.options.getBoolean('private');
     const tag = interaction.options.getString('tag');
     const noteId = interaction.options.getString('noteid');
     const { User, Note } = conn.models;
@@ -55,7 +57,10 @@ module.exports = {
       const embed = new EmbedBuilder();
       embed.setTitle(notes[i].title);
       if (notes[i].image) {
-        embed.setImage(notes[i].image);
+        embed.addFields({ name: 'Image', value: notes[i].image})
+      }
+      if (notes[i].file) {
+        embed.addFields({ name: 'File', value: notes[i].file })
       }
       embed.setAuthor({ name: notes[i].noteCreator.discordName })
       embed.setDescription(notes[i].text);
@@ -65,8 +70,12 @@ module.exports = {
       );
       embeds.push(embed);
     }
+    
     if (embeds.length) {
-      await interaction.followUp({ embeds, ephemeral: private });
+      pagination.setEmbeds(embeds, (embed, index, array) => {
+        return embed.setFooter({ text: `Page: ${index + 1}/${array.length}` });
+      });
+      return pagination.render();
     } else {
       await interaction.followUp('No notes found :(');
     }

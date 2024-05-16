@@ -87,7 +87,7 @@ module.exports = {
   
       pagination.setOptions({ ephemeral: true });
   
-      pagination.render();
+      return pagination.render();
     }
   }
 }

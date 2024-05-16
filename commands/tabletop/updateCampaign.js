@@ -1,4 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const downloadFile = require('../../helpers/downloadFile');
+const uploadFileToGoogle = require('../../helpers/uploadFileToGoogle');
+const fs = require('fs');
 
 
 module.exports = {
@@ -20,7 +23,7 @@ module.exports = {
     const title = interaction.options.getString('title');
     const groupName = interaction.options.getString('groupname');
     const attachment = interaction.options.getAttachment('grouplogo');
-    const groupLogo = attachment.url;
+    const groupLogo = attachment;
     const character = interaction.options.getString('character');
     const GM = interaction.options.getUser('gm');
     const player = interaction.options.getUser('player');
@@ -81,7 +84,10 @@ module.exports = {
       campaign.groupName = groupName;
     }
     if (groupLogo) {
-      campaign.groupLogo = groupLogo;
+      await downloadFile(groupLogo.url, `./groupLogo`);
+      const links = await uploadFileToGoogle(`groupLogo`, `./groupLogo`, groupLogo.contentType)
+      campaign.groupLogo = links.webContentLink;
+      fs.unlinkSync(`./groupLogo`)
     }
     if (victory) {
       campaign.isVictory = victory;

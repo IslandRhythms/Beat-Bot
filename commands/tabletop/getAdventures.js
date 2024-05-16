@@ -10,7 +10,7 @@ module.exports = {
   .addUserOption(option => option.setName('author').setDescription('get all adventures created by the indicated user')),
   async execute(interaction, conn) {
     const pagination = new Pagination(interaction);
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
 
     const { Adventure, User } = conn.models;
     const author = interaction.options.getUser('author');
@@ -61,6 +61,6 @@ module.exports = {
       return currentEmbed.setFooter({ text: new Date().toLocaleDateString() });
     });
     pagination.setOptions({ ephemeral: true })
-    pagination.render();
+    return pagination.render();
   }
 }

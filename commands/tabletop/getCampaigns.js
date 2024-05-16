@@ -1,12 +1,14 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const getDiscordNameFromId = require('../../helpers/getDiscordNameFromId');
+const { Pagination } = require('pagination.djs');
 
 
 module.exports = {
   data: new SlashCommandBuilder().setName('getcampaigns').setDescription('get the details of all active campaigns on the server.')
   .addStringOption(option => option.setName('system').setDescription('the system the campaign is using.')),
   async execute(interaction, conn) {
-    await interaction.deferReply();
+    const pagination = new Pagination(interaction);
+    await interaction.deferReply({ ephemeral: true });
     const { Campaign } = conn.models;
     const system = interaction.options.getString('system');
     const obj = {};
@@ -27,9 +29,12 @@ module.exports = {
       const embeds = [];
       const embed = new EmbedBuilder().setTitle('No entries found');
       embeds.push(embed);
-      await interaction.followUp({ embeds, ephemeral: true });
+      await interaction.followUp({ embeds });
     } else {
-      await interaction.followUp({ embeds, ephemeral: true });
+      pagination.setEmbeds(embeds, (embed, index, array) => {
+        return embed.setFooter({ text: `Page: ${index + 1}/${array.length}` });
+      });
+      return pagination.render();
     }
     
   }

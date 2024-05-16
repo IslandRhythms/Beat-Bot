@@ -10,11 +10,11 @@ const { EmbedBuilder } = require('discord.js');
 
 const sendMessageTo = require('../helpers/sendMessageTo.js');
 
+const apexMatches = require('./apexMatches.js');
 const getHolidaysForTheYear = require('./getHolidaysForTheYear.js');
 const happyBirthday = require('./happyBirthday');
 const remind = require('./remind');
 const september = require('./september.js');
-const startQueue = require('./startQueue');
 const valorantMatchesOfTheDay = require('./valorantMatchesOfTheDay.js');
 
 // of the day daily automation
@@ -50,6 +50,7 @@ module.exports = async function tasks(bot) {
     // Task.registerHandler('ofTheDay', ofTheDay(setup.db, bot));
     // Task.registerHandler('happyBirthday', happyBirthday(setup.db, bot));
     // Task.registerHandler('remind', remind(bot));
+    // Task.registerHandler('apexMatches', apexMatches(bot))
     // Task.registerHandler('getHolidaysForTheYear', getHolidaysForTheYear());
     // Task.registerHandler('september', september(bot));
     // Task.registerHandler('valorantMatchesOfTheDay', valorantMatchesOfTheDay(bot));

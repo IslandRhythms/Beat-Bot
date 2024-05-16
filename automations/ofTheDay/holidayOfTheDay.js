@@ -11,7 +11,11 @@ module.exports = function holidayOfTheDay() {
       if (year == new Date(holidays[i].date).getUTCFullYear() && 
         month == (new Date(holidays[i].date).getUTCMonth() + 1) 
         && day == new Date(holidays[i].date).getUTCDay()) {
-          return holidays[i].name;
+          if (holidays[i].name == 'Christmas Day') {
+            return 'Merry Christmas'
+          } else {
+            return `Happy ${holidays[i].name}`
+          }
       }
     }
     return null;

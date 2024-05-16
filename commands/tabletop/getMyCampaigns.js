@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const getDiscordNameFromId = require('../../helpers/getDiscordNameFromId');
+const { Pagination } = require('pagination.djs');
 
 
 module.exports = {
@@ -7,7 +8,8 @@ module.exports = {
   .addStringOption(option => option.setName('title').setDescription('the name of the campaign you are in. Omit to get all.'))
   .addStringOption(option => option.setName('id').setDescription('the id of the campaign')),
   async execute(interaction, conn) {
-    await interaction.deferReply();
+    const pagination = new Pagination(interaction);
+    await interaction.deferReply({ ephemeral: true });
     const { Campaign, User } = conn.models;
     const obj = {};
     const title = interaction.options.getString('title');
@@ -44,9 +46,12 @@ module.exports = {
       const embeds = [];
       const embed = new EmbedBuilder().setTitle('No entries found');
       embeds.push(embed);
-      await interaction.followUp({ embeds, ephemeral: true });
+      await interaction.followUp({ embeds});
     } else {
-      await interaction.followUp({ embeds, ephemeral: true });
+      pagination.setEmbeds(embeds, (embed, index, array) => {
+        return embed.setFooter({ text: `Page: ${index + 1}/${array.length}` });
+      });
+      return pagination.render();
     }
   }
 }
