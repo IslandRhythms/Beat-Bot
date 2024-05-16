@@ -30,7 +30,7 @@ module.exports = async function valorantMatchesOfTheDay(bot) {
     }
   
     // sendMessageToTest(bot, { embeds: [embed] });
-    // sendMessageToEsports(bot, { embeds: [embed] });
+    sendMessageToEsports(bot, { embeds: [embed] });
   } catch (error) {
     console.log('something went wrong with the valorant matches automation', error);
   }

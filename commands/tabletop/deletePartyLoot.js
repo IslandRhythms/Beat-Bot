@@ -4,19 +4,19 @@ const getPlayersActiveCharacter = require('../../helpers/getPlayersActiveCharact
 
 module.exports = {
   data: new SlashCommandBuilder().setName('deletepartyloot').setDescription('delete an item from the party loot')
-  .addStringOption(option => option.setName('campaign').setDescription('the name of your campaign.').setRequired(true))
+  .addStringOption(option => option.setName('campaignid').setDescription('the id of your campaign.').setRequired(true))
   .addStringOption(option => option.setName('item').setDescription('the name of the item').setRequired(true))
   .addUserOption(option => option.setName('player').setDescription('the player that is currently using the checked out item.')),
   async execute(interaction, conn) {
     await interaction.deferReply();
 
     const { Campaign, User } = conn.models;
-    const adventure = interaction.options.getString('campaign');
+    const adventure = interaction.options.getString('campaignid');
     const user = await User.findOne({ discordId: interaction.user.id });
     if (!user) {
       return interaction.followUp('You do not exist in the db, please contact Beat.');
     }
-    const doc = await Campaign.findOne({ title: adventure, $or: [{ players: user._id }, { gameMaster: user._id }] }).populate('characters').populate('partyLoot.character');
+    const doc = await Campaign.findOne({ campaignId: adventure, $or: [{ players: user._id }, { gameMaster: user._id }] }).populate('characters').populate('partyLoot.character');
     if (!doc) {
       return interaction.followUp(`No campaign found meeting the indicated parameters.`);
     }
@@ -38,7 +38,7 @@ module.exports = {
       if (!character) {
         return interaction.followUp('No character found.');
       }
-      doc.partLoot.pull({ _id: entry._id });
+      doc.partyLoot.pull({ _id: entry._id });
     } else {
       return interaction.followUp('loot item not found in party loot.')
     }

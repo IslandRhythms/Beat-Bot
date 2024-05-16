@@ -44,7 +44,7 @@ module.exports = async function happyBirthday(db, bot) {
     link: ${pageEntry.content_urls.mobile.page}`;
     embed.setDescription(`You were born in the year of the ${zodiac.name}. ${zodiac.description} You are most compatible with ${zodiac.compatible.join(', ')} and least compatible with ${zodiac.incompatible}. ${history}`)
     // send message into channel here / maybe send a DM?
-    // sendMessageTo.sendMessageToGeneral(bot, { embeds: [embed] });
+    sendMessageTo.sendMessageToGeneral(bot, { embeds: [embed] });
     // sendMessageTo.sendMessageToTest(bot, { embeds: [embed] });
     // sendMessageTo.sendMessageToOwner(bot, { embeds: [embed] });
   } catch (error) {

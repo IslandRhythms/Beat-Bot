@@ -74,5 +74,6 @@ module.exports = async function animalOfTheDay() {
     return AOTD;
   } catch(error) {
     console.log('something went wrong with animal of the day', error);
+    return { AOTD: null }
   }
 };

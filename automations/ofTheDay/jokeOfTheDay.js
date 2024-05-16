@@ -18,9 +18,9 @@ module.exports = async function jokeOfTheDay() {
       return { jokeOTD: { joke: 'something went wrong'} };
     }
     if (res.type == 'twopart') {
-      return { jokeOTD: { setup: res.setup, delivery: res.delivery } };
+      return { jokeOTD: { setup: res.setup, delivery: res.delivery, safe: res.safe } };
     } else {
-      return { jokeOTD: { joke: res.joke } };
+      return { jokeOTD: { joke: res.joke, safe: res.safe } };
     }
   } catch (error) {
     console.log('something went wrong with joke of the day', error);

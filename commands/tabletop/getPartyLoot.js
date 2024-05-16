@@ -3,18 +3,18 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder().setName('getpartyloot').setDescription('get the shared loot of the adventuring party')
-  .addStringOption(option => option.setName('campaign').setDescription('the name of your campaign.').setRequired(true)),
+  .addStringOption(option => option.setName('campaignid').setDescription('the id of your campaign.').setRequired(true)),
   async execute(interaction, conn) {
     await interaction.deferReply();
 
     const { Campaign, User } = conn.models;
-    const adventure = interaction.options.getString('campaign');
+    const adventure = interaction.options.getString('campaignid');
     const user = await User.findOne({ discordId: interaction.user.id });
     if (!user) {
       return interaction.followUp('You do not exist in the db, please contact Beat.');
     }
     const userId = user._id;
-    const doc = await Campaign.findOne({ title: adventure, $or: [{ players: userId }, { gameMaster: userId }] }).populate('partyLoot.character');
+    const doc = await Campaign.findOne({ campaignId: adventure, $or: [{ players: userId }, { gameMaster: userId }] }).populate('partyLoot.character');
     if (!doc) {
       return interaction.followUp(`No campaign found meeting the indicated parameters.`);
     }

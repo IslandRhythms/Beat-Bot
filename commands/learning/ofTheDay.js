@@ -187,9 +187,12 @@ module.exports = {
     }
     else if (sub == 'pokemon') {
       const pokemon = doc.pokemonOTD;
+      console.log('what is pokemon', pokemon);
       const res = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon}`).then(res => res.data);
+      console.log('what is res', res);
       // two different payloads
       const pokedex = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${res.name}`).then(res => res.data);
+      console.log(pokedex);
       const nationalDex = pokedex.pokedex_numbers.find(x => x.pokedex.name == 'national');
       let evolvesFrom = '';
       const name = capitalizeFirstLetter(res.name);
@@ -199,7 +202,8 @@ module.exports = {
       embed.setAuthor({ name: 'pokeapi', iconURL: 'https://raw.githubusercontent.com/PokeAPI/media/master/logo/pokeapi_64.png', url: 'https://pokeapi.co/' });
       const genus = pokedex.genera.find(x => x.language.name == 'en');
       embed.setTitle(`Pokemon of the Day: ${name}, The ${genus.genus}. `);
-      embed.setDescription(`${evolvesFrom}${pokedex.flavor_text_entries[0].flavor_text}`);
+      const englishFlavor = pokedex.flavor_text_entries.find(x => x.language.name == 'en');
+      embed.setDescription(`${evolvesFrom}${englishFlavor.flavor_text}`);
       for (let i = 0; i < res.types.length;i++) {
         embed.addFields({ name: 'Type', value: res.types[i].type.name, inline: true });
       }
