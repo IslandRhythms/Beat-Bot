@@ -42,5 +42,6 @@ module.exports = async function songOfTheDay() {
     return songOfTheDay;
   } catch (error) {
     console.log('something went wrong with song of the day', error);
+    return { name: null }
   }
 }

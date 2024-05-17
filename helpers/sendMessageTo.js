@@ -41,3 +41,15 @@ exports.sendMessageToEsports = function(bot, message) {
     }
   });
 }
+
+exports.sendMessageToDaily = function(bot, message) {
+  bot.guilds.cache.forEach(guild => {
+    const dailyChannel = guild.channels.cache.find(x => x.name.includes('daily'))
+    if (dailyChannel) {
+      const channel = bot.channels.cache.get(dailyChannel.id);
+      channel.send(message)
+    } else {
+      console.log(`No daily text channel found for guild "${guild.name}"`);
+    }
+  });
+}

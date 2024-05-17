@@ -55,7 +55,7 @@ module.exports = async function tasks(bot) {
     const setup = { db: conn }
     initTasks(null, setup.db);
     const { Task } = setup.db.models;
-    // Task.registerHandler('ofTheDay', ofTheDay(setup.db, bot));
+    Task.registerHandler('ofTheDay', ofTheDay(setup.db, bot));
     // Task.registerHandler('happyBirthday', happyBirthday(setup.db, bot));
     // Task.registerHandler('remind', remind(bot));
     // Task.registerHandler('apexMatches', apexMatches(bot))
@@ -92,13 +92,16 @@ async function ofTheDay(db, bot) {
   try {
     const { Daily, BugReport } = db.models;
     const yesterDoc = await Daily.findOne().sort({ createdAt: -1 });
+    console.log('what is yesterDoc', yesterDoc)
     if (yesterDoc) {
       const yesterEmbed = new EmbedBuilder();
       const bugReports = await BugReport.countDocuments({ status: { $nin: ['Done', 'Third Party Problem', 'Expected', 'Feature Request'] } });
       const features = await BugReport.countDocuments({ status: `Feature Request` });
       yesterEmbed.setTitle(`Daily Report: ${new Date().toLocaleString()}`)
-      .setDescription(`${yesterDoc.pings.map(ping => `${ping.name} - ${ping.called}`).join('\n')}`)
-      .addFields(
+      if (yesterDoc.pings.length > 0) {
+        yesterEmbed.setDescription(`${yesterDoc.pings.map(ping => `${ping.name} - ${ping.called}`).join('\n') ?? `No pings to report`}`)
+      }
+      yesterEmbed.addFields(
         { name: `Total Bug Reports`, value: `${bugReports}`, inline: true },
         { name: `Total Feature Requests`, value: `${features}`, inline: true }
       );
@@ -106,7 +109,7 @@ async function ofTheDay(db, bot) {
     }
     const embeds = [];
     // if obj pathing is doubly nested, need to predefine key in the obj
-    const obj = { jokeOTD: {}, factOTD: {}, astropicOTD: {}, animalOTD: {}, riddleOTD: {}, songOTD: {}, plantOTD: {}, poemOTD: {} };
+    const obj = { jokeOTD: {}, factOTD: {}, astropicOTD: {}, animalOTD: {}, riddleOTD: {}, songOTD: {}, plantOTD: {}, poemOTD: {}, memeOTD: {} };
     const holidayOTD = holidayOfTheDay();
     obj.holidayOTD = holidayOTD; // now what
     // Daily Facts and Trivia Embed
@@ -163,17 +166,29 @@ async function ofTheDay(db, bot) {
     artEmbed.addFields({ name: 'Book of the Day', value: `${bookOTD.title} https://openlibrary.org${bookOTD.bookRoute}` });
     embeds.push(artEmbed);
     // Entertainment Embed
-    const entertainmentEmbed = new EmbedBuilder().setTitle(`Daily Entertainment Selection`)
+    const entertainmentEmbed = new EmbedBuilder().setTitle(`Daily Entertainment Selection`);
     const { memeOTD } = await memeOfTheDay();
-    obj.memeOTD = memeOTD;
-    entertainmentEmbed.addFields({ name: 'Meme of the Day', value: memeOTD });
+    if (memeOTD.title) {
+      obj.memeOTD.url = memeOTD.url;
+      obj.memeOTD.title = memeOTD.title;
+      obj.memeOTD.NSFW = memeOTD.NSFW;
+      obj.memeOTD.postLink = memeOTD.postLink
+      entertainmentEmbed.addFields({ name: `Meme of the Day ${memeOTD.NSFW ? `(NSFW)` : ``}`, value: `${memeOTD.postLink}` });
+    } else {
+      entertainmentEmbed.addFields({ name: `Meme of the Day`, value: `Could not get meme` });
+    }
     const sOTD = await songOfTheDay();
-    obj.songOTD.name = sOTD.name;
-    obj.songOTD.artist = sOTD.artist;
-    obj.songOTD.url = sOTD.url;
-    obj.songOTD.image = sOTD.image;
-    obj.songOTD.genre = sOTD.genre;
-    entertainmentEmbed.addFields({ name: 'Song of the Day', value: `${sOTD.name} by ${sOTD.artist} ${sOTD.url}` });
+    if (sOTD.name) {
+      obj.songOTD.name = sOTD.name;
+      obj.songOTD.artist = sOTD.artist;
+      obj.songOTD.url = sOTD.url;
+      obj.songOTD.image = sOTD.image;
+      obj.songOTD.genre = sOTD.genre;
+      entertainmentEmbed.addFields({ name: 'Song of the Day', value: `${sOTD.name} by ${sOTD.artist} ${sOTD.url}` });
+    } else {
+      entertainmentEmbed.addFields({ name: 'Song of the Day', value: `Unable to retrieve for today` });
+    }
+   
     const { pokemonOTD } = await pokeOfTheDay();
     obj.pokemonOTD = pokemonOTD;
     entertainmentEmbed.addFields({ name: 'Pokemon of the Day', value: pokemonOTD });
@@ -199,7 +214,7 @@ async function ofTheDay(db, bot) {
       obj.animalOTD.funFact = AOTD.funFact;
       obj.animalOTD.link = AOTD.link;
       obj.animalOTD.briefSummary = AOTD.briefSummary;
-      scienceEmbed.addFields({ name: 'Animal of the Day', value: AOTD.name });
+      scienceEmbed.addFields({ name: 'Animal of the Day', value: AOTD.animalName });
     } else {
       scienceEmbed.addFields({ name: 'Animal of the Day', value: `None today` });
     }

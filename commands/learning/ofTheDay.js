@@ -138,9 +138,14 @@ module.exports = {
       return interaction.followUp({ embeds: [embed] });
     }
     else if (sub == 'meme') {
-      embed.setTitle('Meme of the Day')
-      .setImage(`${doc.memeOTD}`)
-      return interaction.followUp({ embeds: [embed] })
+      if (doc.memeOTD) {
+        embed.setTitle(`Meme of the Day ${doc.memeOTD.NSFW ? `(NSFW)`: ``}`)
+        embed.setDescription(`${doc.memeOTD.title}`)
+        .setImage(`${doc.memeOTD.url}`)
+        return interaction.followUp({ embeds: [embed] })
+      } else {
+        return interaction.followUp(`No meme could be retrieved for today, sorry.`)
+      }
     }
     else if (sub == 'moonphase') {
       embed.setTitle(`Today's moon phase: ${doc.phaseOfTheMoon.phase} ${doc.phaseOfTheMoon.moon}`)

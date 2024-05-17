@@ -71,7 +71,8 @@ module.exports = async function animalOfTheDay() {
     await page.close();
     await browser.close();
     Object.assign(AOTD, data);
-    return AOTD;
+    console.log('what is AOTD', AOTD, data)
+    return { AOTD: AOTD };
   } catch(error) {
     console.log('something went wrong with animal of the day', error);
     return { AOTD: null }

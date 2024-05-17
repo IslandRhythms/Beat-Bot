@@ -38,7 +38,12 @@ const dailySchema = new mongoose.Schema({
     author: String
   },
   factOTD: { fact: String, source: String },
-  memeOTD: String,
+  memeOTD: {
+    url: String,
+    NSFW: Boolean,
+    title: String,
+    postLink: String
+  },
   jokeOTD: {
     setup: String,
     delivery: String,
