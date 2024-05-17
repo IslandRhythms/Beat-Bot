@@ -13,7 +13,7 @@ module.exports = {
   .addIntegerOption(option => option.setName('second').setDescription('the second').setMaxValue(59))
   .addIntegerOption(option => option.setName('millisecond').setDescription('the millisecond').setMaxValue(999)),
   async execute(interaction, conn) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const { Task } = conn.models;
     const message = interaction.options.getString('message');
     const year = interaction.options.getInteger('year');

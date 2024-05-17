@@ -14,7 +14,7 @@ module.exports = {
   .addStringOption(option => option.setName('state').setDescription('state abbreviation the city is in i.e. FL, NY, etc.')),
   async execute(interaction) {
     await interaction.deferReply();
-    console.log('what is interaction object', interaction.options);
+
     if (!interaction.options._hoistedOptions.length) {
       return interaction.followUp('You must provide either the latitude and longitude, or city, state, zip, and country');
     }

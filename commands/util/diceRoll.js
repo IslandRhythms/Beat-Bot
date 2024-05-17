@@ -6,10 +6,12 @@ module.exports = {
   .addIntegerOption(option => option.setName('sides').setDescription('the number of sides the dice should have. If omitted, the default is 6').setMinValue(1))
   .addIntegerOption(option => option.setName('amount').setDescription('the number of dice to roll'))
   .addIntegerOption(option => option.setName('modifier').setDescription('the amount to add to the dice'))
-  .addBooleanOption(option => option.setName('individual').setDescription('if the modifier should be added to each dice')),
+  .addBooleanOption(option => option.setName('individual').setDescription('if the modifier should be added to each dice'))
+  .addBooleanOption(option => option.setName('private').setDescription('set to true if you want anyone to see the result of the roll. default is false')),
   // what if the modifier is negative
   async execute(interaction) {
-    await interaction.deferReply();
+    const private = interaction.options.getBoolean('private');
+    await interaction.deferReply({ ephemeral: private });
     const sides = interaction.options.getInteger('sides') ?? 6;
     const amount = interaction.options.getInteger('amount');
     const modifier = interaction.options.getInteger('modifier');

@@ -9,7 +9,7 @@ module.exports = {
   .setDescription('Get information about a pokemon')
   .addStringOption(option => option.setName('pokemon').setDescription('the pokemon name or national dex id').setRequired(true)),
   async execute(interaction) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const pokemon = interaction.options.getString('pokemon');
     const embed = new EmbedBuilder();
     const res = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon}`).then(res => res.data);

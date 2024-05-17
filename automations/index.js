@@ -55,7 +55,7 @@ module.exports = async function tasks(bot) {
     const setup = { db: conn }
     initTasks(null, setup.db);
     const { Task } = setup.db.models;
-    Task.registerHandler('ofTheDay', ofTheDay(setup.db, bot));
+    // Task.registerHandler('ofTheDay', ofTheDay(setup.db, bot));
     // Task.registerHandler('happyBirthday', happyBirthday(setup.db, bot));
     // Task.registerHandler('remind', remind(bot));
     // Task.registerHandler('apexMatches', apexMatches(bot))

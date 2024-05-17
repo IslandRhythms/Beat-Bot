@@ -5,7 +5,7 @@ module.exports = {
   data: new SlashCommandBuilder().setName('getpartyloot').setDescription('get the shared loot of the adventuring party')
   .addStringOption(option => option.setName('campaignid').setDescription('the id of your campaign.').setRequired(true)),
   async execute(interaction, conn) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
 
     const { Campaign, User } = conn.models;
     const adventure = interaction.options.getString('campaignid');
@@ -22,8 +22,10 @@ module.exports = {
     const embed = new EmbedBuilder().setTitle(`${groupName}'s shared loot.`).setThumbnail(doc.groupLogo);
     for (let i = 0; i < doc.partyLoot.length; i++) {
       const loot = doc.partyLoot[i];
-      embed.addFields({ name: loot.name, value: loot.url, inline: true });
-      embed.addFields({ name: `Currently Used? ${loot.checkedOut}`, value: `${loot.character.name}`, inline: true });
+      if (!doc.partyLoot[i].deletedBy) {
+        embed.addFields({ name: loot.name, value: loot.url, inline: true });
+        embed.addFields({ name: `Currently Used? ${loot.checkedOut}`, value: `${loot.character.name}`, inline: true });
+      }
     }
     await interaction.followUp({ embeds: [embed], ephemeral: true });
   }

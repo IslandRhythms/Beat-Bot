@@ -24,6 +24,9 @@ module.exports = {
     const isGM = doc.gameMaster.find(x => x.toString() == user._id.toString());
 
     const entry = doc.partyLoot.find(x => x.name == item);
+    if (entry.deletedBy) {
+      return interaction.followUp(`Item has already been deleted by ${entry.deletedBy}`)
+    }
     const player = interaction.options.getUser('player');
     if (entry.checkedOut && (!player || player.id != interaction.user.id) && !isGM) {
       return interaction.followUp('If an item is being used by someone and you are not a GM, you must provide who.');
@@ -31,14 +34,14 @@ module.exports = {
 
 
     if (entry && !entry.checkedOut) {
-      doc.partyLoot.pull({ _id: entry._id });
+      doc.partyLoot.find(x => x.name == item).deletedBy = interaction.user.id;
     } else if (entry.checkedOut) {
       const playerDoc = await User.findOne({ discordId: player.id });
       const character = getPlayersActiveCharacter(doc.characters, playerDoc._id);
       if (!character) {
         return interaction.followUp('No character found.');
       }
-      doc.partyLoot.pull({ _id: entry._id });
+      doc.partyLoot.find(x => x.name == item).deletedBy = interaction.user.id;
     } else {
       return interaction.followUp('loot item not found in party loot.')
     }

@@ -7,7 +7,7 @@ module.exports = {
   data: new SlashCommandBuilder().setName('dog')
   .setDescription('Get a random dog fact and random dog picture.'),
   async execute(interaction) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const embed = new EmbedBuilder();
     const fact = await axios.get('https://dogapi.dog/api/v2/facts?limit=1').then(res => res.data);
     embed.setTitle('Dog Fact');

@@ -13,7 +13,7 @@ module.exports = {
   .addAttachmentOption(option => option.setName('document').setDescription('a file of the adventure if you do not have a link'))
   .addAttachmentOption(option => option.setName('picture').setDescription('A cover photo for the adventure')),
   async execute(interaction, conn) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const { Adventure, User } = conn.models;
     const url = interaction.options.getString('url');
     const document = interaction.options.getAttachment('document');

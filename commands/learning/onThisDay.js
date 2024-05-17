@@ -17,7 +17,7 @@ module.exports = {
   .addNumberOption(option => option.setName('month').setDescription('The number of the month (1 (January), 2, 3 ...)').setMaxValue(12).setMinValue(1))
   .addNumberOption(option => option.setName('day').setDescription('The day of the month (1, 2, 3 ...)').setMaxValue(31).setMinValue(1)),
   async execute(interaction) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const type = interaction.options.getString('type');
     const month = interaction.options.getNumber('month');
     const day = interaction.options.getNumber('day');

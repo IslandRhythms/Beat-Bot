@@ -9,7 +9,7 @@ module.exports = {
   .addUserOption(option => option.setName('player').setDescription('the player that is currently using the checked out item.').setRequired(true))
   .addStringOption(option => option.setName('link').setDescription('a link or reference to the item')),
   async execute(interaction, conn) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const { Campaign, User } = conn.models;
 
     const user = await User.findOne({ discordId: interaction.user.id });

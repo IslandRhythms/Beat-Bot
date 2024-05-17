@@ -8,7 +8,7 @@ module.exports = {
   .setRequired(true)
   .addChoices({ name: 'rock', value: 'rock'}, { name: 'paper', value: 'paper'}, { name: 'scissors', value: 'scissors'})),
   async execute(interaction) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const outcomes = { 
         rock: { scissors: 'I win', paper: 'you win', rock: 'its a draw'}, 
         paper: { scissors: 'You win', paper: 'its a draw', rock: 'I win'}, 

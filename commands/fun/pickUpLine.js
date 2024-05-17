@@ -12,7 +12,7 @@ module.exports = {
     if (user) {
       interaction.followUp(`${user} ${pickUpLine}`);
     } else {
-      interaction.followUp(`${pickUpLine}`);
+      interaction.followUp({ content: `${pickUpLine}`, ephemeral: true });
     }
   }
 }

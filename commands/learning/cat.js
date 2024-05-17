@@ -7,7 +7,7 @@ module.exports = {
   data: new SlashCommandBuilder().setName('cat')
   .setDescription('Get a random cat fact and random cat picture.'),
   async execute(interaction) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const embed = new EmbedBuilder();
     const { fact } = await axios.get('https://catfact.ninja/fact').then(res => res.data);
     embed.setTitle('Cat Fact');

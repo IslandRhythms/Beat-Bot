@@ -19,7 +19,7 @@ module.exports = {
   )),
   async execute(interaction, conn) {
     const pagination = new Pagination(interaction);
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const { User, BugReport } = conn.models;
     const user = await User.findOne({ discordId: interaction.user.id });
     const status = interaction.options.getString('status');

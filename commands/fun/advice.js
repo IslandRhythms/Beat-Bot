@@ -5,7 +5,7 @@ module.exports = {
   data: new SlashCommandBuilder().setName('advice')
   .setDescription('Get some advice'),
   async execute(interaction) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const url = 'https://api.adviceslip.com/advice';
 
     const { slip } = await axios.get(url).then(res => res.data);

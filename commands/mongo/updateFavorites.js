@@ -22,7 +22,7 @@ module.exports = {
     .addStringOption(option => option.setName('book').setDescription('the name of the book').setRequired(true))
     .addStringOption(option => option.setName('link').setDescription('link to the book description'))),
   async execute(interaction, conn) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const { User } = conn.models;
     const property = interaction.options._subcommand;
     const user = await User.findOne({ discordId: interaction.user.id });

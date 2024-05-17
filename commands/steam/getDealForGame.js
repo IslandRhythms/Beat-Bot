@@ -8,7 +8,7 @@ module.exports = {
   .addStringOption(option => option.setName('game').setDescription('the game to check'))
   .addStringOption(option => option.setName('gameid').setDescription('the id of the game which can be pulled from the url.')),
   async execute(interaction) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const game = interaction.options.getString('game');
     const id = interaction.options.getString('gameid');
     if (!game && !id) {

@@ -11,7 +11,7 @@ module.exports = {
     if (user) {
       return interaction.followUp(`${user} ${joke}`);
     } else {
-      return interaction.followUp(`${joke}`);
+      return interaction.followUp({ content: `${joke}`, ephemeral: true });
     }
   }
 }

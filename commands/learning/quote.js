@@ -7,7 +7,7 @@ module.exports = {
   .setDescription('get a quote from a famous author.')
   .addStringOption(option => option.setName('author').setDescription('specify what author you want the quote to originate from.')),
   async execute(interaction) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const author = interaction.options.getString('author');
     const embed = new EmbedBuilder();
     let obj = null;

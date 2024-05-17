@@ -17,7 +17,7 @@ module.exports = {
   .addStringOption(option => option.setName('character').setDescription('the name of the character you wish to add or remove. Must include with player option.')) // this is more nuanced
   .addUserOption(option => option.setName('gm').setDescription('the game master you wish to add or remove from the campaign.')),
   async execute(interaction, conn) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const { Campaign, Character, User } = conn.models;
     const campaignId = interaction.options.getString('campaignid');
     const title = interaction.options.getString('title');

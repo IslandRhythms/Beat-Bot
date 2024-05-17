@@ -54,7 +54,7 @@ module.exports = {
     }
   },
   async execute(interaction) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const subcommand = interaction.options._subcommand;
     const group = interaction.options._group;
     let embed = null;
