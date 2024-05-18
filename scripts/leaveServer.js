@@ -1,8 +1,9 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 require('../config');
-process.env.NODE_ENV = 'local';
 
+// env NODE_ENV= node ./leaveServer "server name"
 (async () => {
+  console.log(process.env.NODE_ENV)
 // Create a Discord client
 const client = new Client({ 
   intents: [
