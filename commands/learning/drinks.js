@@ -23,7 +23,7 @@ module.exports = {
     subcommand.setName('random').setDescription('get a random beverage')),
   async execute(interaction) {
     const pagination = new Pagination(interaction);
-    await interaction.({ ephemeral: true });
+    await interaction({ ephemeral: true });
     const type = interaction.options._subcommand;
     let url = `https://www.thecocktaildb.com/api/json/v1/1/`
     if (type == 'name') {
