@@ -251,13 +251,15 @@ const tasks = require('./automations');
     try {
       const { User, Daily, GameProfile } = conn.models;
       const doc = await Daily.findOne({}).sort({ createdAt: 1 });
-      const pingedCommand = doc.pings.findIndex(x => x.name == interaction.commandName );
-      if (pingedCommand > -1) {
-        doc.pings[pingedCommand].called = doc.pings[pingedCommand].called + 1;
-      } else {
-        doc.pings.push({ name: interaction.commandName, called: 1 });
+      if (doc) {
+        const pingedCommand = doc.pings.findIndex(x => x.name == interaction.commandName );
+        if (pingedCommand > -1) {
+          doc.pings[pingedCommand].called = doc.pings[pingedCommand].called + 1;
+        } else {
+          doc.pings.push({ name: interaction.commandName, called: 1 });
+        }
+        await doc.save();
       }
-      await doc.save();
       // need to update discord pics in the db so check when the user runs a command if their profile pic has changed.
       const user = await User.findOneAndUpdate({ discordName: interaction.user.username, discordId: interaction.user.id }, { discordName: interaction.user.username, discordId: interaction.user.id, discordPic: interaction.user.avatar }, { upsert: true });
       await GameProfile.findOneAndUpdate({ player: user._id }, { player: user._id }, { upsert: true });
