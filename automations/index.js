@@ -55,22 +55,34 @@ module.exports = async function tasks(bot) {
     const setup = { db: conn }
     initTasks(null, setup.db);
     const { Task } = setup.db.models;
-    Task.registerHandler('ofTheDay', ofTheDay(setup.db, bot));
-    Task.registerHandler('happyBirthday', happyBirthday(setup.db, bot));
-    Task.registerHandler('remind', remind(bot));
-    Task.registerHandler('apexMatches', apexMatches(bot))
-    Task.registerHandler('getHolidaysForTheYear', getHolidaysForTheYear());
-    Task.registerHandler('september', september(bot));
-    Task.registerHandler('valorantMatchesOfTheDay', valorantMatchesOfTheDay(bot));
-    Task.registerHandler('basketball', basketball());
-    Task.registerHandler('baseball', baseball());
-    Task.registerHandler('soccer', soccer());
-    Task.registerHandler('hockey', hockey());
-    Task.registerHandler('football', football());
+    Task.registerHandler('ofTheDay', function dailyMessage() {
+      return ofTheDay(setup.db, bot)
+    });
+    Task.registerHandler('happyBirthday', function birthdayMessage() {
+      return happyBirthday(setup.db, bot)
+    });
+    Task.registerHandler('remind', function remindMessage() {
+      return remind(bot)
+    });
+    Task.registerHandler('apexMatches', function messageData() {
+      return apexMatches(bot);
+    })
+    Task.registerHandler('getHolidaysForTheYear', getHolidaysForTheYear);
+    Task.registerHandler('september', function quirkMessage() {
+      return september(bot);
+    });
+    Task.registerHandler('valorantMatchesOfTheDay', function valorantInformation() {
+      return valorantMatchesOfTheDay(bot);
+    });
+    Task.registerHandler('basketball', basketball);
+    Task.registerHandler('baseball', baseball);
+    Task.registerHandler('soccer', soccer);
+    Task.registerHandler('hockey', hockey);
+    Task.registerHandler('football', football);
     await Task.startPolling();
     // Testing Date
     // const testDate = new Date(2024, 4, 16, 18, 2, 0);
-    await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: testDate, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: next6am, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
     await Task.findOneAndUpdate({ name: 'happyBirthday', status: 'pending' }, { scheduledAt: next6am, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
     await Task.findOneAndUpdate({ name: 'september', status: 'pending' }, { scheduledAt: earthWindAndFire, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
     await Task.findOneAndUpdate({ name: 'getHolidaysForTheYear', status: 'pending' }, { scheduledAt: firstDayOfTheYear, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
