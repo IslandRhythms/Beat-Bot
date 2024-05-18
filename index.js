@@ -82,7 +82,7 @@ const tasks = require('./automations');
   bot.on('messageReactionAdd', async (reaction, user) => {
     if (reaction.message.partial) await reaction.message.fetch(); // Fetch the message if it's partial
     if (user.bot) return; // Ignore reactions from bots
-    const channel = await bot.channels.cache.find(x => x.name == 'bot-testing');
+    const channel = await bot.channels.cache.find(x => x.name == 'role-call');
     const channelId = channel.id;
     const { message, emoji } = reaction;
     // I think this makes it so that if I edit this file while in prod, the updates propogate through and don't require a restart.
