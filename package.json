@@ -8,7 +8,7 @@
     "start": "node index.js",
     "deploy": "node deploy-commands.js",
     "activate": "node deploy-commands.js && node index.js",
-    "start:prod": "env NODE_ENV=production node deploy-commands.js && node index.js",
+    "start:prod": "env NODE_ENV=production node deploy-commands.js && env NODE_ENV=production node index.js",
     "start:local": "env NODE_ENV=local node deploy-commands.js && node index.js"
   },
   "author": "",
