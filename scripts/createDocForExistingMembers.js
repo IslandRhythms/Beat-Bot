@@ -1,6 +1,5 @@
 const { Client, Events, GatewayIntentBits, Collection, EmbedBuilder } = require('discord.js');
 require('../config');
-process.env.NODE_ENV = 'local';
 const db = require('../db');
 (async () => {
 // Create a Discord client
