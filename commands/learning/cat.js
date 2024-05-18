@@ -13,7 +13,9 @@ module.exports = {
     embed.setTitle('Cat Fact');
     embed.setDescription(fact);
     const image = await axios.get('https://api.thecatapi.com/v1/images/search').then(res => res.data);
-    embed.setImage(image[0].url);
+    if (image[0]) {
+      embed.setImage(image[0].url);
+    }
     embed.setFooter({ text: 'Possible thanks to https://catfact.ninja/fact and https://api.thecatapi.com/v1/images/search'})
     await interaction.followUp({ embeds: [embed] })
   }

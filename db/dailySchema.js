@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { stringify } = require('vdf-parser');
+
 
 const dailySchema = new mongoose.Schema({
   wordOTD: String,

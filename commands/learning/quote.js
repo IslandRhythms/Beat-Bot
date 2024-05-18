@@ -26,8 +26,8 @@ module.exports = {
     }
     const page = await wikipedia.page(obj.author.name);
     const summary = await page.summary();
-    embed.setTitle(obj.author.name);
-    embed.setDescription(obj.text);
+    embed.setTitle(obj.author.name ?? `Could not get author name`);
+    embed.setDescription(obj.text ?? `Could not get poem`);
     embed.setImage(summary.thumbnail ? summary.thumbnail.source : 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Wikipedia-logo-v2-en.svg/1200px-Wikipedia-logo-v2-en.svg.png');
     embed.setFooter({ text: 'Possible thanks to https://github.com/fisenkodv for creating https://github.com/fisenkodv/dictum api and wikipedia https://www.npmjs.com/package/wikipedia.' });
     await interaction.followUp({ embeds: [embed] });

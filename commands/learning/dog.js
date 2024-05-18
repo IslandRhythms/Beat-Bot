@@ -13,7 +13,9 @@ module.exports = {
     embed.setTitle('Dog Fact');
     embed.setDescription(fact.data[0].attributes.body);
     const image = await axios.get('https://dog.ceo/api/breeds/image/random ').then(res => res.data);
-    embed.setImage(image.message);
+    if (image.message) {
+      embed.setImage(image.message);
+    }
     embed.setFooter({ text: 'Possible thanks to https://dog.ceo/dog-api/documentation/ and https://dogapi.dog/docs/api-v2'})
     await interaction.followUp({ embeds: [embed] })
   }

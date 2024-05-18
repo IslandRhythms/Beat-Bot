@@ -47,7 +47,7 @@ module.exports = {
     const res = await axios.get(url).then(res => res.data);
     if (res) {
       const embed = new EmbedBuilder();
-      embed.setTitle(res);
+      embed.setTitle(res ?? `Something went wrong`);
       embed.setFooter({ text: 'Possible thanks to http://numbersapi.com/'})
       return interaction.followUp({ embeds: [embed] })
     } else {
