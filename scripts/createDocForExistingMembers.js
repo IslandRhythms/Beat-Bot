@@ -27,40 +27,39 @@ client.once('ready', async () => {
     const { User } = conn.models;
     // Fetch all users from the server
     const guilds = client.guilds.cache.values();
-    console.log('what is guilds', guilds)
     for (const guild of guilds) {
       const members = await guild.members.fetch();
 
-    // Iterate over each member and create a user document in MongoDB
-    members.forEach(async (member) => {
-      const user = await User.findOne({ discordId: member.user.id });
-      if (user) {
-        console.log(`${member.user.id} already has a document in the db, adding server to list of servers`)
-        user.discordServers.push(guild.id);
-        await user.save()
-      } else {
-        const newUser = new User({
-          discordName: member.user.username,
-          discordId: member.user.id,
-          discordPic: member.user.avatar,
-          discordServers: [guild.id]
-        });
-        await newUser.save();
-        console.log(`User ${member.user.tag} added to MongoDB.`);
+      // Iterate over each member and create a user document in MongoDB
+      for (const member of members.values()) {
+        const user = await User.findOne({ discordId: member.user.id });
+        if (user) {
+          console.log(`${member.user.id} already has a document in the db, adding server to list of servers`)
+          user.discordServers.push(guild.id);
+          await user.save()
+        } else {
+          const newUser = new User({
+            discordName: member.user.username,
+            discordId: member.user.id,
+            discordPic: member.user.avatarURL() ?? `No discord pic`,
+            discordServers: [guild.id]
+          });
+          await newUser.save();
+          console.log(`User ${member.user.tag} added to MongoDB.`);
+        }
       }
-    });
     }
 
-    console.log('All users added to MongoDB.');
-
     // Disconnect from MongoDB
-    await conn.close();
+    await db().close();
     console.log('Disconnected from MongoDB.');
 
     // Logout and destroy the bot client
-    client.destroy();
+    await client.destroy();
+    process.exit(0)
   } catch (error) {
     console.error('Error:', error);
+    process.exit(-1)
   }
 });
 
