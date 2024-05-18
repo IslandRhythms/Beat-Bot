@@ -55,39 +55,38 @@ module.exports = async function tasks(bot) {
     const setup = { db: conn }
     initTasks(null, setup.db);
     const { Task } = setup.db.models;
-    // Task.registerHandler('ofTheDay', ofTheDay(setup.db, bot));
-    // Task.registerHandler('happyBirthday', happyBirthday(setup.db, bot));
-    // Task.registerHandler('remind', remind(bot));
-    // Task.registerHandler('apexMatches', apexMatches(bot))
-    // Task.registerHandler('getHolidaysForTheYear', getHolidaysForTheYear());
-    // Task.registerHandler('september', september(bot));
-    // Task.registerHandler('valorantMatchesOfTheDay', valorantMatchesOfTheDay(bot));
-    // Task.registerHandler('basketball', basketball());
-    // Task.registerHandler('baseball', baseball());
-    // Task.registerHandler('soccer', soccer());
-    // Task.registerHandler('hockey', hockey());
-    // Task.registerHandler('football', football());
-    // await Task.startPolling();
-    // // Testing Date
+    Task.registerHandler('ofTheDay', ofTheDay(setup.db, bot));
+    Task.registerHandler('happyBirthday', happyBirthday(setup.db, bot));
+    Task.registerHandler('remind', remind(bot));
+    Task.registerHandler('apexMatches', apexMatches(bot))
+    Task.registerHandler('getHolidaysForTheYear', getHolidaysForTheYear());
+    Task.registerHandler('september', september(bot));
+    Task.registerHandler('valorantMatchesOfTheDay', valorantMatchesOfTheDay(bot));
+    Task.registerHandler('basketball', basketball());
+    Task.registerHandler('baseball', baseball());
+    Task.registerHandler('soccer', soccer());
+    Task.registerHandler('hockey', hockey());
+    Task.registerHandler('football', football());
+    await Task.startPolling();
+    // Testing Date
     // const testDate = new Date(2024, 4, 16, 18, 2, 0);
-    // // console.log(testDate)
-    // await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: testDate, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
-    // await Task.findOneAndUpdate({ name: 'happyBirthday', status: 'pending' }, { scheduledAt: next6am, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
-    // await Task.findOneAndUpdate({ name: 'september', status: 'pending' }, { scheduledAt: earthWindAndFire, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    // await Task.findOneAndUpdate({ name: 'getHolidaysForTheYear', status: 'pending' }, { scheduledAt: firstDayOfTheYear, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    // await Task.findOneAndUpdate({ name: 'valorantMatchesOfTheDay', status: 'pending' }, { scheduledAt: midnight, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
-    // await Task.findOneAndUpdate({ name: 'basketball', status: 'pending' }, { scheduledAt: scheduleBasketball, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    // await Task.findOneAndUpdate({ name: 'baseball', status: 'pending' }, { scheduledAt: scheduleBaseball, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    // await Task.findOneAndUpdate({ name: 'soccer', status: 'pending' }, { scheduledAt: scheduleSoccer, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    // await Task.findOneAndUpdate({ name: 'football', status: 'pending' }, { scheduledAt: scheduleFootball, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    // await Task.findOneAndUpdate({ name: 'hockey', status: 'pending' }, { scheduledAt: scheduleHockey, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: testDate, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'happyBirthday', status: 'pending' }, { scheduledAt: next6am, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'september', status: 'pending' }, { scheduledAt: earthWindAndFire, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'getHolidaysForTheYear', status: 'pending' }, { scheduledAt: firstDayOfTheYear, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'valorantMatchesOfTheDay', status: 'pending' }, { scheduledAt: midnight, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'basketball', status: 'pending' }, { scheduledAt: scheduleBasketball, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'baseball', status: 'pending' }, { scheduledAt: scheduleBaseball, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'soccer', status: 'pending' }, { scheduledAt: scheduleSoccer, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'football', status: 'pending' }, { scheduledAt: scheduleFootball, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'hockey', status: 'pending' }, { scheduledAt: scheduleHockey, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
   } catch(error) {
     console.log('something went wrong registering all the handlers', error);
   }
 }
 // use pagination so that each entry can have their own embed
 // https://pagination-djs.js.org/#md:other-send-options
-// Do sections so there's less to navigate per page
+// Do sections so there's less to navigate per page, plus no timeout so its historical
 async function ofTheDay(db, bot) {
   try {
     const { Daily, BugReport } = db.models;
@@ -245,7 +244,8 @@ async function ofTheDay(db, bot) {
     obj.totalBugReports = await BugReport.countDocuments({ status: { $nin: ['Done', 'Third Party Problem', 'Expected'] } });
     const doc = await Daily.create(obj);
     console.log('what is doc', doc);
-    sendMessageTo.sendMessageToTest(bot, { embeds })
+    // sendMessageTo.sendMessageToTest(bot, { embeds })
+    sendMessageTo.sendMessageToDaily(bot, { embeds });
     } catch (error) {
       console.log('Of the day automation crashed', error);
     }

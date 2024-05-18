@@ -36,5 +36,5 @@ module.exports = async function Baseball() {
 
 
   
-  await fs.writeFile(`./sportsData/Baseball.json${fileName}`, JSON.stringify(baseballData, null, 2))
+  await fs.writeFile(`./sportsData/Baseball.json`, JSON.stringify(baseballData, null, 2))
 }

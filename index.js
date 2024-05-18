@@ -62,7 +62,7 @@ const tasks = require('./automations');
     // console.log(bot.application.owner)
     await bot.application.fetch();
     try {
-      if (process.env.NODE_ENV !== 'production') {
+      if (process.env.NODE_ENV === 'production') {
         await tasks(bot);
         console.log('Automations initiated');
       }

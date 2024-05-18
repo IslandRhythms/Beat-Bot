@@ -15,11 +15,11 @@ const gameProfileSchema = new mongoose.Schema({
   },
   playerDescription: {  // a small intro for dms to get to know you.
     type: String,
-    default: '' 
+    default: 'None given' 
   },
   playerExpectations: { // what the player expects from the game.
     type: String,
-    default: ''
+    default: 'None indicated'
   },
   playerCharacters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Character' }],
   numPlayerCharacters: Number,
@@ -31,11 +31,11 @@ const gameProfileSchema = new mongoose.Schema({
   },
   campaignPreference: { // In person, online
     type: String,
-    default: ''
+    default: 'None indicated'
   },
   campaignStyle: { // Gritty, Casual, play test, combat driven, story driven, etc.
     type: String,
-    default: ''
+    default: 'None indicated'
   },
   availableToDm: {
     type: Boolean,
@@ -49,11 +49,11 @@ const gameProfileSchema = new mongoose.Schema({
   },
   gmDescription: { // a small intro for players to get to know you.
     type: String,
-    default: '',
+    default: 'None given',
   },
   gmExpectations: { // what the gm expects from the players.
     type: String,
-    default: ''
+    default: 'None listed'
   },
   guildId: String,
   preferredSystem: [String],
