@@ -6,7 +6,7 @@ module.exports = {
     .addStringOption(option => option.setName('name').setDescription('the name to jumble').setRequired(true).setMinLength(3))
     .addStringOption(option => option.setName('letter').setDescription('The letter to throw into the mix')),
     async execute(interaction) {
-        await interaction.deferReply();
+        await interaction.deferReply({ ephemeral: true });
         const name = interaction.options.getString('name');
         const letter = interaction.options.getString('letter') ?? '';
         const size = name.split('');

@@ -1,0 +1,52 @@
+[
+  {
+    "name": "esports",
+    "summary": "a collection of commands related to everything esports.",
+    "emoji": "🎮"
+  },
+  {
+    "name": "fun",
+    "summary": "a collection of commands offering small games and other fun things.",
+    "emoji": "🎉"
+  },
+  {
+    "name": "learning",
+    "summary": "a collection of commands that will let you learn something new when used.",
+    "emoji": "🧠"
+  },
+  {
+    "name": "mongo",
+    "summary": "a collection of commands that don't have much in common other than directly interacting with the database.",
+    "emoji": "🍃"
+  },
+  {
+    "name": "music",
+    "summary": "a collection of commands that allow you to manipulate Beat Bot's music functionality",
+    "emoji": "📻"
+  },
+  {
+    "name": "sports",
+    "summary": "A collection of commands related to sports.",
+    "emoji": "🏅"
+  },
+  {
+    "name": "spotify",
+    "summary": "Commands that interact with spotify's api.",
+    "emoji": "📀"
+  },
+  {
+    "name": "steam",
+    "summary": "a collection of commands that interact with steam's api and allow you to look up deals and news for games",
+    "emoji": "♨️"
+  },
+  {
+    "name": "tabletop",
+    "summary": "a collection of commands that aid TTRPGs on the server as well as log adventures for posterity",
+    "emoji": "🎲"
+  },
+  {
+    "name": "util",
+    "summary": "a collection of useful commands that offer simple tools and solutions for simple problems or situations",
+    "emoji": "📋"
+  }
+]

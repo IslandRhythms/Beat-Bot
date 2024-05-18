@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a Character</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        h2 {
+            text-align: center;
+        }
+        form {
+            max-width: 500px;
+            margin: auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], textarea, input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Create a Character</h1>
+    <h2>When you're done entering information, save the file to your computer and use the command /uploadcharacter and provide this html page</h2>
+    <form id="characterForm">
+        <label for="name">Character Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="race">Race:</label>
+        <input type="text" id="race" name="race" required>
+
+        <label for="background">Background:</label>
+        <input type="text" id="background" name="background" required>
+
+        <label for="alignment">Alignment:</label>
+        <input type="text" id="alignment" name="alignment" required>
+
+        <label for="classLevels">Class & Level. Please enter as comma separated values if more than one class</label>
+        <textarea id="classLevels" name="classLevels" rows="3" required placeholder="Forge Domain Cleric 4,Battlemaster Fighter 3"></textarea>
+
+        <label for="personalityTrait">Personality Trait:</label>
+        <textarea id="personalityTrait" name="trait" rows="2" required></textarea>
+
+        <label for="ideal">Ideal:</label>
+        <textarea id="ideal" name="ideal" rows="2" required></textarea>
+
+        <label for="bond">Bond:</label>
+        <textarea id="bond" name="bond" rows="2" required></textarea>
+
+        <label for="flaw">Flaw:</label>
+        <textarea id="flaw" name="flaw" rows="2" required></textarea>
+
+        <label for="backstory">Backstory:</label>
+        <textarea id="backstory" name="backStory" rows="2" required></textarea>
+
+        <label for="experiencePoints">Experience Points:</label>
+        <input type="number" id="experiencePoints" name="XP" min="0" required>
+
+        <label for="hitPoints">Max Hit Points:</label>
+        <input type="number" id="hitPoints" name="totalHP" min="1" required>
+
+        <label for="feats">Feats. Please enter as a comma separated values:</label>
+        <textarea id="feats" name="feats" rows="3" required placeholder="polearm master,Elven Accuracy (Dexterity 1),war caster"></textarea>
+
+        <label for="equipment">Equipment. Please enter as a comma separated values:</label>
+        <textarea id="equipment" name="equipment" rows="3" required placeholder="1 pouch,1 longsword,1 shield"></textarea>
+
+        <label for="strModifier">Strength Modifier:</label>
+        <input type="number" id="strengthModifier" name="strengthModifier" min="-5" max="5" required>
+
+        <label for="strScore">Strength Score:</label>
+        <input type="number" id="strengthScore" name="strengthScore" min="1" max="20" required>
+
+        <label for="dexModifier">Dexterity Modifier:</label>
+        <input type="number" id="dexterityModifier" name="dexterityModifier" min="-5" max="5" required>
+
+        <label for="dexScore">Dexterity Score:</label>
+        <input type="number" id="dexterityScore" name="dexterityScore" min="1" max="20" required>
+
+        <label for="conModifier">Constitution Modifier:</label>
+        <input type="number" id="constitutionModifier" name="constitutionModifier" min="-5" max="5" required>
+
+        <label for="conScore">Constitution Score:</label>
+        <input type="number" id="constitutionScore" name="constitutionScore" min="1" max="20" required>
+
+        <label for="intModifier">Intelligence Modifier:</label>
+        <input type="number" id="intelligenceModifier" name="intelligenceModifier" min="-5" max="5" required>
+
+        <label for="intScore">Intelligence Score:</label>
+        <input type="number" id="intelligenceScore" name="intelligenceScore" min="1" max="20" required>
+
+        <label for="wisModifier">Wisdom Modifier:</label>
+        <input type="number" id="wisdomModifier" name="wisdomModifier" min="-5" max="5" required>
+
+        <label for="wisScore">Wisdom Score:</label>
+        <input type="number" id="wisdomScore" name="wisdomScore" min="1" max="20" required>
+
+        <label for="chaModifier">Charisma Modifier:</label>
+        <input type="number" id="charismaModifier" name="charismaModifier" min="-5" max="5" required>
+
+        <label for="chaScore">Charisma Score:</label>
+        <input type="number" id="charismaScore" name="charismaScore" min="1" max="20" required>
+
+    </form>
+</body>
+</html>

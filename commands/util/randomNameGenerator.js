@@ -31,7 +31,7 @@ module.exports = {
   .addStringOption(option => option.setName('sixth').setDescription('the sixth option').addChoices(options.A, options.B, options.C, options.D, options.E, options.F, options.G))
   .addStringOption(option => option.setName('seventh').setDescription('the seventh option').addChoices(options.A, options.B, options.C, options.D, options.E, options.F, options.G)),
   async execute(interaction) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const first = interaction.options.getString('first');
     const second = interaction.options.getString('second') ?? '';
     const third = interaction.options.getString('third') ?? '';

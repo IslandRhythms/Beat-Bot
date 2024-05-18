@@ -38,7 +38,7 @@ module.exports = {
   .setMinValue(0)
   .setMaxValue(1)),
   async execute(interaction) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     let link = 'http://www.boredapi.com/api/activity/';
     console.log('what is options', interaction.options, typeof interaction.options);
     const data = {

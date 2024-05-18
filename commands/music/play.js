@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, } = require("discord.js");
-const { useMasterPlayer } = require('discord-player');
-const player = useMasterPlayer();
+const { useMainPlayer } = require('discord-player');
+
 
 module.exports = {
   data: new SlashCommandBuilder().setName('play')
@@ -8,6 +8,7 @@ module.exports = {
   .addStringOption(option => option.setName('link').setDescription('link to the song/playlist to play').setRequired(true)),
   async execute(interaction) {
     await interaction.deferReply();
+    const player = useMainPlayer();
     const link = interaction.options.getString('link');
     const voiceChannel = interaction.member.voice.channel;
     if (!voiceChannel)

@@ -9,7 +9,7 @@ module.exports = {
   .addStringOption(option => option.setName('game').setDescription('the name of the game'))
   .addStringOption(option => option.setName('id').setDescription('the app id of the game')),
   async execute(interaction) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const game = interaction.options.getString('game');
     const id = interaction.options.getString('id');
     if (!game && !id) {

@@ -18,7 +18,7 @@ module.exports = {
   .addAttachmentOption(option => option.setName('file').setDescription('A csv file instead of typing in the table.'))
   .addBooleanOption(option => option.setName('axe').setDescription('Set to true to prevent overflow, so 1,2,3,4,5,- with 3 columns ignores 4 and 5. Defaut is false')),
   async execute(interaction) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     const background = interaction.options.getString('background') ?? '#C0C0C0';
     if (!background.startsWith('#')) {
       return interaction.followUp({ content: 'That is not a valid hex color', ephemeral: true });

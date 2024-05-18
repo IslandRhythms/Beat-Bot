@@ -1,21 +1,17 @@
 const { SlashCommandBuilder } = require('discord.js');
-const advice = require("../../fortune-cookie.json");
-
-// https://discord.js.org/#/docs/builders/main/class/SlashCommandBuilder?scrollTo=addMentionableOption
+const axios = require('axios');
 
 module.exports = {
-  data: new SlashCommandBuilder().setName('fortune')
-  .setDescription('Get a fortune or give a fortune if you mention someone after the command call')
-  .addUserOption(option => option.setName('target')
-  .setDescription('The member to give a fortune')),
+  data: new SlashCommandBuilder().setName('advice')
+  .setDescription('Get some advice'),
   async execute(interaction) {
-    await interaction.deferReply();
-    const user = interaction.options.getUser('target') ?? '';
-    const fortune = advice[Math.floor(Math.random() * advice.length)];
-    if (user) {
-      return interaction.followUp(`${user} ${fortune}`);
-    } else {
-      return interaction.followUp(`${fortune}`);
+    await interaction.deferReply({ ephemeral: true });
+    const url = 'https://api.adviceslip.com/advice';
+
+    const { slip } = await axios.get(url).then(res => res.data);
+    if (!slip) {
+      return interaction.followUp('No advice found');
     }
+    await interaction.followUp(slip.advice);
   }
 }
