@@ -20,6 +20,7 @@ exports.sendMessageToOwner = function(bot, message) {
 
 exports.sendMessageToTest = function(bot, message) {
   bot.guilds.cache.forEach(guild => {
+    console.log(guild.channels.cache.find(x => x.name.includes('daily')));
     const testChannel = guild.channels.cache.find(x => x.name == 'bot-testing')
     if (testChannel) {
       const channel = bot.channels.cache.get(testChannel.id);

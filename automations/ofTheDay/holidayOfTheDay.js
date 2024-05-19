@@ -7,10 +7,10 @@ module.exports = function holidayOfTheDay() {
     const year = today.getUTCFullYear();
     const month = today.getUTCMonth() + 1;
     const day = today.getUTCDay();
+    
     for (let i = 0; i < holidays.length; i++) {
-      if (year == new Date(holidays[i].date).getUTCFullYear() && 
-        month == (new Date(holidays[i].date).getUTCMonth() + 1) 
-        && day == new Date(holidays[i].date).getUTCDay()) {
+      if (today == new Date(holidays[i].date)) {
+        console.log('today', today, 'selected holiday', holidays[i])
           if (holidays[i].name == 'Christmas Day') {
             return 'Merry Christmas'
           } else {

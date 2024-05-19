@@ -54,19 +54,51 @@ module.exports = async function tasks(bot) {
     const conn = await db().asPromise();
     const setup = { db: conn }
     initTasks(null, setup.db);
-    const { Task } = setup.db.models;
+    const { Task, Log } = setup.db.models;
     Task.registerHandler('ofTheDay', function dailyMessage() {
       return ofTheDay(setup.db, bot)
     });
-    Task.registerHandler('happyBirthday', function birthdayMessage() {
-      return happyBirthday(setup.db, bot)
+    Task.registerHandler('happyBirthday', async function birthdayMessage() {
+      console.log('Running happy birthday');
+      try {
+        happyBirthday(setup.db, bot)
+      } catch (error) {
+        await Log.create({ 
+          message: error.message,
+          commandName: 'Happy Birthday Automation',
+          data: error,
+          commandArgs: { db: setup.db, bot }
+        })
+      }
     });
-    Task.registerHandler('remind', function remindMessage() {
-      return remind(bot)
+    Task.registerHandler('remind', async function remindMessage(params) {
+      console.log('Handler remindMessage started with params:', params);
+      try {
+        await remind(bot, params);
+        console.log('Handler remindMessage completed successfully');
+      } catch (error) {
+        console.error('Handler remindMessage encountered an error:', error);
+        await Log.create({ 
+          message: error.message,
+          commandName: 'Remind Automation',
+          data: error,
+          commandArgs: { params, bot }
+        })
+      }
     });
-    Task.registerHandler('apexMatches', function messageData() {
-      return apexMatches(bot);
-    })
+    Task.registerHandler('apexMatches', async function messageData(params) {
+      console.log('apex handler with params', params);
+      try {
+        await apexMatches(bot, params)
+      } catch (error) {
+        await Log.create({ 
+          message: error.message,
+          commandName: 'Apex Automation',
+          data: error,
+          commandArgs: { params, bot }
+        })
+      }
+    });
     Task.registerHandler('getHolidaysForTheYear', getHolidaysForTheYear);
     Task.registerHandler('september', function quirkMessage() {
       return september(bot);
@@ -81,17 +113,17 @@ module.exports = async function tasks(bot) {
     Task.registerHandler('football', football);
     await Task.startPolling();
     // Testing Date
-    // const testDate = new Date(2024, 4, 16, 18, 2, 0);
-    await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: next6am, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'happyBirthday', status: 'pending' }, { scheduledAt: next6am, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'september', status: 'pending' }, { scheduledAt: earthWindAndFire, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'getHolidaysForTheYear', status: 'pending' }, { scheduledAt: firstDayOfTheYear, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'valorantMatchesOfTheDay', status: 'pending' }, { scheduledAt: midnight, repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'basketball', status: 'pending' }, { scheduledAt: scheduleBasketball, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'baseball', status: 'pending' }, { scheduledAt: scheduleBaseball, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'soccer', status: 'pending' }, { scheduledAt: scheduleSoccer, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'football', status: 'pending' }, { scheduledAt: scheduleFootball, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'hockey', status: 'pending' }, { scheduledAt: scheduleHockey, repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
+    // const testDate = new Date(2024, 4, 19, 12, 47, 0);
+    await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: next6am(), repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'happyBirthday', status: 'pending' }, { scheduledAt: next6am(), repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'september', status: 'pending' }, { scheduledAt: earthWindAndFire(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'getHolidaysForTheYear', status: 'pending' }, { scheduledAt: firstDayOfTheYear(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'valorantMatchesOfTheDay', status: 'pending' }, { scheduledAt: midnight(), repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'basketball', status: 'pending' }, { scheduledAt: scheduleBasketball(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'baseball', status: 'pending' }, { scheduledAt: scheduleBaseball(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'soccer', status: 'pending' }, { scheduledAt: scheduleSoccer(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'football', status: 'pending' }, { scheduledAt: scheduleFootball(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'hockey', status: 'pending' }, { scheduledAt: scheduleHockey(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
   } catch(error) {
     console.log('something went wrong registering all the handlers', error);
   }
@@ -230,9 +262,15 @@ async function ofTheDay(db, bot) {
       scienceEmbed.addFields({ name: 'Animal of the Day', value: `None today` });
     }
     const { plantInformation } = await plantOTD();
-    obj.plantOTD.name = plantInformation.common_name;
-    obj.plantOTD.id = plantInformation.id;
-    scienceEmbed.addFields({ name: 'Plant of the Day', value: plantInformation.common_name });
+    console.log('what is plantInformation', plantInformation);
+    if (!plantInformation) {
+      scienceEmbed.addFields({ name: 'Plant of the Day', value: `Could not get today`})
+    } else {
+      obj.plantOTD.name = plantInformation.common_name;
+      obj.plantOTD.id = plantInformation.id;
+      scienceEmbed.addFields({ name: 'Plant of the Day', value: plantInformation.common_name });
+  
+    }
     const { phaseOfTheMoon } = await moonPhase();
     obj.phaseOfTheMoon = phaseOfTheMoon;
     scienceEmbed.addFields({ name: 'Moon Phase Today', value: `${phaseOfTheMoon.phase} ${phaseOfTheMoon.moon}`});
@@ -260,6 +298,12 @@ async function ofTheDay(db, bot) {
     sendMessageTo.sendMessageToDaily(bot, { embeds });
     } catch (error) {
       console.log('Of the day automation crashed', error);
+      const { Log } = db.models;
+      await Log.create({
+        message: error.message,
+        commandName: 'Of the Day automation',
+        data: error
+      })
     }
 }
 function next6am() {
