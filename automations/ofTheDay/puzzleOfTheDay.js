@@ -25,5 +25,6 @@ module.exports = async function puzzleOfTheDay() {
     return { puzzleOTD: data[index] };
   } catch (error) {
     console.log('something went wrong with puzzle of the day', error);
+    return { puzzleOTD: null }
   }
 }

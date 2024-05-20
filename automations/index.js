@@ -181,8 +181,12 @@ async function ofTheDay(db, bot) {
     obj.riddleOTD.answer = riddleOTD.answer;
     knowledgeEmbed.addFields({ name: 'Riddle of the Day', value: `${riddleOTD.riddle} || ${riddleOTD.answer} ||`});
     const { puzzleOTD } = await puzzleOfTheDay();
-    obj.puzzleOTD = puzzleOTD;
-    knowledgeEmbed.addFields({ name: 'Puzzle of the Day', value: puzzleOTD });
+    if (puzzleOTD) {
+      obj.puzzleOTD = puzzleOTD;
+      knowledgeEmbed.addFields({ name: 'Puzzle of the Day', value: puzzleOTD });
+    } else {
+      knowledgeEmbed.addFields({ name: 'Puzzle of the Day', value: `Could not get` });
+    }
     embeds.push(knowledgeEmbed);
     // Arts and Literature Embed
     const artEmbed = new EmbedBuilder().setTitle(`Daily Arts and Literature`);
