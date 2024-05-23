@@ -1,16 +1,18 @@
 'use strict';
 
-const puppeteer = require('puppeteer');
+const { chromium } = require('playwright');
 
 module.exports = async function puzzleOfTheDay() {
-  console.log('getting puzzle of the day ...')
+  console.log('getting puzzle of the day ...');
   try {
-    const browser = await puppeteer.launch({
+    const browser = await chromium.launch({
       headless: false,
+    });
+    const context = await browser.newContext({
       userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
     });
-    const page = await browser.newPage();
-    await page.goto(`https://www.brainbashers.com/showpuzzles.asp?field=random`);
+    const page = await context.newPage();
+    await page.goto('https://www.brainbashers.com/showpuzzles.asp?field=random');
     const data = await page.evaluate(() => {
       const puzzleElements = document.querySelectorAll('p.puzzle_code');
       const puzzleCodes = [];
@@ -25,6 +27,6 @@ module.exports = async function puzzleOfTheDay() {
     return { puzzleOTD: data[index] };
   } catch (error) {
     console.log('something went wrong with puzzle of the day', error);
-    return { puzzleOTD: null }
+    return { puzzleOTD: null };
   }
 }

@@ -1,14 +1,16 @@
 'use strict';
-const puppeteer = require('puppeteer');
+const { chromium } = require('playwright')
 
 module.exports = async function animalOfTheDay() {
-  console.log('getting animal of the day ...')
+  console.log('getting animal of the day ...');
   try {
-    const browser = await puppeteer.launch({
+    const browser = await chromium.launch({
       headless: false,
+    });
+    const context = await browser.newContext({
       userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
     });
-    const page = await browser.newPage();
+    const page = await context.newPage();
     const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
     const index = Math.floor(Math.random() * alphabet.length);
     const letter = alphabet[index];
@@ -17,6 +19,9 @@ module.exports = async function animalOfTheDay() {
       let header = document.querySelector(`#h-alphabetical-list-of-animals-that-start-with-${letter.toLowerCase()}`);
       if (header == null) {
         header = document.querySelector(`#h-animals-by-letter-count-letter-${letter.toLowerCase()}-animals-that-start-with-${letter.toLowerCase()}`);
+      }
+      if (header == null) {
+        header = document.querySelector(`#h-list-of-animals-that-start-with-${letter.toLowerCase()}`);
       }
       const container = header.nextElementSibling;
       const ul = container.querySelector('ul');
@@ -29,7 +34,7 @@ module.exports = async function animalOfTheDay() {
       });
       return listItems;
     }, letter);
-    
+
     const animalIndex = Math.floor(Math.random() * animalChoices.length);
     const AOTD = animalChoices[animalIndex];
     const data = await page.evaluate((animalObj) => {
@@ -48,7 +53,6 @@ module.exports = async function animalOfTheDay() {
           const img = imgAnchor.querySelector('img');
           info.image = img ? img.src : '';
           
-          // There's other stuff that I ignored because I didn't feel like it added anything.
           const scientificDiv = div.querySelector('div:nth-child(2)');
           const funFactTag = scientificDiv.querySelector('p');
           info.funFact = funFactTag ? funFactTag.textContent.trim() : '';
@@ -58,20 +62,20 @@ module.exports = async function animalOfTheDay() {
           const lastEntry = tableData[tableData.length - 1].textContent.trim();
           info.scientificName = lastEntry;
   
-  
           const briefSummaryDiv = div.querySelector('div:nth-child(3)');
           const briefSummaryTag = briefSummaryDiv.querySelector('p');
           info.briefSummary = briefSummaryTag ? briefSummaryTag.textContent.trim() : '';
-          const cutOff = info.briefSummary.indexOf('['); // info.briefSummary.indexOf('Read');
+          const cutOff = info.briefSummary.indexOf('['); 
           info.briefSummary = info.briefSummary.substring(0, cutOff).trim();
         }
       })
       return info;
     }, { animal: AOTD.animalName, letter });
+
     await page.close();
     await browser.close();
     Object.assign(AOTD, data);
-    console.log('what is AOTD', AOTD, data)
+    console.log('what is AOTD', AOTD, data);
     return { AOTD: AOTD };
   } catch(error) {
     console.log('something went wrong with animal of the day', error);
