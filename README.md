@@ -16,3 +16,6 @@ link to discord player highlights https://discord-player.js.org/docs/guides/migr
 link to the pagination library documentation https://pagination-djs.js.org/
 
 link to discord image references https://discord.com/developers/docs/reference#image-formatting
+
+
+Add sudo infront of the npm script values so it can write files
