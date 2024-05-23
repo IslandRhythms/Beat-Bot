@@ -24,7 +24,7 @@ module.exports = async function valorantMatchesOfTheDay(bot) {
       if (matchTimeAST.getTime() >= today.getTime() && matchTimeAST.getTime() < tomorrow.getTime()) {
         embed.addFields({ 
           name: `:${match.flag1}: ${match.team1} vs ${match.team2} :${match.flag2}:`, 
-          value: matchTimeAST.toLocaleString('en-US', { timeZone: 'AST', hour12: true, hour: 'numeric', minute: '2-digit' }) 
+          value: matchTimeAST.toLocaleTimeString()
         });
       }
     }

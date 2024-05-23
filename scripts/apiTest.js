@@ -4,13 +4,7 @@ const fs = require('fs');
 const path = require ('path');
 const puppeteer = require('puppeteer');
 
-const memes = require("random-memes");
-
-const run = async () => {
-  const meme = await memes.random();
-  console.log(meme);
-};
-
+run();
 
 // async function run() {
 
@@ -41,16 +35,11 @@ const run = async () => {
 //   console.log(res.response, res.response.length, res.response[0])
 // }
 
-// async function run() {
-//   const { data } = await axios.get(`https://vlrggapi.vercel.app/news`).then(res => res.data);
-//   console.log('what is res', data, data.segments[0]);
+async function run() {
 
-//   const res = await axios.get(`https://vlrggapi.vercel.app/match/results`).then(res => res.data);
-//   console.log('what is response', res, res.data.segments)
-
-//   const test = await axios.get(`https://vlrggapi.vercel.app/match/upcoming`).then(res => res.data);
-//   console.log('what is test', test, test.data.segments, test.data.segments[0]);
-// }
+  const { data } = await axios.get(`https://vlrggapi.vercel.app/match?q=upcoming`).then(res => res.data);
+  console.log('what is data', data, data.segments, data.segments[0]);
+}
 
 // async function run() {
 //     // Launch a headless Chromium browser
@@ -120,7 +109,7 @@ const run = async () => {
 // }
 
 
-run();
+
 
 // async function run() {
 //   // free tier only allows up to id 3000

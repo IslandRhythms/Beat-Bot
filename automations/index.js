@@ -9,6 +9,7 @@ const millisecondsInYear = 31556952000;
 const { EmbedBuilder } = require('discord.js');
 
 const sendMessageTo = require('../helpers/sendMessageTo.js');
+const truncate = require('../helpers/truncate.js');
 
 const apexMatches = require('./apexMatches.js');
 const getHolidaysForTheYear = require('./getHolidaysForTheYear.js');
@@ -114,7 +115,7 @@ module.exports = async function tasks(bot) {
     await Task.startPolling();
     // Testing Date
     // const testDate = new Date(2024, 4, 19, 12, 47, 0);
-    await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: next6am(), repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: nextMorningMessage(), repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
     await Task.findOneAndUpdate({ name: 'happyBirthday', status: 'pending' }, { scheduledAt: next6am(), repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
     await Task.findOneAndUpdate({ name: 'september', status: 'pending' }, { scheduledAt: earthWindAndFire(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
     await Task.findOneAndUpdate({ name: 'getHolidaysForTheYear', status: 'pending' }, { scheduledAt: firstDayOfTheYear(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
@@ -179,7 +180,11 @@ async function ofTheDay(db, bot) {
     const { riddleOTD } = await riddleOfTheDay();
     obj.riddleOTD.riddle = riddleOTD.riddle;
     obj.riddleOTD.answer = riddleOTD.answer;
-    knowledgeEmbed.addFields({ name: 'Riddle of the Day', value: `${riddleOTD.riddle} || ${riddleOTD.answer} ||`});
+    if (riddleOTD.riddle.length > 900) {
+      knowledgeEmbed.addFields({ name: 'Riddle of the Day', value: `To long for this message, use \\oftheday riddle to see the riddle`});
+    } else {
+      knowledgeEmbed.addFields({ name: 'Riddle of the Day', value: `${riddleOTD.riddle} || ${riddleOTD.answer} ||`});
+    }
     const { puzzleOTD } = await puzzleOfTheDay();
     if (puzzleOTD) {
       obj.puzzleOTD = puzzleOTD;
@@ -247,7 +252,7 @@ async function ofTheDay(db, bot) {
       obj.astropicOTD.url = astropicOTD.url;
       obj.astropicOTD.title = astropicOTD.title;
       obj.astropicOTD.description = astropicOTD.description;
-      scienceEmbed.addFields({ name: 'Astronomy Picture of the Day', value: `${astropicOTD.title} ${astropicOTD.description} ${astropicOTD.url}`});
+      scienceEmbed.addFields({ name: 'Astronomy Picture of the Day', value: `${astropicOTD.title} ${truncate(astropicOTD.description, 900)} ${astropicOTD.url}`});
       scienceEmbed.setImage(astropicOTD.url);
     } else {
       scienceEmbed.addFields({ name: 'Astronomy Picture of the Day', value: `Unable to retrieve Image`})
@@ -322,6 +327,27 @@ function next6am() {
   tomorrow.setDate(today.getDate() + 1);
   tomorrow.setHours(6);
   tomorrow.setMinutes(0);
+  tomorrow.setSeconds(5); // add a buffer between starting the script and it getting to the task start.
+  return tomorrow;
+}
+
+// randomize time to combat scraping detection
+function nextMorningMessage() {
+  const today = new Date();
+  const hourMax = 10;
+  const hourMin = 6;
+  const hour = Math.floor(Math.random() * hourMax) + hourMin;
+  const minute = Math.floor(Math.random() * 59);
+  if (today.getHours() < 6) {
+    today.setHours(hour);
+    today.setMinutes(minute);
+    today.setSeconds(5); // add a buffer between starting the script and it getting to the task start.
+    return today;
+  }
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+  tomorrow.setHours(hour);
+  tomorrow.setMinutes(minute);
   tomorrow.setSeconds(5); // add a buffer between starting the script and it getting to the task start.
   return tomorrow;
 }
