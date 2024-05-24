@@ -1,30 +1,29 @@
 'use strict';
 
-const { chromium } = require('playwright');
+const axios = require('axios');
+const cheerio = require('cheerio');
 
 module.exports = async function puzzleOfTheDay() {
   console.log('getting puzzle of the day ...');
   try {
-    const browser = await chromium.launch({
-      headless: false,
-    });
-    const context = await browser.newContext({
-      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
-    });
-    const page = await context.newPage();
-    await page.goto('https://www.brainbashers.com/showpuzzles.asp?field=random');
-    const data = await page.evaluate(() => {
-      const puzzleElements = document.querySelectorAll('p.puzzle_code');
-      const puzzleCodes = [];
-      puzzleElements.forEach(element => {
-        const puzzleCode = element.textContent.trim().replace(/^Share link – /, '');
-        puzzleCodes.push(puzzleCode);
-      });
-      return puzzleCodes;
-    });
-    const index = Math.floor(Math.random() * data.length);
-    await browser.close();
-    return { puzzleOTD: data[index] };
+    // Fetch the HTML content of the page
+    const response = await axios.get('https://www.brainbashers.com/showpuzzles.asp?field=random');
+    const html = response.data;
+
+    // Load the HTML content into Cheerio
+    const $ = cheerio.load(html);
+
+    // Extract puzzle codes
+    const puzzleElements = $('p.puzzle_code');
+    const puzzleCodes = puzzleElements.map((index, element) => {
+      return $(element).text().trim().replace(/^Share link – /, '');
+    }).get();
+
+    // Select a random puzzle code
+    const index = Math.floor(Math.random() * puzzleCodes.length);
+    const puzzleOTD = puzzleCodes[index];
+
+    return { puzzleOTD };
   } catch (error) {
     console.log('something went wrong with puzzle of the day', error);
     return { puzzleOTD: null };

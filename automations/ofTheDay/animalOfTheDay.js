@@ -1,16 +1,16 @@
 'use strict';
-const { chromium } = require('playwright')
+const puppeteer = require('puppeteer')
 
 module.exports = async function animalOfTheDay() {
   console.log('getting animal of the day ...');
   try {
-    const browser = await chromium.launch({
+    const browser = await puppeteer.launch({
       headless: false,
     });
     const context = await browser.newContext({
       userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
     });
-    const page = await context.newPage();
+    const page = await browser.newPage();
     const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
     const index = Math.floor(Math.random() * alphabet.length);
     const letter = alphabet[index];

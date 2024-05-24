@@ -27,7 +27,11 @@ const soccer = require('./sportsAutomations/soccer.js');
 const hockey = require('./sportsAutomations/hockey.js');
 
 // of the day daily automation
-const animalOfTheDay = require('./ofTheDay/animalOfTheDay');
+/*
+  Had to remove animal of the day as raspberry pi arm processor
+  is not compatible with modern scraping libraries.
+*/
+// const animalOfTheDay = require('./ofTheDay/animalOfTheDay');
 const artworkOfTheDay = require('./ofTheDay/artworkOfTheDay');
 const astropicOfTheDay = require('./ofTheDay/astropicOfTheDay');
 const bookOfTheDay = require('./ofTheDay/bookOfTheDay');
@@ -115,7 +119,7 @@ module.exports = async function tasks(bot) {
     await Task.startPolling();
     // Testing Date
     // const testDate = new Date(2024, 4, 19, 12, 47, 0);
-    await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: nextMorningMessage(), repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: next6am(), repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
     await Task.findOneAndUpdate({ name: 'happyBirthday', status: 'pending' }, { scheduledAt: next6am(), repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
     await Task.findOneAndUpdate({ name: 'september', status: 'pending' }, { scheduledAt: earthWindAndFire(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
     await Task.findOneAndUpdate({ name: 'getHolidaysForTheYear', status: 'pending' }, { scheduledAt: firstDayOfTheYear(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
@@ -153,7 +157,7 @@ async function ofTheDay(db, bot) {
     }
     const embeds = [];
     // if obj pathing is doubly nested, need to predefine key in the obj
-    const obj = { jokeOTD: {}, factOTD: {}, astropicOTD: {}, animalOTD: {}, riddleOTD: {}, songOTD: {}, plantOTD: {}, poemOTD: {}, memeOTD: {} };
+    const obj = { jokeOTD: {}, factOTD: {}, astropicOTD: {}, riddleOTD: {}, songOTD: {}, plantOTD: {}, poemOTD: {}, memeOTD: {} };
     const holidayOTD = holidayOfTheDay();
     obj.holidayOTD = holidayOTD; // now what
     // Daily Facts and Trivia Embed
@@ -257,19 +261,7 @@ async function ofTheDay(db, bot) {
     } else {
       scienceEmbed.addFields({ name: 'Astronomy Picture of the Day', value: `Unable to retrieve Image`})
     }
-    const { AOTD } = await animalOfTheDay();
-    console.log(AOTD)
-    if (AOTD) {
-      obj.animalOTD.name = AOTD.animalName;
-      obj.animalOTD.scientificName = AOTD.scientificName;
-      obj.animalOTD.image = AOTD.image;
-      obj.animalOTD.funFact = AOTD.funFact;
-      obj.animalOTD.link = AOTD.link;
-      obj.animalOTD.briefSummary = AOTD.briefSummary;
-      scienceEmbed.addFields({ name: 'Animal of the Day', value: AOTD.animalName });
-    } else {
-      scienceEmbed.addFields({ name: 'Animal of the Day', value: `None today` });
-    }
+    scienceEmbed.addFields({ name: 'Animal of the Day', value: `https://a-z-animals.com/ top right under search` })
     const { plantInformation } = await plantOTD();
     console.log('what is plantInformation', plantInformation);
     if (!plantInformation) {

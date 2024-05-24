@@ -34,13 +34,8 @@ module.exports = {
     const sub = interaction.options._subcommand;
     const embed = new EmbedBuilder();
     if (sub == 'animal') {
-      const animal = doc[`${sub}OTD`];
-      embed.setTitle(`Animal of the Day: ${animal.scientificName}, commonly known as ${animal.name}`)
-        .setDescription(`${animal.briefSummary}`)
-        .setImage(`${animal.image}`)
-        .setURL(`${animal.link}`)
-        .addFields({ name: 'Fun Fact', value: `${animal.funFact}`});
-        return interaction.followUp({ embeds: [embed] });
+      embed.setURL(`https://a-z-animals.com/`).setTitle(`Animal of the day. Look at the top right of the page.`)
+      return interaction.followUp({ embeds: [embed] });
     } else if (sub == 'artwork') {
       const metEmbed = new EmbedBuilder()
       .setTitle(doc.artOTD.metTitle ?? `No title found`)
