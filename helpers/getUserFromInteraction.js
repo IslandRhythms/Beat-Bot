@@ -1,6 +1,6 @@
 
-module.exports = function getUserFromInteraction(interaction, userId) {
-  const members = interaction.member.guild.members;
+module.exports = async function getUserFromInteraction(interaction, userId) {
+  const members = await interaction.member.guild.members.fetch();
   const user = members.find(x => x.id == userId);
   return user;
 }

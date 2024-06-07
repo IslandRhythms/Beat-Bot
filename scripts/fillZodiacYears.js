@@ -1,3 +1,5 @@
+'use strict';
+
 const zodiac = require('../zodiac.json');
 const fs = require('fs/promises');
 async function run() {

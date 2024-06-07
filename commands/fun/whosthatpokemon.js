@@ -39,7 +39,7 @@ module.exports = {
       time: time, // Set a timeout for response collection (30 seconds in this example)
       errors: ['time'] // Handle timeout errors
     }
-    if (!private) {
+    if (private) {
       collectorObject.filter = (msg) => msg.author.id === interaction.user.id;
     } else {
       collectorObject.max = 1; // Collect only one response

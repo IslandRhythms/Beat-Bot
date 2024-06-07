@@ -296,7 +296,7 @@ async function ofTheDay(db, bot) {
     const doc = await Daily.create(obj);
     console.log('what is doc', doc);
     // sendMessageTo.sendMessageToTest(bot, { embeds })
-    sendMessageTo.sendMessageToDaily(bot, { embeds });
+    sendMessageTo.sendMessageToDaily(bot, { embeds, content: `use /oftheday to learn more about each different selection` });
     } catch (error) {
       console.log('Of the day automation crashed', error);
       const { Log } = db.models;

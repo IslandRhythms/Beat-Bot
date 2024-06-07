@@ -21,7 +21,7 @@ module.exports = async function puzzleOfTheDay() {
 
     // Select a random puzzle code
     const index = Math.floor(Math.random() * puzzleCodes.length);
-    const puzzleOTD = puzzleCodes[index];
+    const puzzleOTD = `https://${puzzleCodes[index]}`;
 
     return { puzzleOTD };
   } catch (error) {
