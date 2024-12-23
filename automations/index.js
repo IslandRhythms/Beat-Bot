@@ -367,27 +367,6 @@ function next6am() {
   return tomorrow;
 }
 
-// randomize time to combat scraping detection
-function nextMorningMessage() {
-  const today = new Date();
-  const hourMax = 10;
-  const hourMin = 6;
-  const hour = Math.floor(Math.random() * hourMax) + hourMin;
-  const minute = Math.floor(Math.random() * 59);
-  if (today.getHours() < 6) {
-    today.setHours(hour);
-    today.setMinutes(minute);
-    today.setSeconds(5); // add a buffer between starting the script and it getting to the task start.
-    return today;
-  }
-  const tomorrow = new Date();
-  tomorrow.setDate(today.getDate() + 1);
-  tomorrow.setHours(hour);
-  tomorrow.setMinutes(minute);
-  tomorrow.setSeconds(5); // add a buffer between starting the script and it getting to the task start.
-  return tomorrow;
-}
-
 function firstDayOfTheYear() {
   const date = new Date();
   return new Date(date.getFullYear(), 0, 1, 8, 0, 0, 0);
@@ -398,6 +377,7 @@ function midnight() {
   today.setDate(today.getDate() + 1);
   today.setHours(0);
   today.setSeconds(5);
+  today.setMilliseconds(0);
   return today;
 }
 
@@ -436,9 +416,4 @@ function scheduleFootball() {
   const date = new Date();
   // May 24th. Extra week to give the api time to update the schedule
   return new Date(date.getFullYear(), 4, 24, 0, 0, 0, 0)
-}
-
-// https://codereview.stackexchange.com/questions/33527/find-next-occurring-friday-or-any-dayofweek
-function getNextWeekAt6() {
-
 }
