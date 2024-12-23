@@ -116,19 +116,60 @@ module.exports = async function tasks(bot) {
     Task.registerHandler('soccer', soccer);
     Task.registerHandler('hockey', hockey);
     Task.registerHandler('football', football);
+    // pending tasks will be run no matter how far in the past they are.
     await Task.startPolling();
     // Testing Date
     // const testDate = new Date(2024, 4, 19, 12, 47, 0);
-    await Task.findOneAndUpdate({ name: 'ofTheDay', status: 'pending' }, { scheduledAt: next6am(), repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'happyBirthday', status: 'pending' }, { scheduledAt: next6am(), repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'september', status: 'pending' }, { scheduledAt: earthWindAndFire(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'getHolidaysForTheYear', status: 'pending' }, { scheduledAt: firstDayOfTheYear(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'valorantMatchesOfTheDay', status: 'pending' }, { scheduledAt: midnight(), repeatAfterMS: millisecondsInDay }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'basketball', status: 'pending' }, { scheduledAt: scheduleBasketball(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'baseball', status: 'pending' }, { scheduledAt: scheduleBaseball(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'soccer', status: 'pending' }, { scheduledAt: scheduleSoccer(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'football', status: 'pending' }, { scheduledAt: scheduleFootball(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
-    await Task.findOneAndUpdate({ name: 'hockey', status: 'pending' }, { scheduledAt: scheduleHockey(), repeatAfterMS: millisecondsInYear }, { upsert: true, returnDocument: 'after' });
+    await Task.findOneAndUpdate(
+      { name: 'ofTheDay', scheduledAt: next6am() },
+      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInDay } },
+      { upsert: true, returnDocument: 'after' }
+    );
+    await Task.findOneAndUpdate(
+      { name: 'happyBirthday', scheduledAt: next6am() },
+      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInDay } },
+      { upsert: true, returnDocument: 'after' }
+    );
+    await Task.findOneAndUpdate(
+      { name: 'september', scheduledAt: earthWindAndFire() },
+      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInYear } },
+      { upsert: true, returnDocument: 'after' }
+    );
+    await Task.findOneAndUpdate(
+      { name: 'getHolidaysForTheYear', scheduledAt: firstDayOfTheYear() },
+      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInYear } },
+      { upsert: true, returnDocument: 'after' }
+    );
+    await Task.findOneAndUpdate(
+      { name: 'valorantMatchesOfTheDay', scheduledAt: midnight() },
+      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInDay } },
+      { upsert: true, returnDocument: 'after' }
+    );
+    await Task.findOneAndUpdate(
+      { name: 'basketball', scheduledAt: scheduleBasketball() },
+      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInYear } },
+      { upsert: true, returnDocument: 'after' }
+    );
+    await Task.findOneAndUpdate(
+      { name: 'baseball', scheduledAt: scheduleBaseball() },
+      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInYear } },
+      { upsert: true, returnDocument: 'after' }
+    );
+    await Task.findOneAndUpdate(
+      { name: 'soccer', scheduledAt: scheduleSoccer() },
+      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInYear } },
+      { upsert: true, returnDocument: 'after' }
+    );
+    await Task.findOneAndUpdate(
+      { name: 'football', scheduledAt: scheduleFootball() },
+      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInYear } },
+      { upsert: true, returnDocument: 'after' }
+    );
+    await Task.findOneAndUpdate(
+      { name: 'hockey', scheduledAt: scheduleHockey() },
+      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInYear } },
+      { upsert: true, returnDocument: 'after' }
+    );
   } catch(error) {
     console.log('something went wrong registering all the handlers', error);
   }
@@ -346,7 +387,7 @@ function nextMorningMessage() {
 
 function firstDayOfTheYear() {
   const date = new Date();
-  return new Date(date.getFullYear(), 0, 1, 8);
+  return new Date(date.getFullYear(), 0, 1, 8, 0, 0, 0);
 }
 
 function midnight() {
@@ -360,38 +401,38 @@ function midnight() {
 function earthWindAndFire() {
   const date = new Date()
   const year = date.getFullYear();
-  const septemberTwentyFirst = new Date(year, 8, 21, 19);
+  const septemberTwentyFirst = new Date(year, 8, 21, 19, 0, 0, 0);
   return septemberTwentyFirst;
 }
 
 function scheduleBasketball() {
   const date = new Date();
   // September 7th
-  return new Date(date.getFullYear(), 8, 7)
+  return new Date(date.getFullYear(), 8, 7, 0, 0, 0, 0)
 }
 
 function scheduleBaseball() {
   const date = new Date();
   // March 7th
-  return new Date(date.getFullYear(), 2, 7)
+  return new Date(date.getFullYear(), 2, 7, 0, 0, 0, 0)
 }
 
 function scheduleSoccer() {
   const date = new Date();
   // July 23rd
-  return new Date(date.getFullYear(), 6, 23)
+  return new Date(date.getFullYear(), 6, 23, 0, 0, 0, 0)
 }
 
 function scheduleHockey() {
   const date = new Date();
   // July 15th
-  return new Date(date.getFullYear(), 6, 15)
+  return new Date(date.getFullYear(), 6, 15, 0, 0, 0, 0)
 }
 
 function scheduleFootball() {
   const date = new Date();
   // May 24th. Extra week to give the api time to update the schedule
-  return new Date(date.getFullYear(), 4, 24)
+  return new Date(date.getFullYear(), 4, 24, 0, 0, 0, 0)
 }
 
 // https://codereview.stackexchange.com/questions/33527/find-next-occurring-friday-or-any-dayofweek
