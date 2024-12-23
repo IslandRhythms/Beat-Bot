@@ -369,7 +369,11 @@ function next6am() {
 
 function firstDayOfTheYear() {
   const date = new Date();
-  return new Date(date.getFullYear(), 0, 1, 8, 0, 0, 0);
+  let NewYearsDay = new Date(date.getFullYear(), 0, 1, 8, 0, 0, 0);
+  if (date > NewYearsDay) {
+    NewYearsDay = NewYearsDay.setFullYear(date.getFullYear() + 1)
+  }
+  return NewYearsDay;
 }
 
 function midnight() {
@@ -395,29 +399,50 @@ function earthWindAndFire() {
 function scheduleBasketball() {
   const date = new Date();
   // September 7th
-  return new Date(date.getFullYear(), 8, 7, 0, 0, 0, 0)
+  let septemberSeventh = new Date(date.getFullYear(), 8, 7, 0, 0, 0, 0);
+  if (date > septemberSeventh) {
+    septemberSeventh.setFullYear(date.getFullYear() + 1);
+  }
+  return septemberSeventh;
 }
 
 function scheduleBaseball() {
   const date = new Date();
+
+  let marchSeventh = new Date(date.getFullYear(), 2, 7, 0, 0, 0, 0);
+  if (date > marchSeventh) {
+    marchSeventh.setFullYear(date.getFullYear() + 1);
+  }
   // March 7th
-  return new Date(date.getFullYear(), 2, 7, 0, 0, 0, 0)
+  return marchSeventh;
 }
 
 function scheduleSoccer() {
   const date = new Date();
   // July 23rd
-  return new Date(date.getFullYear(), 6, 23, 0, 0, 0, 0)
+  let julyTwentyThird = new Date(date.getFullYear(), 6, 23, 0, 0, 0, 0);
+  if (date > julyTwentyThird) {
+    julyTwentyThird.setFullYear(date.getFullYear() + 1)
+  }
+  return julyTwentyThird;
 }
 
 function scheduleHockey() {
   const date = new Date();
   // July 15th
-  return new Date(date.getFullYear(), 6, 15, 0, 0, 0, 0)
+  let julyFifthteenth = new Date(date.getFullYear(), 6, 15, 0, 0, 0, 0);
+  if (date > julyFifthteenth) {
+    julyFifthteenth.setFullYear(date.getFullYear() + 1);
+  }
+  return julyFifthteenth;
 }
 
 function scheduleFootball() {
   const date = new Date();
   // May 24th. Extra week to give the api time to update the schedule
-  return new Date(date.getFullYear(), 4, 24, 0, 0, 0, 0)
+  let mayTwentyFourth = new Date(date.getFullYear(), 4, 24, 0, 0, 0, 0);
+  if (date > mayTwentyFourth) {
+    mayTwentyFourth.setFullYear(date.getFullYear() + 1);
+  }
+  return mayTwentyFourth;
 }
