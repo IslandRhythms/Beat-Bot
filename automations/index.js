@@ -384,7 +384,11 @@ function midnight() {
 function earthWindAndFire() {
   const date = new Date()
   const year = date.getFullYear();
-  const septemberTwentyFirst = new Date(year, 8, 21, 19, 0, 0, 0);
+  let septemberTwentyFirst = new Date(year, 8, 21, 19, 0, 0, 0);
+  if (date > septemberTwentyFirst) {
+    septemberTwentyFirst.setFullYear(year + 1);
+  }
+
   return septemberTwentyFirst;
 }
 
