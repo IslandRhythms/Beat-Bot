@@ -274,17 +274,18 @@ async function ofTheDay(db, bot) {
     } else {
       entertainmentEmbed.addFields({ name: `Meme of the Day`, value: `Could not get meme` });
     }
-    const sOTD = await songOfTheDay();
-    if (sOTD.name) {
-      obj.songOTD.name = sOTD.name;
-      obj.songOTD.artist = sOTD.artist;
-      obj.songOTD.url = sOTD.url;
-      obj.songOTD.image = sOTD.image;
-      obj.songOTD.genre = sOTD.genre;
-      entertainmentEmbed.addFields({ name: 'Song of the Day', value: `${sOTD.name} by ${sOTD.artist} ${sOTD.url}` });
-    } else {
-      entertainmentEmbed.addFields({ name: 'Song of the Day', value: `Unable to retrieve for today` });
-    }
+    /* spotify deprecated the api and revoked access */
+    // const sOTD = await songOfTheDay();
+    // if (sOTD.name) {
+    //   obj.songOTD.name = sOTD.name;
+    //   obj.songOTD.artist = sOTD.artist;
+    //   obj.songOTD.url = sOTD.url;
+    //   obj.songOTD.image = sOTD.image;
+    //   obj.songOTD.genre = sOTD.genre;
+    //   entertainmentEmbed.addFields({ name: 'Song of the Day', value: `${sOTD.name} by ${sOTD.artist} ${sOTD.url}` });
+    // } else {
+    //   entertainmentEmbed.addFields({ name: 'Song of the Day', value: `Unable to retrieve for today` });
+    // }
    
     const { pokemonOTD } = await pokeOfTheDay();
     obj.pokemonOTD = pokemonOTD;
@@ -354,6 +355,7 @@ function next6am() {
     today.setHours(6);
     today.setMinutes(0);
     today.setSeconds(5); // add a buffer between starting the script and it getting to the task start.
+    today.setMilliseconds(0);
     return today;
   }
   const tomorrow = new Date();
@@ -361,6 +363,7 @@ function next6am() {
   tomorrow.setHours(6);
   tomorrow.setMinutes(0);
   tomorrow.setSeconds(5); // add a buffer between starting the script and it getting to the task start.
+  tomorrow.setMilliseconds(0);
   return tomorrow;
 }
 
