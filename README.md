@@ -19,3 +19,8 @@ link to discord image references https://discord.com/developers/docs/reference#i
 
 
 Add sudo infront of the npm script values so it can write files
+
+To setup in pm2:
+pm2 start npm --name "my-app-name" -- run "npm:script"
+
+Ex: pm2 start npm --name "myApp" -- run "start:production"
