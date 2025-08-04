@@ -182,20 +182,20 @@ async function ofTheDay(db, bot) {
     const { Daily, BugReport } = db.models;
     const yesterDoc = await Daily.findOne().sort({ createdAt: -1 });
     console.log('what is yesterDoc', yesterDoc)
-    if (yesterDoc) {
-      const yesterEmbed = new EmbedBuilder();
-      const bugReports = await BugReport.countDocuments({ status: { $nin: ['Done', 'Third Party Problem', 'Expected', 'Feature Request'] } });
-      const features = await BugReport.countDocuments({ status: `Feature Request` });
-      yesterEmbed.setTitle(`Daily Report: ${new Date().toLocaleString()}`)
-      if (yesterDoc.pings.length > 0) {
-        yesterEmbed.setDescription(`${yesterDoc.pings.map(ping => `${ping.name} - ${ping.called}`).join('\n') ?? `No pings to report`}`)
-      }
-      yesterEmbed.addFields(
-        { name: `Total Bug Reports`, value: `${bugReports}`, inline: true },
-        { name: `Total Feature Requests`, value: `${features}`, inline: true }
-      );
-      sendMessageTo.sendMessageToOwner(bot, { embeds: [yesterEmbed] });
-    }
+    // if (yesterDoc) {
+    //   const yesterEmbed = new EmbedBuilder();
+    //   const bugReports = await BugReport.countDocuments({ status: { $nin: ['Done', 'Third Party Problem', 'Expected', 'Feature Request'] } });
+    //   const features = await BugReport.countDocuments({ status: `Feature Request` });
+    //   yesterEmbed.setTitle(`Daily Report: ${new Date().toLocaleString()}`)
+    //   if (yesterDoc.pings.length > 0) {
+    //     yesterEmbed.setDescription(`${yesterDoc.pings.map(ping => `${ping.name} - ${ping.called}`).join('\n') ?? `No pings to report`}`)
+    //   }
+    //   yesterEmbed.addFields(
+    //     { name: `Total Bug Reports`, value: `${bugReports}`, inline: true },
+    //     { name: `Total Feature Requests`, value: `${features}`, inline: true }
+    //   );
+    //   sendMessageTo.sendMessageToOwner(bot, { embeds: [yesterEmbed] });
+    // }
     const embeds = [];
     // if obj pathing is doubly nested, need to predefine key in the obj
     const obj = { jokeOTD: {}, factOTD: {}, astropicOTD: {}, riddleOTD: {}, songOTD: {}, plantOTD: {}, poemOTD: {}, memeOTD: {} };
