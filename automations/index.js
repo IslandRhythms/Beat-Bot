@@ -122,52 +122,52 @@ module.exports = async function tasks(bot) {
     // const testDate = new Date(2024, 4, 19, 12, 47, 0);
     await Task.findOneAndUpdate(
       { name: 'ofTheDay' },
-      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInDay, scheduledAt: next6am() } },
+      { $set: { status: 'pending', repeatAfterMS: millisecondsInDay, scheduledAt: next6am() } },
       { upsert: true, returnDocument: 'after' }
     );
     await Task.findOneAndUpdate(
       { name: 'happyBirthday' },
-      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInDay, scheduledAt: next6am() } },
+      { $set: { status: 'pending', repeatAfterMS: millisecondsInDay, scheduledAt: next6am() } },
       { upsert: true, returnDocument: 'after' }
     );
     await Task.findOneAndUpdate(
       { name: 'september' },
-      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInYear, scheduledAt: earthWindAndFire() } },
+      { $set: { status: 'pending', repeatAfterMS: millisecondsInYear, scheduledAt: earthWindAndFire() } },
       { upsert: true, returnDocument: 'after' }
     );
     await Task.findOneAndUpdate(
       { name: 'getHolidaysForTheYear' },
-      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInYear, scheduledAt: firstDayOfTheYear() } },
+      { $set: { status: 'pending', repeatAfterMS: millisecondsInYear, scheduledAt: firstDayOfTheYear() } },
       { upsert: true, returnDocument: 'after' }
     );
     await Task.findOneAndUpdate(
       { name: 'valorantMatchesOfTheDay' },
-      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInDay, scheduledAt: midnight() } },
+      { $set: { status: 'pending', repeatAfterMS: millisecondsInDay, scheduledAt: midnight() } },
       { upsert: true, returnDocument: 'after' }
     );
     await Task.findOneAndUpdate(
       { name: 'basketball' },
-      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInYear, scheduledAt: scheduleBasketball() } },
+      { $set: { status: 'pending', repeatAfterMS: millisecondsInYear, scheduledAt: scheduleBasketball() } },
       { upsert: true, returnDocument: 'after' }
     );
     await Task.findOneAndUpdate(
       { name: 'baseball' },
-      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInYear, scheduledAt: scheduleBaseball() } },
+      { $set: { status: 'pending', repeatAfterMS: millisecondsInYear, scheduledAt: scheduleBaseball() } },
       { upsert: true, returnDocument: 'after' }
     );
     await Task.findOneAndUpdate(
       { name: 'soccer' },
-      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInYear, scheduledAt: scheduleSoccer() } },
+      { $set: { status: 'pending', repeatAfterMS: millisecondsInYear, scheduledAt: scheduleSoccer() } },
       { upsert: true, returnDocument: 'after' }
     );
     await Task.findOneAndUpdate(
       { name: 'football' },
-      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInYear, scheduledAt: scheduleFootball() } },
+      { $set: { status: 'pending', repeatAfterMS: millisecondsInYear, scheduledAt: scheduleFootball() } },
       { upsert: true, returnDocument: 'after' }
     );
     await Task.findOneAndUpdate(
       { name: 'hockey' },
-      { $setOnInsert: { status: 'pending', repeatAfterMS: millisecondsInYear, scheduledAt: scheduleHockey() } },
+      { $set: { status: 'pending', repeatAfterMS: millisecondsInYear, scheduledAt: scheduleHockey() } },
       { upsert: true, returnDocument: 'after' }
     );
   } catch(error) {
